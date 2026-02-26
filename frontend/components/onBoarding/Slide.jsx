@@ -8,21 +8,21 @@ const Slide = ({ bg, title, subtitle, img, active }) => {
       {active && (
         <>
           <Animated.Image
-            entering={FadeInUp.duration(400)}
+            entering={FadeInUp.duration(300)}
             source={img}
             style={styles.img}
           />
 
           <View style={{ paddingHorizontal: 32 }}>
             <Animated.Text
-              entering={FadeInDown.delay(200).duration(400)}
+              entering={FadeInDown.delay(200).duration(300)}
               style={styles.title}
             >
               {title}
             </Animated.Text>
 
             <Animated.Text
-              entering={FadeInDown.delay(400).duration(400)}
+              entering={FadeInDown.delay(400).duration(300)}
               style={styles.subtitle}
             >
               {subtitle}

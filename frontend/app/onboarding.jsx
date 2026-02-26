@@ -1,21 +1,23 @@
-import { View, Text, Image } from 'react-native'
-import React, { useState } from 'react'
-import Onboarding from 'react-native-onboarding-swiper';
-import Slide from '../components/onBoarding/Slide';
-import GradientBottomBar from '../components/onBoarding/GradientBottomBar';
-import DoneButtonComponent from '../components/onBoarding/DoneButtonComponent';
-import { useNavigation, useRouter } from 'expo-router';
+import { router } from "expo-router";
+import { useState } from "react";
+import Onboarding from "react-native-onboarding-swiper";
+import DoneButtonComponent from "../components/onBoarding/DoneButtonComponent";
+import Slide from "../components/onBoarding/Slide";
+import { setItem } from "../utils/asyncStorage";
+import { SafeAreaView } from "react-native-safe-area-context";
 const onboarding = () => {
-    const [currentIndex,setCurrentIndex] = useState(0)
-    const router = useRouter()
-    const handleSkip = ()=>{
-        router.push("/login")
-    }
-    const handleDone = ()=>{
-        router.push("/login")
-    }
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const handleSkip = () => {
+    setItem("onboardingCompleted", "true");
+    router.replace("/login"); // ← use replace to prevent back navigation
+  };
+  const handleDone = () => {
+    setItem("onboardingCompleted", "true");
+     router.replace("/login"); // ← use replace to prevent back navigation
+  };
   return (
-     <Onboarding
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
+      <Onboarding
       pageIndexCallback={(index) => setCurrentIndex(index)}
       onSkip={handleSkip}
       onDone={handleDone}
@@ -32,7 +34,7 @@ const onboarding = () => {
           image: (
             <Slide
               bg={require("../assets/images/on-boarding-bg-1.png")}
-              img = {require("../assets/images/onboarding-1.png")}
+              img={require("../assets/images/onboarding-1.png")}
               title="Ask AI Helpdesk"
               subtitle="Get instant answers to academic queries"
               active={currentIndex === 0}
@@ -46,7 +48,7 @@ const onboarding = () => {
           image: (
             <Slide
               bg={require("../assets/images/on-boarding-bg-1.png")}
-              img = {require("../assets/images/onboarding-2.png")}
+              img={require("../assets/images/onboarding-2.png")}
               title="Voice Assistant"
               subtitle="Speak your question, get instant reply"
               active={currentIndex === 1}
@@ -60,7 +62,7 @@ const onboarding = () => {
           image: (
             <Slide
               bg={require("../assets/images/on-boarding-bg-3.png")}
-              img = {''}
+              img={""}
               title="Find Locations"
               subtitle="Scan QR to locate labs & offices"
               active={currentIndex === 2}
@@ -71,7 +73,8 @@ const onboarding = () => {
         },
       ]}
     />
-  )
-}
+    </SafeAreaView>
+  );
+};
 
-export default onboarding
+export default onboarding;
