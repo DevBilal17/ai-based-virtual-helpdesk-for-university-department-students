@@ -4,10 +4,10 @@ import { setItem } from "../../utils/asyncStorage";
 import { router } from "expo-router";
 
 const DoneButtonComponent = () => {
-   const handleDone = () => {
-      setItem("onboardingCompleted", "true");
-       router.replace("/login"); // ← use replace to prevent back navigation
-    };
+  const handleDone = () => {
+    setItem("onboardingCompleted", "true");
+    router.replace("/login"); // ← use replace to prevent back navigation
+  };
   return (
     <TouchableOpacity onPress={handleDone}>
       <LinearGradient

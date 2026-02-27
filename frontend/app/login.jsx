@@ -1,17 +1,37 @@
 import { View, Text, TouchableOpacity, ImageBackground, StatusBar, StyleSheet } from 'react-native'
-import React from 'react'
-import { removeItem } from '../utils/asyncStorage'
-import { useNavigation, useRouter } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { getItem, removeItem } from '../utils/asyncStorage'
+import { Redirect, useNavigation, useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlassmorphismCard from '../components/GlassmorphismCard/GlassmorphismCard'
 import LoginForm from '../components/Forms/LoginForm'
 
 const login = () => {
+  const [isLoggedIn,setIsLoggedIn] = useState(false)
+
+  useEffect(()=>{
+    checkLoggedInStatus()
+  },[])
+
+  const checkLoggedInStatus = async()=>{
+    const status = await getItem("loggedIn")
+    
+    if (status === "true") {
+      setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
+    }
+  }
+
   const navigation = useNavigation();
   const handleReset = async() => {
     await removeItem("onboardingCompleted");
     navigation.navigate("onboarding");
   };
+   
+  if(isLoggedIn){
+    return <Redirect href={'/(tabs)'} />
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
        <ImageBackground source={require("../assets/images/on-boarding-bg-1.png")} style={[styles.container,{  }]}>

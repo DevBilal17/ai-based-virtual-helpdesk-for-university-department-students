@@ -4,7 +4,6 @@ const { width, height } = Dimensions.get("window");
 const Slide = ({ bg, title, subtitle, img, active }) => {
   return (
     <ImageBackground source={bg} resizeMode="cover" style={styles.container}>
-      
       {active && (
         <>
           <Animated.Image
@@ -30,7 +29,6 @@ const Slide = ({ bg, title, subtitle, img, active }) => {
           </View>
         </>
       )}
-
     </ImageBackground>
   );
 };

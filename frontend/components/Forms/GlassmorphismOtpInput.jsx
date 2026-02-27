@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
-import {BlurView} from "expo-blur"
-import {LinearGradient} from "expo-linear-gradient"
-import { useRef } from 'react'
-import { Controller } from 'react-hook-form'
+import { View, Text, StyleSheet, TextInput } from "react-native";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useRef } from "react";
+import { Controller } from "react-hook-form";
 const GlassmorphismOtpInput = ({ control }) => {
   const inputsRef = [useRef(), useRef(), useRef(), useRef()];
-
+  // useEffect(()=>{
+  //   inputsRef[0].current.focus()
+  // },[])
   return (
     <Controller
       control={control}
@@ -16,15 +18,19 @@ const GlassmorphismOtpInput = ({ control }) => {
           value.every((num) => num !== "") || "All fields required",
       }}
       render={({ field: { onChange, value } }) => (
-        <View style={{ maxWidth: 376, flexDirection: "row", justifyContent: "center" , gap:20 }}>
+        <View
+          style={{
+            maxWidth: 376,
+            flexDirection: "row",
+            justifyContent: "center",
+            gap: 20,
+          }}
+        >
           {value.map((digit, index) => (
             <View key={index} style={styles.container}>
               <BlurView intensity={15} style={styles.glass}>
                 <LinearGradient
-                  colors={[
-                    "rgba(255,255,255,0.1)",
-                    "rgba(255,255,255,0.02)",
-                  ]}
+                  colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]}
                   start={{ x: 1, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={styles.gradient}
@@ -65,28 +71,26 @@ const GlassmorphismOtpInput = ({ control }) => {
   );
 };
 
-export default GlassmorphismOtpInput
+export default GlassmorphismOtpInput;
 
 const styles = StyleSheet.create({
-    container : {
-        width:64,
-        borderRadius:20,
-        height:74,
-        backgroundColor: 'rgba(247, 254, 255, 0.1)',
-        overflow:"hidden",
-    }
-    ,
+  container: {
+    width: 64,
+    borderRadius: 20,
+    height: 74,
+    backgroundColor: "rgba(247, 254, 255, 0.1)",
+    overflow: "hidden",
+  },
   gradient: {
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
-
   },
 
   input: {
-    fontFamily:"Roboto",
-    fontSize:40,
-    fontWeight:"medium",
-    color:"#fff",
-    textAlign:"center"
+    fontFamily: "Roboto",
+    fontSize: 40,
+    fontWeight: "medium",
+    color: "#fff",
+    textAlign: "center",
   },
-})
+});

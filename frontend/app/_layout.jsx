@@ -28,7 +28,7 @@ export default function RootLayout() {
   if (!isShowOnboarding) {
     return (
       <Stack
-        initialRouteName="verificationcode"
+        initialRouteName="login"
         screenOptions={{
           headerShown: false,
         }}
