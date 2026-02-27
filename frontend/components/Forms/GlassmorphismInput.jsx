@@ -67,4 +67,12 @@ const styles = StyleSheet.create({
     fontWeight:"medium",
     color:"#fff"
   },
+  inputError: {
+    borderColor: "red",
+  },
+  error: {
+    color: "red",
+    marginBottom: 15,
+    fontSize: 12,
+  },
 })

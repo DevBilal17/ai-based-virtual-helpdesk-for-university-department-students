@@ -5,6 +5,7 @@ import GlassmorphismCard from '../components/GlassmorphismCard/GlassmorphismCard
 import { useForm, Controller } from "react-hook-form";
 import GlassmorphismInput from '../components/Forms/GlassmorphismInput';
 import LinearGradientFormSubmitButton from '../components/Forms/LinearGradientFormSubmitButton';
+import { router } from 'expo-router';
 const ResetPassword = () => {
    const {
       control,
@@ -14,7 +15,11 @@ const ResetPassword = () => {
   
     const onSubmit = (data) => {
       console.log("Form Data:", data);
+      router.push("verificationcode")
   };
+  const handleBack = ()=>{
+    router.back();
+  }
   return (
     <SafeAreaView style={{flex:1}}>
       <StatusBar/>
@@ -23,7 +28,7 @@ const ResetPassword = () => {
         style={styles.container}
       >
         {/* Back Button */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleBack}>
           <GlassmorphismCard style={{borderRadius:20,height :40,width:40}}>
               
           </GlassmorphismCard>
@@ -90,6 +95,14 @@ const styles = StyleSheet.create({
     lineHeight:22,
     color:"#C8CACD",
     textAlign:"left"
+  },
+  inputError: {
+    borderColor: "red",
+  },
+  error: {
+    color: "red",
+    marginBottom: 15,
+    fontSize: 12,
   },
   formContainer:{
     marginTop:40,

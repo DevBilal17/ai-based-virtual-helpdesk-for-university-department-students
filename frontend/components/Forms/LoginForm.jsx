@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 
 export default function LoginForm() {
   const {
@@ -20,6 +20,7 @@ export default function LoginForm() {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    router.push("index")
   };
   const navigation = useNavigation()
   const handleForgotButton = ()=>{
