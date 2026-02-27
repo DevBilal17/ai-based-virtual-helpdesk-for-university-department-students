@@ -5,13 +5,15 @@ import { Ionicons } from "@expo/vector-icons";
 const TabLayout = () => {
   return (
     <Tabs
+    initialRouteName='chat'
       screenOptions={({route})=>({
+        
         headerShown:false,
         tabBarIcon:({color,focused})=>{
             let iconName;
-            let size = 30;
+            let size = 28;
             if(route.name == "index"){
-                iconName == "home"
+                iconName = !focused ? "home-outline" : "home"
             }
             else if(route.name == "chat"){
                 iconName = !focused ? `chatbubble-outline` : 'chatbubble'
@@ -38,13 +40,13 @@ const TabLayout = () => {
           borderRadius: 30,
           borderTopWidth: 0,
           elevation: 5, 
-          marginHorizontal:20
+          marginHorizontal:15
         },
 
         
         tabBarItemStyle: {
 
-         marginTop:7
+         marginTop:9
         },
         tabBarShowLabel: false,
         
