@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "expo-router";
 
 export default function LoginForm() {
   const {
@@ -20,6 +21,10 @@ export default function LoginForm() {
   const onSubmit = (data) => {
     console.log("Form Data:", data);
   };
+  const navigation = useNavigation()
+  const handleForgotButton = ()=>{
+      navigation.navigate("resetpassword")
+  }
 
   return (
     <View style={styles.container}>
@@ -112,7 +117,7 @@ export default function LoginForm() {
           )}
         />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleForgotButton}>
           <Text style={styles.forgotText}>
             Forgot Password?
           </Text>
@@ -166,21 +171,22 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 12,
   },
-    rememberContainer: { flexDirection: "row", alignItems: "center", justifyContent:"center" ,marginVertical: 12 },
+  rememberContainer: { flexDirection: "row", alignItems: "center", justifyContent:"center" ,marginVertical: 12,gap:5 },
   circle: {
-    width: 12, height: 12, borderRadius: 50 + "%",
+    width: 11, height: 11, borderRadius: 50 + "%",
     backgroundColor: "#fff",
-    justifyContent: "center", alignItems: "center", marginRight: 10,
+    justifyContent: "center", alignItems: "center", 
   },
-  checkedCircle: { width: 10, height: 10, borderRadius: 50 + "%", backgroundColor: "#3659F4" },
-  rememberLabel: { fontSize: 12, color: "#fff",fontFamily:"Roboto" },
+  checkedCircle: { width: 9, height: 9, borderRadius: 50 + "%", backgroundColor: "#3659F4" },
+  rememberLabel: { fontSize: 12, color: "#fff",fontFamily:"Poppin" },
 
   forgotContainer:{
     display:"flex",
     flexDirection:"row",
     alignItems:"center",
     justifyContent:"space-between",
-    gap:10
+    gap:10,
+    paddingHorizontal:6
   },
   forgotText:{
     fontSize: 12, color: "#fff",fontFamily:"Poppins" 

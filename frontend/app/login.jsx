@@ -14,7 +14,7 @@ const login = () => {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-       <ImageBackground source={require("../assets/images/on-boarding-bg-1.png")} style={[styles.container,{ flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
+       <ImageBackground source={require("../assets/images/on-boarding-bg-1.png")} style={[styles.container,{  }]}>
          <StatusBar barStyle="light-content" />
           <View style={{marginBottom:40}}>
             <Text style={styles.headTitle}>Hi, Welcome Here!</Text>
@@ -35,6 +35,7 @@ export default login
 const styles = StyleSheet.create({
   container : {
      paddingHorizontal:20,
+     flex: 1, justifyContent: 'center', alignItems: 'center'
   },
   headTitle : {
     fontSize:40,

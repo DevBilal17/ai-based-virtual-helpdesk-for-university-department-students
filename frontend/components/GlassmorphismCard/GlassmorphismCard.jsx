@@ -3,15 +3,15 @@ import {BlurView} from "expo-blur"
 import {LinearGradient} from "expo-linear-gradient"
 import React from 'react'
 
-const GlassmorphismCard = ({children}) => {
+const GlassmorphismCard = ({children,style,gradientStyle}) => {
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container,style]}>
         <BlurView intensity={15} style={styles.glass}>
         <LinearGradient
           colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]}
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={styles.gradient}
+          style={[styles.gradient]}
         >
           {children}
         </LinearGradient>
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     }
     ,
   gradient: {
-
     paddingHorizontal: 16,
     paddingVertical:26,
     borderWidth: 1,
