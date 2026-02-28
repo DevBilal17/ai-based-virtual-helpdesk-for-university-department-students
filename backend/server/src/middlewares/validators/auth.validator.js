@@ -116,10 +116,27 @@ const verifyOtpValidator = [
     .matches(/^\d{4}$/)
     .withMessage("OTP must be numeric"),
 ];
+
+const changePasswordValidator = [
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email")
+    .normalizeEmail({ gmail_remove_dots: false }),
+
+  // Password is always required
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+];
 module.exports = {
     loginValidator,
     createStudentValidator,
     createAdminValidator,
     sendOtpValidator,
-    verifyOtpValidator
+    verifyOtpValidator,
+    changePasswordValidator
 }

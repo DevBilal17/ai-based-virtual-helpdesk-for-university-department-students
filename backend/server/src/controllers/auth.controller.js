@@ -284,6 +284,28 @@ const createAdmin = async (req, res) => {
   }
 };
 
+// ================= Change Password =================
+const changePassword = async(req,res)=>{
+  try {
+    const {email,password} = req.body;
+
+    if (!email || !password) {
+      return response(res, 400, false, "Email and password are required");
+    }
+    // Check existence
+    let user = await User.findOne({ email });
+    if (!user) {
+      return response(res, 400, false, "User not exist");
+    }
+    user.password = password;
+    user.save()
+    return response(res, 200, true, "Password reset successfully");
+  } catch (error) {
+    console.error("Create Admin Error:", error.message);
+    return response(res, 500, false, "Internal Server Error");
+  }
+}
+
 
 
 module.exports = {
@@ -291,5 +313,6 @@ module.exports = {
   login,
   sendOtp,
   createAdmin,
-  verifyOtp
+  verifyOtp,
+  changePassword
 }
