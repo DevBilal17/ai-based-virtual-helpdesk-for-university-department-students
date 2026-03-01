@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -9,16 +9,23 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { setItem } from "../../utils/asyncStorage";
 import { useLoginMutation } from "../../store/services/authApi";
 import Toast from 'react-native-toast-message';
+
 export default function LoginForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues:{
+      registrationNumber:"",
+      password:""
+    }
+  });
+
   const [login, { isLoading, error }] = useLoginMutation();
   const onSubmit = async (data) => {
     try {

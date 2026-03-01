@@ -288,7 +288,7 @@ const createAdmin = async (req, res) => {
 const changePassword = async(req,res)=>{
   try {
     const {email,password} = req.body;
-
+    console.log(email,password)
     if (!email || !password) {
       return response(res, 400, false, "Email and password are required");
     }
