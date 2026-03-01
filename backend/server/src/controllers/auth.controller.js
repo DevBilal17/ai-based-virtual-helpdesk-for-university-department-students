@@ -164,7 +164,7 @@ const sendOtp = async (req, res) => {
       return response(res, 500, false, "OTP generated but email could not be sent");
     }
 
-    return response(res, 200, true, "OTP sent to your email");
+    return response(res, 200, true, "OTP sent to your email",{email});
 
   } catch (error) {
     console.error("Send OTP Error:", error.message);

@@ -11,60 +11,87 @@ import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useNavigation } from "expo-router";
 import { setItem } from "../../utils/asyncStorage";
-
+import { useLoginMutation } from "../../store/services/authApi";
+import Toast from 'react-native-toast-message';
 export default function LoginForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const [login, { isLoading, error }] = useLoginMutation();
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
-    await setItem("loggedIn","true")
+    try {
+      console.log("Form Data:", data);
+
+      // Call backend
+      const response = await login(data).unwrap();
+
+      // Save token in AsyncStorage
+      await setItem("token", response.data.token);
+      await User("user",response.data.user)
+      await setItem("loggedIn", "true");
+
+      console.log("Login Success");
+      Toast.show({
+  type: 'success',
+  text1: 'Login Successful',
+  text2: 'Welcome back!',
+});
+      // Navigate to home screen
+      router.replace("/(tabs)");
+    } catch (err) {
+      console.log("Login Failed ", err?.data?.message);
+  //     Toast.show({
+  //    type: 'error',
+  //    text1: 'Login Failed',
+  //    text2: err?.data?.message || 'Something went wrong',
+  //  });
+   Toast.show({
+  type: 'error',
+  position: 'top',
+  visibilityTime: 3000,
+  autoHide: true,
+  text1: 'Login Failed',
+  text2: err?.data?.message || 'Something went wrong',
+});
+    }
   };
   const navigation = useNavigation();
   const handleForgotButton = () => {
     navigation.navigate("resetpassword");
   };
 
-  
-
   return (
     <View style={styles.container}>
       <View>
-        {/* EMAIL */}
-        <Text style={styles.label}>Email</Text>
+        {/* Registration Number */}
+        <Text style={styles.label}>Registration Number</Text>
         <Controller
           control={control}
-          name="email"
+          name="registrationNumber"
           rules={{
-            required: "Email is required",
+            required: "Registration number is required",
             pattern: {
-              value: /^\S+@\S+$/i,
-              message: "Enter a valid email",
+              value: /^\d{4}-[A-Z]+-\d{5}$/i,
+              message: "Format must be 2022-GCUF-02661",
             },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={[
-                styles.input,
-                {
-                  paddingHorizontal: 15,
-                },
-              ]}
-              placeholder="Enter your email"
+              style={[styles.input, { paddingHorizontal: 15 }]}
+              placeholder="Enter registration number"
               placeholderTextColor={"#F7FEFF99"}
-              keyboardType="email-address"
-              autoCapitalize="none"
+              autoCapitalize="characters" // automatically uppercase
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(text) => onChange(text.toUpperCase())} // force uppercase
               value={value}
             />
           )}
         />
-        {errors.email && (
-          <Text style={styles.error}>{errors.email.message}</Text>
+
+        {errors.registrationNumber && (
+          <Text style={styles.error}>{errors.registrationNumber.message}</Text>
         )}
       </View>
 
@@ -126,9 +153,15 @@ export default function LoginForm() {
         </View>
       </View>
 
-      <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}
+        style={{ opacity: isLoading ? 0.7 : 1 }}
+      >
         <LinearGradient style={styles.button} colors={["#3659F4", "#3C82F2"]}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>
+            {isLoading ? "Logging in..." : "Login"}
+          </Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>

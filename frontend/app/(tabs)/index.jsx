@@ -5,6 +5,7 @@ import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismC
 import { Ionicons } from '@expo/vector-icons'
 import ModuleBox from '../../components/Home/ModuleBox'
 import HistoryChatBox from '../../components/Home/HistoryChatBox'
+import { router } from 'expo-router'
 
 const {width,height} = Dimensions.get("window")
 const index = () => {
@@ -13,7 +14,7 @@ const index = () => {
       <SafeAreaView style={styles.container}>
         {/* Header View */}
         <View style={styles.headerViewContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>router.replace("/login")}>
           <GlassmorphismCard
             style={{ borderRadius: 20, height: 40, width: 40 }}
             gradientStyle={{

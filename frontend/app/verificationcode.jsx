@@ -5,34 +5,78 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
-  TextInput,
-  Image,
 } from "react-native";
-import React, { useRef } from "react";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import GlassmorphismCard from "../components/GlassmorphismCard/GlassmorphismCard";
-import { useForm, Controller } from "react-hook-form";
-import GlassmorphismInput from "../components/Forms/GlassmorphismInput";
+import { useForm } from "react-hook-form";
 import LinearGradientFormSubmitButton from "../components/Forms/LinearGradientFormSubmitButton";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import GlassmorphismOtpInput from "../components/Forms/GlassmorphismOtpInput";
 import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { getItem } from "../utils/asyncStorage";
+import { useVerifyOtpMutation } from "../store/services/authApi";
 const VerificationCode = () => {
+  const { email } = useLocalSearchParams();
+  const [userEmail, setUserEmail] = useState(email || "");
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      otp: ["", "", "", ""],
-    },
+    defaultValues: { otp: ["", "", "", ""] },
   });
 
-  const onSubmit = (data) => {
+  const [timer, setTimer] = useState(24); // countdown for resend
+  const [canResend, setCanResend] = useState(false);
+  const [otpExpired, setOtpExpired] = useState(false);
+
+  const [verifyOtp] = useVerifyOtpMutation();
+
+  // Load email from storage if not passed in params
+  useEffect(() => {
+    const loadEmail = async () => {
+      if (!email) {
+        const storedEmail = await getItem("userEmail");
+        if (storedEmail) setUserEmail(storedEmail);
+      }
+    };
+    loadEmail();
+  }, []);
+
+  // Countdown timer for resend
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    } else {
+      setCanResend(true);
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  // OTP expiry after 5 minutes
+  useEffect(() => {
+    const otpTimer = setTimeout(() => setOtpExpired(true), 5 * 60 * 1000);
+    return () => clearTimeout(otpTimer);
+  }, []);
+
+  // Handle OTP submission
+  const onSubmit = async (data) => {
+    if (otpExpired) return; // disable submit if expired
     const otpValue = data.otp.join("");
-    console.log("OTP:", otpValue);
+    try {
+      const response = await verifyOtp({ email: userEmail, otp: otpValue }).unwrap();
+      console.log("OTP verified ", response);
+      router.push(""); // navigate to new password screen
+    } catch (err) {
+      console.log("OTP verify failed", err?.data?.message);
+    }
   };
-  const handleBack = () => {
+ const handleBack = () => {
     router.back();
   };
 
@@ -64,21 +108,55 @@ const VerificationCode = () => {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Verify Your Code</Text>
           <Text style={styles.subtitle}>
-            A verification code has been sent to butta****gmail.com.Enter it
-            belowto continue.
+            A verification code has been sent to {userEmail}.Enter it belowto
+            continue.
           </Text>
         </View>
         <View style={styles.formContainer}>
           <GlassmorphismOtpInput control={control} />
           {errors.otp && <Text style={styles.error}>{errors.otp.message}</Text>}
         </View>
+
+        {/* Disabled when otp expired */}
         <LinearGradientFormSubmitButton
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
           text={"Continue"}
           style={{ marginTop: 20 }}
         />
-        <Text style={styles.timerText}>Don’t receive the code? Wait(24s)</Text>
+        <Text style={styles.timerText}>
+          {otpExpired
+            ? "OTP expired"
+            : `Don’t receive the code? Wait (${timer}s)`}
+        </Text>
+        {otpExpired && (
+          <Text style={[styles.error, { textAlign: "center" }]}>
+            OTP expired. Please request a new one.
+          </Text>
+        )}
+        {canResend && !otpExpired ? (
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                // Call your sendOtp mutation
+                await sendOtp({ email: userEmail }).unwrap();
+                setTimer(24); // reset wait timer
+                setCanResend(false);
+                setOtpExpired(false);
+              } catch (err) {
+                console.log("Resend OTP failed:", err?.data?.message);
+              }
+            }}
+          >
+            <Text
+              style={{ color: "#3C82F2", textAlign: "center", marginTop: 10 }}
+            >
+              Resend OTP
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.timerText}>Wait ({timer}s)</Text>
+        )}
       </ImageBackground>
     </SafeAreaView>
   );

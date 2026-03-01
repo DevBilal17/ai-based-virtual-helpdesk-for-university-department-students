@@ -13,15 +13,15 @@ const login = () => {
     checkLoggedInStatus()
   },[])
 
-  const checkLoggedInStatus = async()=>{
-    const status = await getItem("loggedIn")
-    
-    if (status === "true") {
-      setIsLoggedIn(false);
-    } else {
-      setIsLoggedIn(true);
-    }
+const checkLoggedInStatus = async () => {
+  const status = await getItem("loggedIn");
+
+  if (status === "true") {
+    setIsLoggedIn(true);
+  } else {
+    setIsLoggedIn(false);
   }
+};
 
   const navigation = useNavigation();
   const handleReset = async() => {
