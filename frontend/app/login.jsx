@@ -30,7 +30,7 @@ const checkLoggedInStatus = async () => {
   };
    
   if(!isLoggedIn){
-    return <Redirect href={'/chat'} />
+    return <Redirect href={'/'} />
   }
   return (
     <SafeAreaView style={{ flex: 1 }}>
