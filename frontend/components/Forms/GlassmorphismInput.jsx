@@ -12,7 +12,10 @@ const GlassmorphismInput = ({
   keyboardType,
   placeholder,
   iconName,
+  autoCapitalize = "none",
   isPassword = false, // Add prop to indicate password
+  isTouchable,
+  onTouchableIconPress
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +34,7 @@ const GlassmorphismInput = ({
               placeholder={placeholder}
               placeholderTextColor={"#F7FEFF99"}
               keyboardType={keyboardType}
-              autoCapitalize="none"
+              autoCapitalize={autoCapitalize}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -39,13 +42,17 @@ const GlassmorphismInput = ({
             />
 
             {/* Left icon (optional) */}
-            {iconName && <Ionicons name={iconName} size={24} color={"white"} />}
-
+            {iconName &&
+              (isTouchable ? (
+                <TouchableOpacity onPress={onTouchableIconPress}>
+                  <Ionicons name={iconName} size={24} color="white" />
+                </TouchableOpacity>
+              ) : (
+                <Ionicons name={iconName} size={24} color="white" />
+              ))}
             {/* Show/hide toggle only for password */}
             {isPassword && (
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-              >
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={24}
@@ -74,6 +81,8 @@ const styles = StyleSheet.create({
   gradient: {
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
+    height: 50,
+    justifyContent: "center",
   },
   inputContainer: {
     display: "flex",
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: "medium",
     color: "#fff",
     // backgroundColor:"red",
-    flex:1
+    flex: 1,
   },
   inputError: {
     borderColor: "red",

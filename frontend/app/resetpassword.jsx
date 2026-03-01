@@ -112,6 +112,8 @@ const ResetPassword = () => {
                 value={value}
                 placeholder={"Enter your email"}
                 style={{}}
+                keyboardType={"email-address"}
+                iconName={"mail-outline"}
               />
             )}
           />
