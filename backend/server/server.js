@@ -5,12 +5,11 @@ const connectDB = require("./src/config/db.config");
 
 const PORT = process.env.PORT || 5000;
 
-
 // ================= CONNECT TO MONGODB =================
 
-connectDB()
+connectDB();
 
 // ================= START SERVER =================
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-}); 
+});
