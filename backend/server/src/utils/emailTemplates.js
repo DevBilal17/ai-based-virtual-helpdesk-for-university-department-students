@@ -50,12 +50,8 @@ const otpTemplate = (name, otp) => {
   `;
 };
 
-
-
-
-
 module.exports = {
   studentCredentialsTemplate,
   otpTemplate,
-  adminCredentialsTemplate
-}
+  adminCredentialsTemplate,
+};

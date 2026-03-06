@@ -13,7 +13,7 @@ const authorize = (...roles) => {
         res,
         403,
         false,
-        `Access denied - Requires role: ${roles.join(", ")}`
+        `Access denied - Requires role: ${roles.join(", ")}`,
       );
     }
 

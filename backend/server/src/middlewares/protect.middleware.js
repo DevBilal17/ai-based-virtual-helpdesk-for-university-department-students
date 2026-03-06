@@ -28,7 +28,6 @@ const protect = async (req, res, next) => {
 
     req.user = user;
     next();
-
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return response(res, 401, false, "Token expired - Login again");

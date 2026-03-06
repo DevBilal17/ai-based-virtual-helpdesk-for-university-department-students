@@ -1,22 +1,16 @@
-
 const response = require("../utils/response");
 const User = require("../models/USER");
 const { otpTemplate } = require("../utils/emailTemplates");
 const { studentCredentialsTemplate } = require("../utils/emailTemplates");
 const sendEmail = require("../utils/sendEmail");
 const { adminCredentialsTemplate } = require("../utils/emailTemplates");
-const generateToken = require("../utils/generateToken")
+const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
+
 // ================= ADMIN CREATE STUDENT =================
 const createStudent = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      registrationNumber,
-      semester,
-      department,
-    } = req.body;
+    const { name, email, registrationNumber, semester, department } = req.body;
 
     // Check existing
     const existingUser = await User.findOne({ email });
@@ -42,7 +36,7 @@ const createStudent = async (req, res) => {
     const htmlTemplate = studentCredentialsTemplate(
       student.name,
       student.email,
-      tempPassword
+      tempPassword,
     );
 
     // Send email
@@ -57,7 +51,7 @@ const createStudent = async (req, res) => {
         res,
         500,
         false,
-        "Student created but email could not be sent"
+        "Student created but email could not be sent",
       );
     }
 
@@ -67,17 +61,14 @@ const createStudent = async (req, res) => {
       true,
       "Student created successfully and credentials sent to email",
       {
-        name : student.name
-      }
+        name: student.name,
+      },
     );
-
   } catch (error) {
     console.error("Create Student Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
-
-
 
 // ================= LOGIN WITH REGISTRATION NUMBER =================
 const login = async (req, res) => {
@@ -100,7 +91,12 @@ const login = async (req, res) => {
         return response(res, 400, false, "Invalid credentials for admin");
       }
     } else {
-      return response(res, 400, false, "Provide registration number (student) or email (admin)");
+      return response(
+        res,
+        400,
+        false,
+        "Provide registration number (student) or email (admin)",
+      );
     }
 
     // Compare password
@@ -123,14 +119,11 @@ const login = async (req, res) => {
         email: user.email,
       },
     });
-
   } catch (error) {
     console.error("Login Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
-
-
 
 // ================= SEND OTP =================
 const sendOtp = async (req, res) => {
@@ -161,17 +154,20 @@ const sendOtp = async (req, res) => {
     });
 
     if (!emailSent) {
-      return response(res, 500, false, "OTP generated but email could not be sent");
+      return response(
+        res,
+        500,
+        false,
+        "OTP generated but email could not be sent",
+      );
     }
 
-    return response(res, 200, true, "OTP sent to your email",{email});
-
+    return response(res, 200, true, "OTP sent to your email", { email });
   } catch (error) {
     console.error("Send OTP Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
-
 
 // ================= VERIFY OTP =================
 const verifyOtp = async (req, res) => {
@@ -196,7 +192,12 @@ const verifyOtp = async (req, res) => {
     // Increment attempts and block if too many
     user.otpAttempts = (user.otpAttempts || 0) + 1;
     if (user.otpAttempts > 5) {
-      return response(res, 429, false, "Too many invalid OTP attempts. Try again later.");
+      return response(
+        res,
+        429,
+        false,
+        "Too many invalid OTP attempts. Try again later.",
+      );
     }
 
     // Hash the incoming OTP to compare with stored hash
@@ -214,13 +215,11 @@ const verifyOtp = async (req, res) => {
     await user.save();
 
     return response(res, 200, true, "OTP verified successfully");
-
   } catch (error) {
     console.error("Verify OTP Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
-
 
 // ================= Create Admin =================
 const createAdmin = async (req, res) => {
@@ -248,7 +247,7 @@ const createAdmin = async (req, res) => {
     const htmlTemplate = adminCredentialsTemplate(
       admin.name,
       admin.email,
-      tempPassword
+      tempPassword,
     );
 
     // Send email
@@ -263,7 +262,7 @@ const createAdmin = async (req, res) => {
         res,
         500,
         false,
-        "Admin created but email could not be sent"
+        "Admin created but email could not be sent",
       );
     }
 
@@ -274,10 +273,9 @@ const createAdmin = async (req, res) => {
       "Admin created successfully and credentials sent to email",
       {
         name: admin.name,
-        email: admin.email
-      }
+        email: admin.email,
+      },
     );
-
   } catch (error) {
     console.error("Create Admin Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
@@ -285,10 +283,10 @@ const createAdmin = async (req, res) => {
 };
 
 // ================= Change Password =================
-const changePassword = async(req,res)=>{
+const changePassword = async (req, res) => {
   try {
-    const {email,password} = req.body;
-    console.log(email,password)
+    const { email, password } = req.body;
+    console.log(email, password);
     if (!email || !password) {
       return response(res, 400, false, "Email and password are required");
     }
@@ -298,15 +296,13 @@ const changePassword = async(req,res)=>{
       return response(res, 400, false, "User not exist");
     }
     user.password = password;
-    user.save()
+    user.save();
     return response(res, 200, true, "Password reset successfully");
   } catch (error) {
     console.error("Create Admin Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
-}
-
-
+};
 
 module.exports = {
   createStudent,
@@ -314,5 +310,5 @@ module.exports = {
   sendOtp,
   createAdmin,
   verifyOtp,
-  changePassword
-}
+  changePassword,
+};

@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
     registrationNumber: {
       type: String,
       unique: true,
-      sparse: true, 
+      sparse: true,
       uppercase: true,
       trim: true,
     },
@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
     department: {
       type: String,
       enum: ["CS", "SE", "IT", "BBA", "EE"],
-      default:"IT"
+      default: "IT",
     },
 
     // ================= OTP FIELDS =================
@@ -77,9 +77,8 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-
 
 // ================= PASSWORD HASH MIDDLEWARE =================
 userSchema.pre("save", async function () {
@@ -93,29 +92,24 @@ userSchema.pre("save", async function () {
   }
 });
 
-
 // ================= METHOD TO COMPARE PASSWORD =================
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-
 // ================= METHOD TO GENERATE OTP =================
 userSchema.methods.generateOTP = function () {
   const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
-  const hashedOtp = crypto
-    .createHash("sha256")
-    .update(otp)
-    .digest("hex");
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
   this.otp = hashedOtp;
   this.otpExpiry = Date.now() + 5 * 60 * 1000; //5min
   this.otpAttempts = 0;
 
-  return otp; 
+  return otp;
 };
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User
+module.exports = User;

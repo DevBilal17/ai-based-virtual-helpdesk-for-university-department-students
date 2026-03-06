@@ -16,7 +16,7 @@ const loginValidator = [
     .optional({ checkFalsy: true })
     .isEmail()
     .withMessage("Please provide a valid email")
-    .normalizeEmail({gmail_remove_dots:false}),
+    .normalizeEmail({ gmail_remove_dots: false }),
 
   // Password is always required
   body("password")
@@ -29,15 +29,12 @@ const loginValidator = [
   body().custom((value, { req }) => {
     if (!req.body.registrationNumber && !req.body.email) {
       throw new Error(
-        "Either registration number (student) or email (admin) is required"
+        "Either registration number (student) or email (admin) is required",
       );
     }
     return true;
   }),
 ];
-
-
-
 
 const createStudentValidator = [
   body("name")
@@ -73,6 +70,7 @@ const createStudentValidator = [
     .isIn(departments)
     .withMessage(`Department must be one of ${departments.join(", ")}`),
 ];
+
 const createAdminValidator = [
   body("name")
     .notEmpty()
@@ -86,9 +84,8 @@ const createAdminValidator = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Please provide a valid email")
-    .normalizeEmail({gmail_remove_dots:false}),
+    .normalizeEmail({ gmail_remove_dots: false }),
 ];
-
 
 const sendOtpValidator = [
   body("email")
@@ -98,7 +95,6 @@ const sendOtpValidator = [
     .withMessage("Please provide a valid email")
     .normalizeEmail({ gmail_remove_dots: false }), // keeps dots in Gmail usernames
 ];
-
 
 const verifyOtpValidator = [
   body("email")
@@ -132,11 +128,12 @@ const changePasswordValidator = [
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
 ];
+
 module.exports = {
-    loginValidator,
-    createStudentValidator,
-    createAdminValidator,
-    sendOtpValidator,
-    verifyOtpValidator,
-    changePasswordValidator
-}
+  loginValidator,
+  createStudentValidator,
+  createAdminValidator,
+  sendOtpValidator,
+  verifyOtpValidator,
+  changePasswordValidator,
+};
