@@ -3,14 +3,15 @@ import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 
 const {width,height} = Dimensions.get("window")
-const ModuleBox = ({style,textStyle,image,text,gradientColors = ["#023E8A", "#011024"]}) => {
+const ModuleBox = ({style,textStyle,image,text,gradientColors = ["#023E8A", "#011024"],onPress}) => {
 const icons = {
   speaking: require("../../assets/icons/speaking.png"),
   communication: require("../../assets/icons/communication.png"),
   address: require("../../assets/icons/address.png"),
+  
 };
   return (
-    <TouchableOpacity style={[styles.container,style]}>
+    <TouchableOpacity style={[styles.container,style]} onPress={onPress}>
       <LinearGradient
       style={
         [styles.gradientContainer]

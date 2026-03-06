@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { getItem } from "../utils/asyncStorage";
 import { useVerifyOtpMutation } from "../store/services/authApi";
+import Toast from "react-native-toast-message";
 const VerificationCode = () => {
   const { email } = useLocalSearchParams();
   const [userEmail, setUserEmail] = useState(email || "");
@@ -71,9 +72,22 @@ const VerificationCode = () => {
     try {
       const response = await verifyOtp({ email: userEmail, otp: otpValue }).unwrap();
       console.log("OTP verified ", response);
-      router.push(""); // navigate to new password screen
+        Toast.show({
+            type: "success",
+            text1: "OTP Verified",
+            text2: response?.message || "Create new password",
+          });
+       router.push({
+            pathname: "/newpassword",
+            params: { email: userEmail },
+          }); // navigate to new password screen
     } catch (err) {
       console.log("OTP verify failed", err?.data?.message);
+       Toast.show({
+            type: "error",
+            text1: "Request Failed",
+            text2: err?.data?.message || "Something went wrong",
+          });
     }
   };
  const handleBack = () => {

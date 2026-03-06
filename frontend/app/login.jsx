@@ -29,8 +29,8 @@ const checkLoggedInStatus = async () => {
     navigation.navigate("onboarding");
   };
    
-  if(isLoggedIn){
-    return <Redirect href={'/(tabs)'} />
+  if(!isLoggedIn){
+    return <Redirect href={'/'} />
   }
   return (
     <SafeAreaView style={{ flex: 1 }}>

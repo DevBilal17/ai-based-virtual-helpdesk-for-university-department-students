@@ -46,6 +46,7 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
         }}
+        
       />
       <Toast config={toastConfig} topOffset={10}/>
       </Provider>

@@ -47,7 +47,7 @@ const ResetPassword = () => {
 
   } catch (err) {
     console.log("OTP Generation Failed", err);
-
+    console.log(err)
     Toast.show({
       type: "error",
       text1: "Request Failed",
@@ -112,6 +112,8 @@ const ResetPassword = () => {
                 value={value}
                 placeholder={"Enter your email"}
                 style={{}}
+                keyboardType={"email-address"}
+                iconName={"mail-outline"}
               />
             )}
           />

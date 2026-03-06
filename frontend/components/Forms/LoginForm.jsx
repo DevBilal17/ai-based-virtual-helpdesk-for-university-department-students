@@ -1,8 +1,6 @@
-import React from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   Pressable,
@@ -12,13 +10,21 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, useNavigation } from "expo-router";
 import { setItem } from "../../utils/asyncStorage";
 import { useLoginMutation } from "../../store/services/authApi";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
+import GlassmorphismInput from "./GlassmorphismInput";
+
 export default function LoginForm() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      registrationNumber: "",
+      password: "",
+    },
+  });
+
   const [login, { isLoading, error }] = useLoginMutation();
   const onSubmit = async (data) => {
     try {
@@ -29,32 +35,29 @@ export default function LoginForm() {
 
       // Save token in AsyncStorage
       await setItem("token", response.data.token);
-      await User("user",response.data.user)
-      await setItem("loggedIn", "true");
-
+      await User("user", response.data.user);
+      if (data.remember == "true") {
+        await setItem("loggedIn", "true");
+      }
       console.log("Login Success");
       Toast.show({
-  type: 'success',
-  text1: 'Login Successful',
-  text2: 'Welcome back!',
-});
+        type: "success",
+        text1: "Login Successful",
+        text2: "Welcome back!",
+      });
       // Navigate to home screen
       router.replace("/(tabs)");
     } catch (err) {
       console.log("Login Failed ", err?.data?.message);
-  //     Toast.show({
-  //    type: 'error',
-  //    text1: 'Login Failed',
-  //    text2: err?.data?.message || 'Something went wrong',
-  //  });
-   Toast.show({
-  type: 'error',
-  position: 'top',
-  visibilityTime: 3000,
-  autoHide: true,
-  text1: 'Login Failed',
-  text2: err?.data?.message || 'Something went wrong',
-});
+
+      Toast.show({
+        type: "error",
+        position: "top",
+        visibilityTime: 3000,
+        autoHide: true,
+        text1: "Login Failed",
+        text2: err?.data?.message || "Something went wrong",
+      });
     }
   };
   const navigation = useNavigation();
@@ -78,14 +81,13 @@ export default function LoginForm() {
             },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[styles.input, { paddingHorizontal: 15 }]}
-              placeholder="Enter registration number"
-              placeholderTextColor={"#F7FEFF99"}
-              autoCapitalize="characters" // automatically uppercase
+            <GlassmorphismInput
+              onChange={(text) => onChange(text.toUpperCase())}
+              placeholder={"Enter registration number"}
+              autoCapitalize="characters"
               onBlur={onBlur}
-              onChangeText={(text) => onChange(text.toUpperCase())} // force uppercase
               value={value}
+              iconName={"card-outline"}
             />
           )}
         />
@@ -109,18 +111,11 @@ export default function LoginForm() {
             },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  paddingHorizontal: 15,
-                },
-              ]}
+            <GlassmorphismInput
+              isPassword={true}
               placeholder="Enter your password"
-              placeholderTextColor={"#F7FEFF99"}
-              secureTextEntry
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChange={onChange}
               value={value}
             />
           )}

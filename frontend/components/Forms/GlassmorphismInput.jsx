@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
+import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 const GlassmorphismInput = ({
   onChange,
@@ -10,7 +11,14 @@ const GlassmorphismInput = ({
   style,
   keyboardType,
   placeholder,
+  iconName,
+  autoCapitalize = "none",
+  isPassword = false, // Add prop to indicate password
+  isTouchable,
+  onTouchableIconPress
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <View style={[styles.container]}>
       <BlurView intensity={15} style={styles.glass}>
@@ -22,16 +30,36 @@ const GlassmorphismInput = ({
         >
           <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input]}
+              style={[styles.input, style]}
               placeholder={placeholder}
               placeholderTextColor={"#F7FEFF99"}
               keyboardType={keyboardType}
-              autoCapitalize="none"
+              autoCapitalize={autoCapitalize}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
+              secureTextEntry={isPassword && !showPassword} // toggle visibility
             />
-            <Text>Icon</Text>
+
+            {/* Left icon (optional) */}
+            {iconName &&
+              (isTouchable ? (
+                <TouchableOpacity onPress={onTouchableIconPress}>
+                  <Ionicons name={iconName} size={24} color="white" />
+                </TouchableOpacity>
+              ) : (
+                <Ionicons name={iconName} size={24} color="white" />
+              ))}
+            {/* Show/hide toggle only for password */}
+            {isPassword && (
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={24}
+                  color="white"
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </LinearGradient>
       </BlurView>
@@ -53,6 +81,8 @@ const styles = StyleSheet.create({
   gradient: {
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
+    height: 50,
+    justifyContent: "center",
   },
   inputContainer: {
     display: "flex",
@@ -67,6 +97,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "medium",
     color: "#fff",
+    // backgroundColor:"red",
+    flex: 1,
   },
   inputError: {
     borderColor: "red",

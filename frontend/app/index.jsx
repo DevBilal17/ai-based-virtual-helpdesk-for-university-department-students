@@ -1,20 +1,20 @@
 import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard'
+import GlassmorphismCard from '../components/GlassmorphismCard/GlassmorphismCard'
 import { Ionicons } from '@expo/vector-icons'
-import ModuleBox from '../../components/Home/ModuleBox'
-import HistoryChatBox from '../../components/Home/HistoryChatBox'
+import ModuleBox from '../components/Home/ModuleBox'
+import HistoryChatBox from '../components/Home/HistoryChatBox'
 import { router } from 'expo-router'
 
 const {width,height} = Dimensions.get("window")
 const index = () => {
   return (
-    <ImageBackground source={require("../../assets/images/on-boarding-bg-1.png")} style={{flex:1}}>
+    <ImageBackground source={require("../assets/images/on-boarding-bg-1.png")} style={{flex:1}}>
       <SafeAreaView style={styles.container}>
         {/* Header View */}
         <View style={styles.headerViewContainer}>
-          <TouchableOpacity onPress={()=>router.replace("/login")}>
+          <TouchableOpacity>
           <GlassmorphismCard
             style={{ borderRadius: 20, height: 40, width: 40 }}
             gradientStyle={{
@@ -52,7 +52,7 @@ const index = () => {
               overflow:"hidden"
             }}
           >
-            <Image source={require("../../assets/images/profile-img.png")} style={{
+            <Image source={require("../assets/images/profile-img.png")} style={{
               flex:1
             }}   
             resizeMode='cover'
@@ -67,7 +67,7 @@ const index = () => {
         <View style={styles.greetingContainer}>
           <View style={styles.greetingNameTextContainer}>
             <Text style={styles.greetingText}>Hi, Ali</Text>
-            <Image source={require("../../assets/icons/hand.png")} 
+            <Image source={require("../assets/icons/hand.png")} 
              style={{width:30,height:38}}
             />
           </View>
@@ -77,15 +77,19 @@ const index = () => {
 
         {/* ModuleGrid View */}
         <View style={styles.moduleGridContainer}>
-          <ModuleBox image={"speaking"} style={{height:250,width:width*0.5}} gradientColors={["#023E8A", "#011024"]} text={"Talk with Bot"}/>
+          <ModuleBox image={"speaking"} style={{height:250,width:width*0.5}} gradientColors={["#023E8A", "#011024"]} text={"Talk with Bot"}
+          onPress={()=>router.push("/chat")}
+          />
           <View style={styles.moduleGridSubContainer}>
             <ModuleBox image={"communication"} style={{height:119}} gradientColors={["#48CAE4", "#48CAE4"]} 
             textStyle={{fontSize:16}}
             text={"Chat with bot"}
+             onPress={()=>router.push("/chat")}
             />
             <ModuleBox image={"address"} style={{height:119}}  gradientColors={["#0077B6", "#0077B6"]}
             textStyle={{fontSize:16}}
             text={"Find Location"}
+             onPress={()=>router.push("/location")}
             />
           </View>
         </View>
@@ -127,7 +131,8 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 14,
     flex: 1,
-    paddingVertical: 20,
+    // paddingVertical: 20,
+    paddingTop:20
   },
   headerViewContainer : {
     display:"flex",

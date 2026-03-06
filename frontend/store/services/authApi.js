@@ -6,7 +6,7 @@ export const authApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: "http://10.173.231.123:5000/api/", 
-
+    
     prepareHeaders: async (headers) => {
       const token = await AsyncStorage.getItem("token");
       if (token) {
@@ -52,6 +52,16 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+
+    // New Password
+    newPassword : builder.mutation({
+      query:(body)=>({
+        url:"auth/change-password",
+        method:"POST",
+        body
+      })
+    })
   }),
 });
 
@@ -60,4 +70,5 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
+  useNewPasswordMutation
 } = authApi;
