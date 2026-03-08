@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const authRoutes = require("./routes/auth.routes");
+const authRoutes = require("./routes/auth.routes.js");
+const userRoutes = require("./routes/user.routes.js");
 const response = require("./utils/response");
 
 const app = express();
@@ -17,6 +18,7 @@ if (process.env.NODE_ENV === "development") {
 
 // ================= ROUTES =================
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 // ================= DEFAULT 404 =================
 app.use((req, res, next) => {

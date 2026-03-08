@@ -46,16 +46,37 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    department: {
+      type: String,
+      enum: ["CS", "SE", "IT", "BBA", "EE"],
+      default: "IT",
+    },
+
+    degreeType: {
+      type: String,
+      enum: ["BS", "MS", "MPhil", "PhD"],
+      default: "BS",
+    },
+
+    degreeTitle: {
+      type: String,
+    },
+
     semester: {
       type: Number,
       min: 1,
       max: 8,
     },
 
-    department: {
+    program: {
       type: String,
-      enum: ["CS", "SE", "IT", "BBA", "EE"],
-      default: "IT",
+      enum: ["morning", "evening", "shifted", "bridging"],
+      default: "morning",
+    },
+
+    session: {
+      type: String,
+      trim: true,
     },
 
     // ================= OTP FIELDS =================

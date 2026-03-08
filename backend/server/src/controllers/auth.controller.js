@@ -1,74 +1,9 @@
 const response = require("../utils/response");
 const User = require("../models/USER");
 const { otpTemplate } = require("../utils/emailTemplates");
-const { studentCredentialsTemplate } = require("../utils/emailTemplates");
 const sendEmail = require("../utils/sendEmail");
-const { adminCredentialsTemplate } = require("../utils/emailTemplates");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
-
-// ================= ADMIN CREATE STUDENT =================
-const createStudent = async (req, res) => {
-  try {
-    const { name, email, registrationNumber, semester, department } = req.body;
-
-    // Check existing
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return response(res, 400, false, "Student already exists");
-    }
-
-    // Generate temporary password
-    const tempPassword = Math.random().toString(36).slice(-8);
-
-    const student = await User.create({
-      name,
-      email,
-      password: tempPassword,
-      role: "student",
-      registrationNumber,
-      semester,
-      department,
-      isVerified: true,
-    });
-
-    // Prepare HTML template
-    const htmlTemplate = studentCredentialsTemplate(
-      student.name,
-      student.email,
-      tempPassword,
-    );
-
-    // Send email
-    const emailSent = await sendEmail({
-      email: student.email,
-      subject: "Your Student Account Credentials",
-      html: htmlTemplate,
-    });
-
-    if (!emailSent) {
-      return response(
-        res,
-        500,
-        false,
-        "Student created but email could not be sent",
-      );
-    }
-
-    return response(
-      res,
-      201,
-      true,
-      "Student created successfully and credentials sent to email",
-      {
-        name: student.name,
-      },
-    );
-  } catch (error) {
-    console.error("Create Student Error:", error.message);
-    return response(res, 500, false, "Internal Server Error");
-  }
-};
 
 // ================= LOGIN WITH REGISTRATION NUMBER =================
 const login = async (req, res) => {
@@ -221,67 +156,6 @@ const verifyOtp = async (req, res) => {
   }
 };
 
-// ================= Create Admin =================
-const createAdmin = async (req, res) => {
-  try {
-    const { name, email } = req.body;
-
-    // Check if admin already exists
-    const existingAdmin = await User.findOne({ email });
-    if (existingAdmin) {
-      return response(res, 400, false, "Admin already exists");
-    }
-
-    // Generate temporary password
-    const tempPassword = Math.random().toString(36).slice(-8);
-
-    const admin = await User.create({
-      name,
-      email,
-      password: tempPassword,
-      role: "admin",
-      isVerified: true,
-    });
-
-    // Prepare email template
-    const htmlTemplate = adminCredentialsTemplate(
-      admin.name,
-      admin.email,
-      tempPassword,
-    );
-
-    // Send email
-    const emailSent = await sendEmail({
-      email: admin.email,
-      subject: "Your Admin Account Credentials",
-      html: htmlTemplate,
-    });
-
-    if (!emailSent) {
-      return response(
-        res,
-        500,
-        false,
-        "Admin created but email could not be sent",
-      );
-    }
-
-    return response(
-      res,
-      201,
-      true,
-      "Admin created successfully and credentials sent to email",
-      {
-        name: admin.name,
-        email: admin.email,
-      },
-    );
-  } catch (error) {
-    console.error("Create Admin Error:", error.message);
-    return response(res, 500, false, "Internal Server Error");
-  }
-};
-
 // ================= Change Password =================
 const changePassword = async (req, res) => {
   try {
@@ -305,10 +179,8 @@ const changePassword = async (req, res) => {
 };
 
 module.exports = {
-  createStudent,
   login,
   sendOtp,
-  createAdmin,
   verifyOtp,
   changePassword,
 };
