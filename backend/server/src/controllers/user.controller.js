@@ -221,6 +221,43 @@ const getStudentById = async (req, res) => {
   }
 };
 
+// ================= GET ALL STUDENTS =================
+const getAllStudents = async (req, res) => {
+  try {
+    // Extract query params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+
+    const skip = (page - 1) * limit;
+
+    // Total students count
+    const totalStudents = await User.countDocuments({ role: "student" });
+
+    // Fetch students with pagination
+    const students = await User.find({ role: "student" })
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalPages = Math.ceil(totalStudents / limit);
+
+    return response(res, 200, true, "Students fetched successfully", {
+      students,
+      pagination: {
+        totalStudents,
+        currentPage: page,
+        totalPages,
+        pageSize: limit,
+      },
+    });
+  } catch (error) {
+    console.error("Get All Students Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
 // ================= CREATE ADMIN =================
 const createAdmin = async (req, res) => {
   try {
@@ -284,5 +321,6 @@ module.exports = {
   updateStudent,
   deleteStudent,
   getStudentById,
+  getAllStudents,
   createAdmin,
 };

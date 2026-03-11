@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body, param, query } = require("express-validator");
 
 const departments = ["CS", "SE", "IT", "BBA", "EE"];
 const degreeTypes = ["BS", "MS", "MPhil", "PhD"];
@@ -125,6 +125,18 @@ const getStudentByIdValidator = [
     .withMessage("Invalid student ID"),
 ];
 
+const getAllStudentsValidator = [
+  query("page")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Page must be a positive integer"),
+
+  query("limit")
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage("Limit must be between 1 and 100"),
+];
+
 const createAdminValidator = [
   body("name")
     .notEmpty()
@@ -146,5 +158,6 @@ module.exports = {
   updateStudentValidator,
   deleteStudentValidator,
   getStudentByIdValidator,
+  getAllStudentsValidator,
   createAdminValidator,
 };
