@@ -117,6 +117,14 @@ const deleteStudentValidator = [
     .withMessage("Invalid student ID"),
 ];
 
+const getStudentByIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("Student ID is required")
+    .isMongoId()
+    .withMessage("Invalid student ID"),
+];
+
 const createAdminValidator = [
   body("name")
     .notEmpty()
@@ -137,5 +145,6 @@ module.exports = {
   createStudentValidator,
   updateStudentValidator,
   deleteStudentValidator,
+  getStudentByIdValidator,
   createAdminValidator,
 };

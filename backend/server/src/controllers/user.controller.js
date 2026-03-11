@@ -82,7 +82,7 @@ const createStudent = async (req, res) => {
       201,
       true,
       "Student created successfully and credentials sent to email",
-      { student },
+      student,
     );
   } catch (error) {
     console.error("Create Student Error:", error.message);
@@ -90,7 +90,7 @@ const createStudent = async (req, res) => {
   }
 };
 
-// ================= UPDATE STUDENT =================
+// ================= UPDATE STUDENT BY ID =================
 const updateStudent = async (req, res) => {
   try {
     const studentId = req.params.id;
@@ -146,7 +146,7 @@ const updateStudent = async (req, res) => {
       200,
       true,
       "Student updated successfully and credentials sent to email",
-      { student },
+      student,
     );
   } catch (error) {
     console.error("Update Student Error:", error.message);
@@ -154,7 +154,7 @@ const updateStudent = async (req, res) => {
   }
 };
 
-// ================= DELETE STUDENT =================
+// ================= DELETE STUDENT BY ID =================
 const deleteStudent = async (req, res) => {
   try {
     const studentId = req.params.id;
@@ -195,6 +195,28 @@ const deleteStudent = async (req, res) => {
     return response(res, 200, true, "Student deleted successfully");
   } catch (error) {
     console.error("Delete Student Error:", error.message);
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
+// ================= GET STUDENT BY ID =================
+const getStudentById = async (req, res) => {
+  try {
+    const studentId = req.params.id;
+
+    const student = await User.findOne({
+      _id: studentId,
+      role: "student",
+    }).select("-password");
+
+    if (!student || student.role !== "student") {
+      return response(res, 404, false, "Student not found");
+    }
+
+    return response(res, 200, true, "Student fetched successfully", student);
+  } catch (error) {
+    console.error("Get Student By ID Error:", error.message);
+
     return response(res, 500, false, "Internal Server Error");
   }
 };
@@ -249,7 +271,7 @@ const createAdmin = async (req, res) => {
       201,
       true,
       "Admin created successfully and credentials sent to email",
-      { admin },
+      admin,
     );
   } catch (error) {
     console.error("Create Admin Error:", error.message);
@@ -261,5 +283,6 @@ module.exports = {
   createStudent,
   updateStudent,
   deleteStudent,
+  getStudentById,
   createAdmin,
 };

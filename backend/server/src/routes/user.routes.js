@@ -5,6 +5,7 @@ const {
   createStudentValidator,
   updateStudentValidator,
   deleteStudentValidator,
+  getStudentByIdValidator,
   createAdminValidator,
 } = require("../middlewares/validators/user.validator");
 const validateRequest = require("../middlewares/validateRequest");
@@ -12,6 +13,7 @@ const {
   createStudent,
   updateStudent,
   deleteStudent,
+  getStudentById,
   createAdmin,
 } = require("../controllers/user.controller");
 
@@ -27,7 +29,7 @@ router.post(
   createStudent,
 );
 
-// Update Student Route
+// Update Student by id Route
 router.put(
   "/update-student/:id",
   protect,
@@ -37,13 +39,24 @@ router.put(
   updateStudent,
 );
 
-// Delete Student Route
+// Delete Student by id Route
 router.delete(
   "/delete-student/:id",
   protect,
   authorize("admin"),
   deleteStudentValidator,
+  validateRequest,
   deleteStudent,
+);
+
+// Get Student by id Route
+router.get(
+  "/get-student/:id",
+  protect,
+  authorize("admin"),
+  getStudentByIdValidator,
+  validateRequest,
+  getStudentById,
 );
 
 // Create Admin Route
