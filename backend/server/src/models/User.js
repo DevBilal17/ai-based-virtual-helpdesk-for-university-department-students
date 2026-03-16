@@ -30,11 +30,16 @@ const userSchema = new mongoose.Schema(
       select: false, // hide password in queries
     },
 
-    // ================= ROLE =================
     role: {
       type: String,
       enum: ["student", "admin"],
       default: "student",
+    },
+
+    department: {
+      type: String,
+      enum: ["CS", "SE", "IT", "BBA", "EE"],
+      default: "IT",
     },
 
     // ================= STUDENT FIELDS =================
@@ -44,12 +49,6 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       uppercase: true,
       trim: true,
-    },
-
-    department: {
-      type: String,
-      enum: ["CS", "SE", "IT", "BBA", "EE"],
-      default: "IT",
     },
 
     degreeType: {
@@ -77,6 +76,12 @@ const userSchema = new mongoose.Schema(
     session: {
       type: String,
       trim: true,
+    },
+
+    // ================= ADMIN FIELDS ===============
+
+    designation: {
+      type: String,
     },
 
     // ================= OTP FIELDS =================
@@ -125,7 +130,7 @@ userSchema.methods.generateOTP = function () {
   const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
 
   this.otp = hashedOtp;
-  this.otpExpiry = Date.now() + 5 * 60 * 1000; //5min
+  this.otpExpiry = Date.now() + 5 * 60 * 1000; // 5min
   this.otpAttempts = 0;
 
   return otp;

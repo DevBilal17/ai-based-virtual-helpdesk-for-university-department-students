@@ -93,7 +93,13 @@ const deleteStudentNotificationTemplate = (name, registrationNumber, email) => {
   `;
 };
 
-const createAdminCredentialsTemplate = (name, email, tempPassword) => {
+const createAdminCredentialsTemplate = (
+  name,
+  email,
+  tempPassword,
+  department,
+  designation,
+) => {
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
       <h2 style="color: #1a73e8;">Hello ${name},</h2>
@@ -101,6 +107,8 @@ const createAdminCredentialsTemplate = (name, email, tempPassword) => {
       <ul>
         <li><strong>Email:</strong> ${email}</li>
         <li><strong>Password:</strong> ${tempPassword}</li>
+        <li><strong>Department:</strong> ${department}</li>
+        <li><strong>Designation:</strong> ${designation}</li>
       </ul>
       <p>You can login to your account using these credentials, and you can also change your password later.</p>
       <p>Regards,<br/>IT Department</p>

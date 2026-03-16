@@ -77,12 +77,15 @@ const createStudent = async (req, res) => {
       );
     }
 
+    const studentObject = student.toObject();
+    delete studentObject.password;
+
     return response(
       res,
       201,
       true,
       "Student created successfully and credentials sent to email",
-      student,
+      { data: studentObject },
     );
   } catch (error) {
     console.error("Create Student Error:", error.message);
@@ -146,7 +149,7 @@ const updateStudent = async (req, res) => {
       200,
       true,
       "Student updated successfully and credentials sent to email",
-      student,
+      { data: student },
     );
   } catch (error) {
     console.error("Update Student Error:", error.message);
@@ -213,7 +216,9 @@ const getStudentById = async (req, res) => {
       return response(res, 404, false, "Student not found");
     }
 
-    return response(res, 200, true, "Student fetched successfully", student);
+    return response(res, 200, true, "Student fetched successfully", {
+      data: student,
+    });
   } catch (error) {
     console.error("Get Student By ID Error:", error.message);
 
@@ -243,7 +248,7 @@ const getAllStudents = async (req, res) => {
     const totalPages = Math.ceil(totalStudents / limit);
 
     return response(res, 200, true, "Students fetched successfully", {
-      students,
+      data: students,
       pagination: {
         totalStudents,
         currentPage: page,
@@ -261,7 +266,7 @@ const getAllStudents = async (req, res) => {
 // ================= CREATE ADMIN =================
 const createAdmin = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, department, designation } = req.body;
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ email });
@@ -277,6 +282,8 @@ const createAdmin = async (req, res) => {
       email,
       password: tempPassword,
       role: "admin",
+      department,
+      designation,
       isVerified: true,
     });
 
@@ -285,6 +292,8 @@ const createAdmin = async (req, res) => {
       admin.name,
       admin.email,
       tempPassword,
+      admin.department,
+      admin.designation,
     );
 
     // Send email
@@ -303,12 +312,15 @@ const createAdmin = async (req, res) => {
       );
     }
 
+    const adminObject = admin.toObject();
+    delete adminObject.password;
+
     return response(
       res,
       201,
       true,
       "Admin created successfully and credentials sent to email",
-      admin,
+      { data: adminObject },
     );
   } catch (error) {
     console.error("Create Admin Error:", error.message);

@@ -16,7 +16,7 @@ const createStudentValidator = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail(),
+    .normalizeEmail({ gmail_remove_dots: false }),
 
   body("registrationNumber")
     .notEmpty()
@@ -72,7 +72,7 @@ const updateStudentValidator = [
     .optional()
     .isEmail()
     .withMessage("Invalid email address")
-    .normalizeEmail(),
+    .normalizeEmail({ gmail_remove_dots: false }),
 
   body("registrationNumber")
     .optional()
@@ -151,6 +151,17 @@ const createAdminValidator = [
     .isEmail()
     .withMessage("Please provide a valid email")
     .normalizeEmail({ gmail_remove_dots: false }),
+
+  body("department")
+    .notEmpty()
+    .withMessage("Department is required")
+    .isIn(departments)
+    .withMessage(`Department must be one of ${departments.join(", ")}`),
+
+  body("designation")
+    .optional()
+    .isString()
+    .withMessage("Designation must be a string"),
 ];
 
 module.exports = {

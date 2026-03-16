@@ -1,9 +1,11 @@
 const express = require("express");
+const protect = require("../middlewares/protect.middleware");
 const {
   loginValidator,
   sendOtpValidator,
   verifyOtpValidator,
   changePasswordValidator,
+  adminChangePasswordValidator,
 } = require("../middlewares/validators/auth.validator");
 const validateRequest = require("../middlewares/validateRequest");
 const {
@@ -11,6 +13,7 @@ const {
   sendOtp,
   verifyOtp,
   changePassword,
+  adminChangePassword,
 } = require("../controllers/auth.controller");
 
 const router = express.Router();
@@ -24,13 +27,21 @@ router.post("/send-otp", sendOtpValidator, validateRequest, sendOtp);
 // Verify OTP Route
 router.post("/verify-otp", verifyOtpValidator, validateRequest, verifyOtp);
 
-// can add more security later
 // Change Password
 router.post(
   "/change-password",
   changePasswordValidator,
   validateRequest,
   changePassword,
+);
+
+// admin change password
+router.post(
+  "/admin-change-password",
+  protect,
+  adminChangePasswordValidator,
+  validateRequest,
+  adminChangePassword,
 );
 
 module.exports = router;

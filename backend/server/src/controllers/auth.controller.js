@@ -5,14 +5,14 @@ const sendEmail = require("../utils/sendEmail");
 const generateToken = require("../utils/generateToken");
 const crypto = require("crypto");
 
-// ================= LOGIN WITH REGISTRATION NUMBER =================
+// ================= LOGIN WITH REGISTRATION NUMBER (STUDENT) OR EMAIL (ADMIN) =================
 const login = async (req, res) => {
   try {
     const { registrationNumber, email, password } = req.body;
 
     let user;
 
-    // Determine role based on which field is provided
+    // Determine the user's role i.e. student or admin
     if (registrationNumber) {
       // Student login
       user = await User.findOne({ registrationNumber }).select("+password");
@@ -149,7 +149,7 @@ const verifyOtp = async (req, res) => {
     user.otpExpiry = null;
     await user.save();
 
-    return response(res, 200, true, "OTP verified successfully");
+    return response(res, 200, true, "OTP verified successfully", { email });
   } catch (error) {
     console.error("Verify OTP Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
@@ -178,9 +178,50 @@ const changePassword = async (req, res) => {
   }
 };
 
+// ================= Admin Change Password =================
+const adminChangePassword = async (req, res) => {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+    console.log(email, newPassword, confirmPassword);
+
+    // Check required fields
+    if (!email || !newPassword || !confirmPassword) {
+      return response(res, 400, false, "All fields are required");
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return response(res, 404, false, "User not found");
+    }
+
+    // Check password match
+    if (newPassword !== confirmPassword) {
+      return response(
+        res,
+        400,
+        false,
+        "New password and confirm password do not match",
+      );
+    }
+
+    // Update password
+    user.password = newPassword;
+
+    await user.save();
+
+    return response(res, 200, true, "Password changed successfully");
+  } catch (error) {
+    console.error("Change Password Error:", error.message);
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
 module.exports = {
   login,
   sendOtp,
   verifyOtp,
   changePassword,
+  adminChangePassword,
 };

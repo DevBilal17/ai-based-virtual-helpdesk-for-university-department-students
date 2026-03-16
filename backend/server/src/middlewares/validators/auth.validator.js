@@ -76,9 +76,35 @@ const changePasswordValidator = [
     .withMessage("Password must be at least 6 characters"),
 ];
 
+// Change password validator for admin account
+const adminChangePasswordValidator = [
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email"),
+
+  body("newPassword")
+    .notEmpty()
+    .withMessage("New password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
+];
+
 module.exports = {
   loginValidator,
   sendOtpValidator,
   verifyOtpValidator,
   changePasswordValidator,
+  adminChangePasswordValidator,
 };
