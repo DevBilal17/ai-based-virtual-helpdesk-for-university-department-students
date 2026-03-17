@@ -1,4 +1,4 @@
-import React from "react";
+import { dashboardRoutes } from "../config/dashboardRoutes.js";
 import { Link } from "react-router-dom";
 
 const DashSidebar = () => {
@@ -7,25 +7,11 @@ const DashSidebar = () => {
       <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
 
       <ul className="space-y-4">
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
-
-        {/* <li>
-          <Link to="/dashboard/students">Students</Link>
-        </li>
-
-        <li>
-          <Link to="/dashboard/add-student">Add Student</Link>
-        </li>
-
-        <li>
-          <Link to="/dashboard/add-admin">Add Admin</Link>
-        </li>
-
-        <li>
-          <Link to="/dashboard/profile">Profile</Link>
-        </li> */}
+        {dashboardRoutes.map((route, index) => (
+          <li key={index}>
+            <Link to={`/dashboard/${route.path}`}>{route.label}</Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
