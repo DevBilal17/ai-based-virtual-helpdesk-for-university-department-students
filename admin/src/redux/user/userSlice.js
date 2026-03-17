@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
-  error: null,
   loading: false,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -11,51 +11,30 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     signInStart: (state) => {
-      ((state.loading = true), (state.error = null));
+      state.loading = true;
+      state.error = null;
     },
+
     signInSuccess: (state, action) => {
-      ((state.currentUser = action.payload),
-        (state.loading = false),
-        (state.error = null));
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = null;
     },
+
     signInFailure: (state, action) => {
-      ((state.loading = false), (state.error = action.payload));
+      state.loading = false;
+      state.error = action.payload;
     },
-    // signOutStart: (state) => {
-    //   ((state.loading = true), (state.error = null));
-    // },
-    // signOutSuccess: (state, action) => {
-    //   ((state.currentUser = action.payload),
-    //     (state.loading = false),
-    //     (state.error = null));
-    // },
-    // signOutFailure: (state, action) => {
-    //   ((state.loading = false), (state.error = action.payload));
-    // },
-    // updateStart: (state) => {
-    //   ((state.loading = true), (state.error = null));
-    // },
-    // updateSuccess: (state, action) => {
-    //   ((state.currentUser = action.payload),
-    //     (state.loading = false),
-    //     (state.error = null));
-    // },
-    // updateFailure: (state, action) => {
-    //   ((state.loading = false), (state.error = action.payload));
-    // },
+
+    signOut: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+    },
   },
 });
 
-export const {
-  signInStart,
-  signInSuccess,
-  signInFailure,
-  // signOutStart,
-  // signOutSuccess,
-  // signOutFailure,
-  // updateStart,
-  // updateSuccess,
-  // updateFailure,
-} = userSlice.actions;
+export const { signInStart, signInSuccess, signInFailure, signOut } =
+  userSlice.actions;
 
 export default userSlice.reducer;
