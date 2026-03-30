@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// ✅ REQUEST INTERCEPTOR
+// REQUEST INTERCEPTOR
 axiosInstance.interceptors.request.use((config) => {
   const state = store.getState();
   const token = state.user?.currentUser?.token;
@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// ✅ RESPONSE INTERCEPTOR
+// RESPONSE INTERCEPTOR
 axiosInstance.interceptors.response.use(
   (response) => response,
 
@@ -29,13 +29,13 @@ axiosInstance.interceptors.response.use(
     if (status === 401) {
       console.log("Unauthorized / Token expired");
 
-      // 1️⃣ Clear Redux state
+      // Clear Redux state
       store.dispatch(signOut());
 
-      // 2️⃣ Clear persisted storage (PROFESSIONAL WAY)
+      // Clear persisted storage (PROFESSIONAL WAY)
       await persistor.purge();
 
-      // 3️⃣ Redirect to login
+      // Redirect to login
       window.location.href = "/login";
     }
 

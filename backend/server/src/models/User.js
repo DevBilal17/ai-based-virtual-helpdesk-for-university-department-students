@@ -49,48 +49,71 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       uppercase: true,
       trim: true,
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     degreeType: {
       type: String,
       enum: ["BS", "MS", "MPhil", "PhD"],
-      default: "BS",
+      // default: "BS",
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     degreeTitle: {
       type: String,
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     semester: {
       type: Number,
       min: 1,
       max: 8,
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     program: {
       type: String,
       enum: ["morning", "evening", "shifted", "bridging"],
-      default: "morning",
+      // default: "morning",
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     session: {
       type: String,
       trim: true,
+      required: function () {
+        return this.role === "student";
+      },
     },
 
     // ================= ADMIN FIELDS ===============
 
     designation: {
       type: String,
+      required: function () {
+        return this.role === "admin";
+      },
     },
 
     // ================= OTP FIELDS =================
     otp: {
       type: String,
+      default: null,
     },
 
     otpExpiry: {
       type: Date,
+      default: null,
     },
 
     otpAttempts: {

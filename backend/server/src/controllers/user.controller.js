@@ -85,7 +85,7 @@ const createStudent = async (req, res) => {
       201,
       true,
       "Student created successfully and credentials sent to email",
-      { data: studentObject },
+      { studentObject },
     );
   } catch (error) {
     console.error("Create Student Error:", error.message);
@@ -149,7 +149,7 @@ const updateStudent = async (req, res) => {
       200,
       true,
       "Student updated successfully and credentials sent to email",
-      { data: student },
+      { student },
     );
   } catch (error) {
     console.error("Update Student Error:", error.message);
@@ -217,7 +217,7 @@ const getStudentById = async (req, res) => {
     }
 
     return response(res, 200, true, "Student fetched successfully", {
-      data: student,
+      student,
     });
   } catch (error) {
     console.error("Get Student By ID Error:", error.message);
@@ -248,7 +248,7 @@ const getAllStudents = async (req, res) => {
     const totalPages = Math.ceil(totalStudents / limit);
 
     return response(res, 200, true, "Students fetched successfully", {
-      data: students,
+      students,
       pagination: {
         totalStudents,
         currentPage: page,
@@ -303,24 +303,27 @@ const createAdmin = async (req, res) => {
       html: htmlTemplate,
     });
 
-    if (!emailSent) {
-      return response(
-        res,
-        500,
-        false,
-        "Admin created but email could not be sent",
-      );
-    }
-
     const adminObject = admin.toObject();
     delete adminObject.password;
+
+    if (!emailSent) {
+      console.error("Email sending failed for:", admin.email);
+
+      return response(
+        res,
+        201,
+        true,
+        "Admin created but email could not be sent",
+        { adminObject },
+      );
+    }
 
     return response(
       res,
       201,
       true,
       "Admin created successfully and credentials sent to email",
-      { data: adminObject },
+      { adminObject },
     );
   } catch (error) {
     console.error("Create Admin Error:", error.message);

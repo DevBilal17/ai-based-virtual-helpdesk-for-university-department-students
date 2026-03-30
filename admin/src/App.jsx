@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -11,15 +11,19 @@ import PutVerificationCode from "./pages/PutVerificationCode.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ProtectedLayout from "./layouts/ProtectedLayout.jsx";
 import { dashboardRoutes } from "./config/dashboardRoutes.js";
-
-const Loader = () => (
-  <div className="flex justify-center items-center h-screen">Loading...</div>
-);
+// import FullScreenLoader from "./components/common/FullScreenLoader.jsx";
+import DashboardSkeleton from "./components/skeletons/DashboardSkeleton.jsx";
 
 const RootRedirect = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const rehydrated = useSelector((state) => state._persist?.rehydrated);
 
-  if (currentUser && currentUser.user.role === "admin") {
+  // Wait until Redux Persist finishes
+  if (!rehydrated) {
+    return <DashboardSkeleton />;
+  }
+
+  if (currentUser && currentUser.data.user.role === "admin") {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -31,7 +35,7 @@ const App = () => {
     <BrowserRouter>
       <Header />
 
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<DashboardSkeleton />}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
 

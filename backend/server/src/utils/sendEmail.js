@@ -10,6 +10,11 @@ const sendEmail = async (options) => {
       },
     });
 
+    // ✅ Verify connection (IMPORTANT)
+    await transporter.verify();
+
+    console.log("SMTP Server is ready to send emails");
+
     const mailOptions = {
       from: `IT Department System <${process.env.EMAIL_USER}>`,
       to: options.email,
@@ -17,11 +22,13 @@ const sendEmail = async (options) => {
       html: options.html,
     };
 
-    await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("Email sent:", info.response);
 
     return true;
   } catch (error) {
-    console.error("Email Error:", error.message);
+    console.error("Email Error:", error);
     return false;
   }
 };
