@@ -87,7 +87,12 @@ const Login = () => {
         </form>
 
         <div className="text-gray-400 text-sm mt-4 text-center">
-          Forgot password?
+          <span
+            className="cursor-pointer hover:text-white"
+            onClick={() => navigate("/get-verification-code")}
+          >
+            Forgot password?
+          </span>
         </div>
       </div>
     </div>

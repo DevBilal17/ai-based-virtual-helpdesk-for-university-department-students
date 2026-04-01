@@ -206,8 +206,11 @@ const adminChangePassword = async (req, res) => {
       );
     }
 
-    // Update password
+    // IMPORTANT: assign new password
     user.password = newPassword;
+
+    // ensure mongoose detects change
+    user.markModified("password");
 
     await user.save();
 

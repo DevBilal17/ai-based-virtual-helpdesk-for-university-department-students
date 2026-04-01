@@ -38,7 +38,6 @@ router.post(
 // admin change password
 router.post(
   "/admin-change-password",
-  protect,
   adminChangePasswordValidator,
   validateRequest,
   adminChangePassword,
