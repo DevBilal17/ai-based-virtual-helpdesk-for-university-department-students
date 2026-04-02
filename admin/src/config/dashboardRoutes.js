@@ -16,6 +16,18 @@ const DashUpdateStudent = lazy(
 const DashAddAdmin = lazy(
   () => import("../components/user_management/DashAddAdmin.jsx"),
 );
+const DashFAQs = lazy(
+  () => import("../components/faq_management/DashFAQs.jsx"),
+);
+const DashAddFAQ = lazy(
+  () => import("../components/faq_management/DashAddFAQ.jsx"),
+);
+const DashUpdateFAQ = lazy(
+  () => import("../components/faq_management/DashUpdateFAQ.jsx"),
+);
+const DashData = lazy(
+  () => import("../components/data_management/DashData.jsx"),
+);
 
 export const dashboardRoutes = [
   {
@@ -47,5 +59,25 @@ export const dashboardRoutes = [
     path: "add-admin",
     component: DashAddAdmin,
     label: "Add Admin",
+  },
+  {
+    path: "faqs",
+    component: DashFAQs,
+    label: "FAQs",
+  },
+  {
+    path: "add-faq",
+    component: DashAddFAQ,
+    label: "Add FAQ",
+  },
+  {
+    path: "update-faq",
+    component: DashUpdateFAQ,
+    label: "Update FAQ",
+  },
+  {
+    path: "data",
+    component: DashData,
+    label: "Data",
   },
 ];

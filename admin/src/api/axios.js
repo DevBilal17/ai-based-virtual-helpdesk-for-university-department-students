@@ -1,6 +1,6 @@
 import axios from "axios";
 import { store, persistor } from "../redux/store.js";
-import { signOut } from "../redux/user/userSlice.js";
+import { signOutSuccess } from "../redux/user/userSlice.js";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/api",
@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
       console.log("Unauthorized / Token expired");
 
       // Clear Redux state
-      store.dispatch(signOut());
+      store.dispatch(signOutSuccess());
 
       // Clear persisted storage (PROFESSIONAL WAY)
       await persistor.purge();
