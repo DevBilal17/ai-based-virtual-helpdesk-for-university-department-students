@@ -45,18 +45,18 @@ const DashSidebar = () => {
   // Logout Handler
   const handleLogout = () => {
     dispatch(signOutSuccess());
-    toast.success("Logout successful");
+    toast.success("Logged out successfully");
     navigate("/login");
   };
 
   return (
-    <aside className="w-64 h-screen bg-[#0B0F19] border-r border-gray-800 flex flex-col">
+    <aside className="w-56 min-h-screen bg-[#0B0F19] border-r border-gray-800 flex flex-col">
       {/* Scrollable Section */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex-1 overflow-y-auto px-3 py-6">
         {/* Title */}
-        <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
+        {/* <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
           Navigation
-        </h2>
+        </h2> */}
 
         {/* Tabs */}
         <div className="flex flex-col gap-4">
