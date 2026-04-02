@@ -164,6 +164,14 @@ const createAdminValidator = [
     .withMessage("Designation must be a string"),
 ];
 
+const getAdminByIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("Admin ID is required")
+    .isMongoId()
+    .withMessage("Invalid admin ID"),
+];
+
 module.exports = {
   createStudentValidator,
   updateStudentValidator,
@@ -171,4 +179,5 @@ module.exports = {
   getStudentByIdValidator,
   getAllStudentsValidator,
   createAdminValidator,
+  getAdminByIdValidator,
 };

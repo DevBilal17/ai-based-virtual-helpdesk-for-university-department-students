@@ -331,6 +331,30 @@ const createAdmin = async (req, res) => {
   }
 };
 
+// ================= GET ADMIN BY ID =================
+const getAdminById = async (req, res) => {
+  try {
+    const adminId = req.params.id;
+
+    const admin = await User.findOne({
+      _id: adminId,
+      role: "admin",
+    }).select("-password");
+
+    if (!admin || admin.role !== "admin") {
+      return response(res, 404, false, "Admin not found");
+    }
+
+    return response(res, 200, true, "Admin fetched successfully", {
+      admin,
+    });
+  } catch (error) {
+    console.error("Get Admin By ID Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
 module.exports = {
   createStudent,
   updateStudent,
@@ -338,4 +362,5 @@ module.exports = {
   getStudentById,
   getAllStudents,
   createAdmin,
+  getAdminById,
 };

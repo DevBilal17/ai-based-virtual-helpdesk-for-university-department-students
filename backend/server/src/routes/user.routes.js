@@ -8,6 +8,7 @@ const {
   getStudentByIdValidator,
   getAllStudentsValidator,
   createAdminValidator,
+  getAdminByIdValidator,
 } = require("../middlewares/validators/user.validator");
 const validateRequest = require("../middlewares/validateRequest");
 const {
@@ -17,6 +18,7 @@ const {
   getStudentById,
   getAllStudents,
   createAdmin,
+  getAdminById,
 } = require("../controllers/user.controller");
 
 const router = express.Router();
@@ -79,6 +81,16 @@ router.post(
   createAdminValidator,
   validateRequest,
   createAdmin,
+);
+
+// Get admin by id Route
+router.get(
+  "/get-admin/:id",
+  protect,
+  authorize("admin"),
+  getAdminByIdValidator,
+  validateRequest,
+  getAdminById,
 );
 
 module.exports = router;
