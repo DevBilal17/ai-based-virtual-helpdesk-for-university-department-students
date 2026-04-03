@@ -22,7 +22,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0B0F19] border-b border-gray-800 shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-[#0B0F19] border-b-2 border-gray-800 shadow-md">
       <div className="flex items-center justify-between px-6 py-3">
         {/* LEFT: App Name */}
         <div

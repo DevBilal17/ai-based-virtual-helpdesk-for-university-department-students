@@ -44,9 +44,9 @@ const DashAdminProfile = () => {
   };
 
   return (
-    <div className="px-6 pt-6 pb-20 text-white">
+    <div className="px-3 pt-3 pb-20 text-white">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-lg text-gray-400 mb-6">
+      <div className="flex items-center gap-2 text-lg text-gray-400 mb-10 bg-[#1F2937] px-4 py-2 rounded-md">
         <span
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer hover:text-white transition"
@@ -78,7 +78,7 @@ const DashAdminProfile = () => {
         </div>
 
         {/* Info Card */}
-        <div className="w-full max-w-xl bg-[#0B0F19] border border-gray-800 rounded-2xl p-6 shadow-lg">
+        <div className="w-full max-w-xl bg-[#0B0F19] border-2 border-gray-800 rounded-xl p-6 shadow-lg">
           {loading ? (
             <p className="text-center text-gray-400">Loading...</p>
           ) : (

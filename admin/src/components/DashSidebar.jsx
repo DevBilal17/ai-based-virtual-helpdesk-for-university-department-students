@@ -73,7 +73,7 @@ const DashSidebar = () => {
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-[#0B0F19] border-r border-gray-800 flex flex-col">
+    <aside className="w-64 min-h-screen bg-[#0B0F19] border-r-2 border-gray-800 flex flex-col">
       {/* Scrollable Section */}
       <div className="flex-1 overflow-y-auto px-3 py-3">
         {/* Navigation Title */}
@@ -136,7 +136,7 @@ const DashSidebar = () => {
       </div>
 
       {/* Bottom Logout Section */}
-      <div className="border-t border-gray-800 p-4">
+      <div className="border-t-2 border-gray-800 p-4">
         <div
           onClick={handleLogout}
           className="flex items-center justify-between cursor-pointer hover:bg-[#111827] px-3 py-2 rounded-lg transition"

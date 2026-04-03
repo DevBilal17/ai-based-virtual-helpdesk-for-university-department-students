@@ -5,7 +5,7 @@ const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="w-full bg-[#0B0F19] border-t border-gray-800">
+    <footer className="w-full bg-[#0B0F19] border-t-2 border-gray-800">
       <div className="flex flex-col md:flex-row items-center justify-between px-6 py-4 gap-4">
         {/* LEFT: Branding */}
         <div
