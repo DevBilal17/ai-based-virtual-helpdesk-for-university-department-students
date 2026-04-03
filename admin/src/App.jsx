@@ -5,13 +5,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import Header from "./components/Header.jsx";
+import Footer from "./components/Footer.jsx";
 import Login from "./pages/Login.jsx";
 import GetVerificationCodeViaEmail from "./pages/GetVerificationCodeViaEmail.jsx";
 import PutVerificationCode from "./pages/PutVerificationCode.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import ProtectedLayout from "./layouts/ProtectedLayout.jsx";
 import { dashboardRoutes } from "./config/dashboardRoutes.js";
-// import FullScreenLoader from "./components/common/FullScreenLoader.jsx";
 import DashboardSkeleton from "./components/skeletons/DashboardSkeleton.jsx";
 
 const RootRedirect = () => {
@@ -67,6 +67,8 @@ const App = () => {
           </Route>
         </Routes>
       </Suspense>
+
+      <Footer />
 
       {/* Toast container to show notifications */}
       <ToastContainer
