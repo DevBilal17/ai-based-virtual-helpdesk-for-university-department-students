@@ -6,6 +6,9 @@ import {
   HelpCircle,
   Database,
   LogOut,
+  Settings,
+  Bell,
+  Logs,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess } from "../redux/user/userSlice.js";
@@ -18,8 +21,8 @@ const DashSidebar = () => {
 
   const { currentUser } = useSelector((state) => state.user);
 
-  // Sidebar Tabs
-  const tabs = [
+  // Sidebar Navigation Tabs
+  const navigationTabs = [
     {
       name: "Dashboard",
       icon: LayoutDashboard,
@@ -42,6 +45,25 @@ const DashSidebar = () => {
     },
   ];
 
+  // Sidebar System Tabs
+  const systemTabs = [
+    {
+      name: "Settings",
+      icon: Settings,
+      path: "/dashboard/settings",
+    },
+    {
+      name: "Notifications",
+      icon: Bell,
+      path: "/dashboard/notifications",
+    },
+    {
+      name: "User Logs",
+      icon: Logs,
+      path: "/dashboard/user-logs",
+    },
+  ];
+
   // Logout Handler
   const handleLogout = () => {
     dispatch(signOutSuccess());
@@ -50,17 +72,46 @@ const DashSidebar = () => {
   };
 
   return (
-    <aside className="w-56 min-h-screen bg-[#0B0F19] border-r border-gray-800 flex flex-col">
+    <aside className="w-64 min-h-screen bg-[#0B0F19] border-r border-gray-800 flex flex-col">
       {/* Scrollable Section */}
-      <div className="flex-1 overflow-y-auto px-3 py-6">
-        {/* Title */}
-        {/* <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
+      <div className="flex-1 overflow-y-auto px-3 py-3">
+        {/* Navigation Title */}
+        <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
           Navigation
-        </h2> */}
+        </h2>
 
-        {/* Tabs */}
-        <div className="flex flex-col gap-4">
-          {tabs.map((tab, index) => {
+        {/* Navigation Tabs */}
+        <div className="flex flex-col gap-3">
+          {navigationTabs.map((tab, index) => {
+            const isActive = location.pathname === tab.path;
+
+            return (
+              <div
+                key={index}
+                onClick={() => navigate(tab.path)}
+                className={`flex items-center gap-4 px-2 py-2 rounded-lg cursor-pointer transition-all
+                  ${
+                    isActive
+                      ? "bg-[#1F2937] text-white"
+                      : "text-gray-400 hover:bg-[#111827] hover:text-white"
+                  }
+                `}
+              >
+                <tab.icon size={18} />
+                <span className="text-sm font-medium">{tab.name}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* System Title */}
+        <h2 className="text-xs text-gray-400 uppercase mt-6 mb-4 tracking-wide">
+          System
+        </h2>
+
+        {/* System Tabs */}
+        <div className="flex flex-col gap-3">
+          {systemTabs.map((tab, index) => {
             const isActive = location.pathname === tab.path;
 
             return (

@@ -28,6 +28,11 @@ const DashUpdateFAQ = lazy(
 const DashData = lazy(
   () => import("../components/data_management/DashData.jsx"),
 );
+const DashSettings = lazy(() => import("../components/DashSettings.jsx"));
+const DashNotifications = lazy(
+  () => import("../components/DashNotifications.jsx"),
+);
+const DashUserLogs = lazy(() => import("../components/DashUserLogs.jsx"));
 
 export const dashboardRoutes = [
   {
@@ -79,5 +84,20 @@ export const dashboardRoutes = [
     path: "data",
     component: DashData,
     label: "Data",
+  },
+  {
+    path: "settings",
+    component: DashSettings,
+    label: "Settings",
+  },
+  {
+    path: "notifications",
+    component: DashNotifications,
+    label: "Notifications",
+  },
+  {
+    path: "user-logs",
+    component: DashUserLogs,
+    label: "User Logs",
   },
 ];

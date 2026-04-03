@@ -59,14 +59,20 @@ const Header = () => {
         </div>
 
         {/* RIGHT: Icons + Profile */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-2">
           {/* Notifications */}
-          <button className="text-gray-300 hover:text-white transition">
+          <button
+            onClick={() => navigate("/dashboard/notifications")}
+            className="text-gray-300 cursor-pointer hover:text-white hover:bg-[#1F2937] p-2.5 rounded-full transition"
+          >
             <Bell size={20} />
           </button>
 
           {/* Settings */}
-          <button className="text-gray-300 hover:text-white transition">
+          <button
+            onClick={() => navigate("/dashboard/settings")}
+            className="text-gray-300 cursor-pointer hover:text-white hover:bg-[#1F2937] p-2.5 rounded-full transition"
+          >
             <Settings size={20} />
           </button>
 
@@ -74,16 +80,21 @@ const Header = () => {
           {currentUser ? (
             <div
               onClick={() => navigate("/dashboard/profile")}
-              className="flex items-center gap-3 cursor-pointer hover:bg-[#111827] px-3 py-1.5 rounded-lg transition"
+              className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-[#1F2937] px-3 py-1.5 rounded-lg transition"
             >
-              <span className="text-sm text-white font-medium">
-                {currentUser?.data?.user?.name || "Admin User"}
-              </span>
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s"
                 alt="avatar"
                 className="w-9 h-9 rounded-full object-cover border border-gray-600"
               />
+              <div className="flex flex-col items-center">
+                <span className="text-sm text-white font-medium">
+                  {currentUser?.data?.user?.name || "Admin User"}
+                </span>
+                <span className="text-gray-300 text-[10px] text-center">
+                  {currentUser?.data?.user?.email || "admin@example.com"}
+                </span>
+              </div>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-[#111827] px-3 py-1.5 rounded-lg transition">

@@ -6,7 +6,7 @@ const DashboardSkeleton = () => {
       {/* Sidebar Skeleton */}
       <div className="w-64 bg-[#111827] p-4 hidden md:block">
         <div className="space-y-4">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(9)].map((_, i) => (
             <div
               key={i}
               className="h-10 rounded-md animate-pulse bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"
