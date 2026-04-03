@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess } from "../redux/user/userSlice.js";
 import { toast } from "react-toastify";
+import profile_pic from "../assets/profile_pic.png";
 
 const DashSidebar = () => {
   const navigate = useNavigate();
@@ -142,7 +143,10 @@ const DashSidebar = () => {
         >
           <div className="flex items-center gap-3">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s"
+              src={
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
+                profile_pic
+              }
               alt="avatar"
               className="w-9 h-9 rounded-full border border-gray-600"
             />

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { LogOut, ChevronRight } from "lucide-react";
 import { signOutSuccess } from "../redux/user/userSlice.js";
 import { toast } from "react-toastify";
+import profile_pic from "../assets/profile_pic.png";
 
 const DashAdminProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -65,7 +66,10 @@ const DashAdminProfile = () => {
           <div className="p-1 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
             <div className="p-1 rounded-full bg-[#0B0F19]">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s"
+                src={
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
+                  profile_pic
+                }
                 alt="profile"
                 className="w-32 h-32 rounded-full object-cover border border-gray-700"
               />

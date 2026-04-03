@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, Settings, Search, LogInIcon } from "lucide-react";
 import { useSelector } from "react-redux";
+import profile_pic from "../assets/profile_pic.png";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -83,7 +84,10 @@ const Header = () => {
               className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-[#1F2937] px-3 py-1.5 rounded-lg transition"
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s"
+                src={
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
+                  profile_pic
+                }
                 alt="avatar"
                 className="w-9 h-9 rounded-full object-cover border border-gray-600"
               />
