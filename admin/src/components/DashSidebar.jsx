@@ -31,7 +31,7 @@ const DashSidebar = () => {
     {
       name: "User Management",
       icon: Users,
-      path: "/dashboard/students",
+      path: "/dashboard/users",
     },
     {
       name: "FAQ Management",

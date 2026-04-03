@@ -43,7 +43,7 @@ const DashAdminProfile = () => {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="px-6 pt-6 pb-20 text-white">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-lg text-gray-400 mb-6">
         <span

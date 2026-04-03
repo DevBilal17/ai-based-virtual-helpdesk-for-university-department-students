@@ -4,8 +4,8 @@ const Dashboard = lazy(() => import("../components/Dashboard.jsx"));
 const DashAdminProfile = lazy(
   () => import("../components/DashAdminProfile.jsx"),
 );
-const DashStudents = lazy(
-  () => import("../components/user_management/DashStudents.jsx"),
+const DashUsers = lazy(
+  () => import("../components/user_management/DashUsers.jsx"),
 );
 const DashAddStudent = lazy(
   () => import("../components/user_management/DashAddStudent.jsx"),
@@ -34,6 +34,7 @@ const DashNotifications = lazy(
 );
 const DashUserLogs = lazy(() => import("../components/DashUserLogs.jsx"));
 
+// Define the dashboard routes
 export const dashboardRoutes = [
   {
     path: "",
@@ -46,22 +47,22 @@ export const dashboardRoutes = [
     label: "Profile",
   },
   {
-    path: "students",
-    component: DashStudents,
-    label: "Students",
+    path: "users",
+    component: DashUsers,
+    label: "Users",
   },
   {
-    path: "students/add-student",
+    path: "users/add-student",
     component: DashAddStudent,
     label: "Add Student",
   },
   {
-    path: "students/update-student",
+    path: "users/update-student",
     component: DashUpdateStudent,
     label: "Update Student",
   },
   {
-    path: "add-admin",
+    path: "users/add-admin",
     component: DashAddAdmin,
     label: "Add Admin",
   },
