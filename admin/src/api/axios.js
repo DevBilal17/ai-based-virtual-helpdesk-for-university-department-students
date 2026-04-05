@@ -1,6 +1,6 @@
 import axios from "axios";
 import { store, persistor } from "../redux/store.js";
-import { signOutSuccess } from "../redux/user/userSlice.js";
+import { signOutSuccess } from "../redux/slices/authSlice.js";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/api",

@@ -57,7 +57,7 @@ export const dashboardRoutes = [
     label: "Add Student",
   },
   {
-    path: "users/update-student",
+    path: "users/update-student/:id",
     component: DashUpdateStudent,
     label: "Update Student",
   },
@@ -77,7 +77,7 @@ export const dashboardRoutes = [
     label: "Add FAQ",
   },
   {
-    path: "faqs/update-faq",
+    path: "faqs/update-faq/:id",
     component: DashUpdateFAQ,
     label: "Update FAQ",
   },

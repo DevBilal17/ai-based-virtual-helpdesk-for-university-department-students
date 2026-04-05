@@ -33,7 +33,7 @@ const Footer = () => {
           </span>
 
           <span
-            onClick={() => navigate("/dashboard/students")}
+            onClick={() => navigate("/dashboard/users")}
             className="cursor-pointer hover:text-white transition"
           >
             Users

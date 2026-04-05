@@ -125,7 +125,7 @@ const getStudentByIdValidator = [
     .withMessage("Invalid student ID"),
 ];
 
-const getAllStudentsValidator = [
+const getAllUsersValidator = [
   query("page")
     .optional()
     .isInt({ min: 1 })
@@ -135,6 +135,13 @@ const getAllStudentsValidator = [
     .optional()
     .isInt({ min: 1, max: 100 })
     .withMessage("Limit must be between 1 and 100"),
+
+  query("search").optional().isString().withMessage("Search must be a string"),
+
+  query("role")
+    .optional()
+    .isIn(["student", "admin", "all"])
+    .withMessage("Role must be student, admin or all"),
 ];
 
 const createAdminValidator = [
@@ -177,7 +184,7 @@ module.exports = {
   updateStudentValidator,
   deleteStudentValidator,
   getStudentByIdValidator,
-  getAllStudentsValidator,
+  getAllUsersValidator,
   createAdminValidator,
   getAdminByIdValidator,
 };

@@ -15,7 +15,7 @@ import { dashboardRoutes } from "./config/dashboardRoutes.js";
 import DashboardSkeleton from "./components/skeletons/DashboardSkeleton.jsx";
 
 const RootRedirect = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.auth);
   const rehydrated = useSelector((state) => state._persist?.rehydrated);
 
   // Wait until Redux Persist finishes

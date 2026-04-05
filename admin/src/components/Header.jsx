@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import profile_pic from "../assets/profile_pic.png";
 
 const Header = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   // Ctrl + K shortcut

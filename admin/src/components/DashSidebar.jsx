@@ -11,7 +11,7 @@ import {
   Logs,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutSuccess } from "../redux/user/userSlice.js";
+import { signOutSuccess } from "../redux/slices/authSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../assets/profile_pic.png";
 
@@ -20,7 +20,7 @@ const DashSidebar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.auth);
 
   // Sidebar Navigation Tabs
   const navigationTabs = [

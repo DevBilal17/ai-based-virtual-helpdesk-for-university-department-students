@@ -3,12 +3,12 @@ import axios from "../api/axios.js";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LogOut, ChevronRight } from "lucide-react";
-import { signOutSuccess } from "../redux/user/userSlice.js";
+import { signOutSuccess } from "../redux/slices/authSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../assets/profile_pic.png";
 
 const DashAdminProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.auth);
   console.log("Current User:", currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,16 +46,14 @@ const DashAdminProfile = () => {
   return (
     <div className="px-3 pt-3 pb-20 text-white">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-lg text-gray-400 mb-10 bg-[#1F2937] px-4 py-2 rounded-md">
+      <div className="flex items-center gap-2 text-lg text-gray-400 mb-10 bg-[#111827] rounded-lg border border-gray-700 p-3">
         <span
           onClick={() => navigate("/dashboard")}
-          className="cursor-pointer hover:text-white transition"
+          className="cursor-pointer hover:text-white"
         >
           Dashboard
         </span>
-
         <ChevronRight size={16} />
-
         <span className="text-white font-medium">Admin Profile</span>
       </div>
 
@@ -78,7 +76,7 @@ const DashAdminProfile = () => {
         </div>
 
         {/* Info Card */}
-        <div className="w-full max-w-xl bg-[#0B0F19] border-2 border-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="w-full max-w-xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg">
           {loading ? (
             <p className="text-center text-gray-400">Loading...</p>
           ) : (

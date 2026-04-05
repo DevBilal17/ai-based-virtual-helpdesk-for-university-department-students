@@ -5,7 +5,7 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
-} from "../redux/user/userSlice.js";
+} from "../redux/slices/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -13,7 +13,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     email: "",
