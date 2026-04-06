@@ -7,7 +7,6 @@ import {
   Pencil,
   Trash2,
   UserPlus,
-  ShieldPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,23 +101,13 @@ const DashUsers = () => {
             </p>
           </div>
 
-          <div className="flex gap-4">
-            <button
-              onClick={() => navigate("/dashboard/users/add-student")}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-800 transition duration-300 px-4 rounded-lg"
-            >
-              <UserPlus size={16} />
-              Add Student
-            </button>
-
-            <button
-              onClick={() => navigate("/dashboard/users/add-admin")}
-              className="flex items-center gap-2 bg-purple-600 hover:bg-purple-800 transition duration-300 px-4 rounded-lg"
-            >
-              <ShieldPlus size={16} />
-              Add Admin
-            </button>
-          </div>
+          <button
+            onClick={() => navigate("/dashboard/users/add-user")}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-800 transition duration-300 px-6 rounded-lg text-lg"
+          >
+            <UserPlus size={18} />
+            Add User
+          </button>
         </div>
 
         {/* ================= SECTION 3 ================= */}
@@ -209,7 +198,7 @@ const DashUsers = () => {
           {users?.map((user) => (
             <div
               key={user._id}
-              className="grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm"
+              className="grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
             >
               <div className="flex items-center gap-3">
                 <img
@@ -218,7 +207,10 @@ const DashUsers = () => {
                     profile_pic
                   }
                   alt="avatar"
-                  className="w-10 h-10 rounded-lg object-cover border border-gray-600"
+                  onClick={() =>
+                    navigate(`/dashboard/users/user-details/${user._id}`)
+                  }
+                  className="w-10 h-10 rounded-lg object-cover border border-gray-600 cursor-pointer"
                 />
                 <span>{truncate(user.name)}</span>
               </div>
@@ -244,7 +236,7 @@ const DashUsers = () => {
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() =>
-                    navigate(`/dashboard/users/update-student/${user._id}`)
+                    navigate(`/dashboard/users/update-user/${user._id}`)
                   }
                   className="p-2 bg-gray-600 hover:bg-gray-700 transition duration-200 rounded-lg"
                 >
@@ -263,6 +255,12 @@ const DashUsers = () => {
             <span>
               Showing {pagination?.currentPage} of {pagination?.totalPages}{" "}
               pages
+            </span>
+
+            <span className="ml-2">|</span>
+
+            <span className="flex-1 ml-2">
+              Total users fetched: {stats?.totalUsersFetched}
             </span>
 
             <div className="flex gap-4">
@@ -297,7 +295,7 @@ const DashUsers = () => {
         {/* ================= SECTION 5 ================= */}
         <div className="grid md:grid-cols-4 gap-4">
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
-            <p className="text-gray-400">Total Users</p>
+            <p className="text-gray-400">Total Users in the Database</p>
             <h2 className="text-4xl font-bold">{stats?.totalUsers}</h2>
           </div>
 

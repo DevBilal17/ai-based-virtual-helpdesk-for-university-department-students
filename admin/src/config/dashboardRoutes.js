@@ -7,14 +7,14 @@ const DashAdminProfile = lazy(
 const DashUsers = lazy(
   () => import("../components/user_management/DashUsers.jsx"),
 );
-const DashAddStudent = lazy(
-  () => import("../components/user_management/DashAddStudent.jsx"),
+const DashUserDetails = lazy(
+  () => import("../components/user_management/DashUserDetails.jsx"),
 );
-const DashUpdateStudent = lazy(
-  () => import("../components/user_management/DashUpdateStudent.jsx"),
+const DashAddUser = lazy(
+  () => import("../components/user_management/DashAddUser.jsx"),
 );
-const DashAddAdmin = lazy(
-  () => import("../components/user_management/DashAddAdmin.jsx"),
+const DashUpdateUser = lazy(
+  () => import("../components/user_management/DashUpdateUser.jsx"),
 );
 const DashFAQs = lazy(
   () => import("../components/faq_management/DashFAQs.jsx"),
@@ -52,19 +52,19 @@ export const dashboardRoutes = [
     label: "Users",
   },
   {
-    path: "users/add-student",
-    component: DashAddStudent,
-    label: "Add Student",
+    path: "users/user-details/:id",
+    component: DashUserDetails,
+    label: "User Details",
   },
   {
-    path: "users/update-student/:id",
-    component: DashUpdateStudent,
-    label: "Update Student",
+    path: "users/add-user",
+    component: DashAddUser,
+    label: "Add User",
   },
   {
-    path: "users/add-admin",
-    component: DashAddAdmin,
-    label: "Add Admin",
+    path: "users/update-user/:id",
+    component: DashUpdateUser,
+    label: "Update User",
   },
   {
     path: "faqs",

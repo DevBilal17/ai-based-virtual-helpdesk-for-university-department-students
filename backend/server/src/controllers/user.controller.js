@@ -1,15 +1,14 @@
 const response = require("../utils/response");
 const User = require("../models/USER");
 const {
-  createStudentCredentialsTemplate,
-  updateStudentCredentialsTemplate,
-  deleteStudentNotificationTemplate,
-  createAdminCredentialsTemplate,
+  createUserEmailNotificationTemplate,
+  updateUserEmailNotificationTemplate,
+  deleteUserEmailNotificationTemplate,
 } = require("../utils/emailTemplates");
 const sendEmail = require("../utils/sendEmail");
 
-// ================= CREATE STUDENT =================
-const createStudent = async (req, res) => {
+// ================= CREATE USER =================
+const createUser = async (req, res) => {
   try {
     const {
       name,
@@ -93,8 +92,8 @@ const createStudent = async (req, res) => {
   }
 };
 
-// ================= UPDATE STUDENT BY ID =================
-const updateStudent = async (req, res) => {
+// ================= UPDATE USER BY ID =================
+const updateUserById = async (req, res) => {
   try {
     const studentId = req.params.id;
     const updates = req.body;
@@ -157,8 +156,8 @@ const updateStudent = async (req, res) => {
   }
 };
 
-// ================= DELETE STUDENT BY ID =================
-const deleteStudent = async (req, res) => {
+// ================= DELETE USER BY ID =================
+const deleteUserById = async (req, res) => {
   try {
     const studentId = req.params.id;
 
@@ -202,8 +201,8 @@ const deleteStudent = async (req, res) => {
   }
 };
 
-// ================= GET STUDENT BY ID =================
-const getStudentById = async (req, res) => {
+// ================= GET USER BY ID =================
+const getUserById = async (req, res) => {
   try {
     const studentId = req.params.id;
 
@@ -262,7 +261,9 @@ const getAllUsers = async (req, res) => {
       .sort({ createdAt: -1 });
 
     // ================= TOTAL COUNT =================
-    const totalUsers = await User.countDocuments(filter);
+    const totalUsers = await User.countDocuments();
+
+    const totalUsersFetched = await User.countDocuments(filter);
 
     const totalPages = Math.ceil(totalUsers / limit);
 
@@ -289,6 +290,7 @@ const getAllUsers = async (req, res) => {
       },
       stats: {
         totalUsers,
+        totalUsersFetched,
         totalStudents,
         totalAdmins,
         usersLastMonth,
@@ -301,104 +303,104 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// -------------------------------------------------------------------------------------------------------
+
 // ================= CREATE ADMIN =================
-const createAdmin = async (req, res) => {
-  try {
-    const { name, email, department, designation } = req.body;
+// const createAdmin = async (req, res) => {
+//   try {
+//     const { name, email, department, designation } = req.body;
 
-    // Check if admin already exists
-    const existingAdmin = await User.findOne({ email });
-    if (existingAdmin) {
-      return response(res, 400, false, "Admin already exists");
-    }
+//     // Check if admin already exists
+//     const existingAdmin = await User.findOne({ email });
+//     if (existingAdmin) {
+//       return response(res, 400, false, "Admin already exists");
+//     }
 
-    // Generate temporary password
-    const tempPassword = Math.random().toString(36).slice(-8);
+//     // Generate temporary password
+//     const tempPassword = Math.random().toString(36).slice(-8);
 
-    const admin = await User.create({
-      name,
-      email,
-      password: tempPassword,
-      role: "admin",
-      department,
-      designation,
-      isVerified: true,
-    });
+//     const admin = await User.create({
+//       name,
+//       email,
+//       password: tempPassword,
+//       role: "admin",
+//       department,
+//       designation,
+//       isVerified: true,
+//     });
 
-    // Prepare email template
-    const htmlTemplate = createAdminCredentialsTemplate(
-      admin.name,
-      admin.email,
-      tempPassword,
-      admin.department,
-      admin.designation,
-    );
+//     // Prepare email template
+//     const htmlTemplate = createAdminCredentialsTemplate(
+//       admin.name,
+//       admin.email,
+//       tempPassword,
+//       admin.department,
+//       admin.designation,
+//     );
 
-    // Send email
-    const emailSent = await sendEmail({
-      email: admin.email,
-      subject: "Your Admin Account Credentials",
-      html: htmlTemplate,
-    });
+//     // Send email
+//     const emailSent = await sendEmail({
+//       email: admin.email,
+//       subject: "Your Admin Account Credentials",
+//       html: htmlTemplate,
+//     });
 
-    const adminObject = admin.toObject();
-    delete adminObject.password;
+//     const adminObject = admin.toObject();
+//     delete adminObject.password;
 
-    if (!emailSent) {
-      console.error("Email sending failed for:", admin.email);
+//     if (!emailSent) {
+//       console.error("Email sending failed for:", admin.email);
 
-      return response(
-        res,
-        201,
-        true,
-        "Admin created but email could not be sent",
-        { adminObject },
-      );
-    }
+//       return response(
+//         res,
+//         201,
+//         true,
+//         "Admin created but email could not be sent",
+//         { adminObject },
+//       );
+//     }
 
-    return response(
-      res,
-      201,
-      true,
-      "Admin created successfully and credentials sent to email",
-      { adminObject },
-    );
-  } catch (error) {
-    console.error("Create Admin Error:", error.message);
-    return response(res, 500, false, "Internal Server Error");
-  }
-};
+//     return response(
+//       res,
+//       201,
+//       true,
+//       "Admin created successfully and credentials sent to email",
+//       { adminObject },
+//     );
+//   } catch (error) {
+//     console.error("Create Admin Error:", error.message);
+//     return response(res, 500, false, "Internal Server Error");
+//   }
+// };
 
 // ================= GET ADMIN BY ID =================
-const getAdminById = async (req, res) => {
-  try {
-    const adminId = req.params.id;
+// const getAdminById = async (req, res) => {
+//   try {
+//     const adminId = req.params.id;
 
-    const admin = await User.findOne({
-      _id: adminId,
-      role: "admin",
-    }).select("-password");
+//     const admin = await User.findOne({
+//       _id: adminId,
+//       role: "admin",
+//     }).select("-password");
 
-    if (!admin || admin.role !== "admin") {
-      return response(res, 404, false, "Admin not found");
-    }
+//     if (!admin || admin.role !== "admin") {
+//       return response(res, 404, false, "Admin not found");
+//     }
 
-    return response(res, 200, true, "Admin fetched successfully", {
-      admin,
-    });
-  } catch (error) {
-    console.error("Get Admin By ID Error:", error.message);
+//     return response(res, 200, true, "Admin fetched successfully", {
+//       admin,
+//     });
+//   } catch (error) {
+//     console.error("Get Admin By ID Error:", error.message);
 
-    return response(res, 500, false, "Internal Server Error");
-  }
-};
+//     return response(res, 500, false, "Internal Server Error");
+//   }
+// };
 
 module.exports = {
-  createStudent,
-  updateStudent,
-  deleteStudent,
-  getStudentById,
+  createUser,
+  updateUserById,
+  deleteUserById,
+  getUserById,
   getAllUsers,
-  createAdmin,
-  getAdminById,
 };

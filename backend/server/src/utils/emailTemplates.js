@@ -1,4 +1,7 @@
-const createStudentCredentialsTemplate = (
+// emailTemplates.js
+
+// Create User Account Email Template
+const createUserEmailNotificationTemplate = (
   name,
   email,
   tempPassword,
@@ -31,7 +34,8 @@ const createStudentCredentialsTemplate = (
   `;
 };
 
-const updateStudentCredentialsTemplate = (
+// Update User Account Email Template
+const updateUserEmailNotificationTemplate = (
   name,
   email,
   registrationNumber,
@@ -62,7 +66,12 @@ const updateStudentCredentialsTemplate = (
   `;
 };
 
-const deleteStudentNotificationTemplate = (name, registrationNumber, email) => {
+// Delete User Account Email Template
+const deleteUserEmailNotificationTemplate = (
+  name,
+  registrationNumber,
+  email,
+) => {
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
       <h2 style="color: #d93025;">Account Deletion Notice</h2>
@@ -93,29 +102,34 @@ const deleteStudentNotificationTemplate = (name, registrationNumber, email) => {
   `;
 };
 
-const createAdminCredentialsTemplate = (
-  name,
-  email,
-  tempPassword,
-  department,
-  designation,
-) => {
-  return `
-    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-      <h2 style="color: #1a73e8;">Hello ${name},</h2>
-      <p>Your admin account has been created successfully. Please find the information below:</p>
-      <ul>
-        <li><strong>Email:</strong> ${email}</li>
-        <li><strong>Password:</strong> ${tempPassword}</li>
-        <li><strong>Department:</strong> ${department}</li>
-        <li><strong>Designation:</strong> ${designation}</li>
-      </ul>
-      <p>You can login to your account using these credentials, and you can also change your password later.</p>
-      <p>Regards,<br/>IT Department</p>
-    </div>
-  `;
-};
+// --------------------------------------------------------------------------------------------------------
 
+// const createAdminCredentialsTemplate = (
+//   name,
+//   email,
+//   tempPassword,
+//   department,
+//   designation,
+// ) => {
+//   return `
+//     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+//       <h2 style="color: #1a73e8;">Hello ${name},</h2>
+//       <p>Your admin account has been created successfully. Please find the information below:</p>
+//       <ul>
+//         <li><strong>Email:</strong> ${email}</li>
+//         <li><strong>Password:</strong> ${tempPassword}</li>
+//         <li><strong>Department:</strong> ${department}</li>
+//         <li><strong>Designation:</strong> ${designation}</li>
+//       </ul>
+//       <p>You can login to your account using these credentials, and you can also change your password later.</p>
+//       <p>Regards,<br/>IT Department</p>
+//     </div>
+//   `;
+// };
+
+// ----------------------------------------------------------------------------------------
+
+// OTP Email Template
 const otpTemplate = (name, otp) => {
   return `
   <div style="font-family: Arial, sans-serif; padding:20px;">
@@ -133,9 +147,8 @@ const otpTemplate = (name, otp) => {
 };
 
 module.exports = {
-  createStudentCredentialsTemplate,
-  updateStudentCredentialsTemplate,
-  deleteStudentNotificationTemplate,
-  createAdminCredentialsTemplate,
+  createUserEmailNotificationTemplate,
+  updateUserEmailNotificationTemplate,
+  deleteUserEmailNotificationTemplate,
   otpTemplate,
 };

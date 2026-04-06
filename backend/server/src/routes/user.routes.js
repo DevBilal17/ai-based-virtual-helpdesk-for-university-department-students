@@ -3,67 +3,65 @@ const upload = require("../middlewares/upload");
 const protect = require("../middlewares/protect.middleware");
 const authorize = require("../middlewares/authorization.middleware");
 const {
-  createStudentValidator,
-  updateStudentValidator,
-  deleteStudentValidator,
-  getStudentByIdValidator,
+  createUserValidator,
+  updateUserByIdValidator,
+  deleteUserByIdValidator,
+  getUserByIdValidator,
   getAllUsersValidator,
-  createAdminValidator,
-  getAdminByIdValidator,
 } = require("../middlewares/validators/user.validator");
 const validateRequest = require("../middlewares/validateRequest");
 const {
-  createStudent,
-  updateStudent,
-  deleteStudent,
-  getStudentById,
+  createUser,
+  updateUserById,
+  deleteUserById,
+  getUserById,
   getAllUsers,
-  createAdmin,
-  getAdminById,
 } = require("../controllers/user.controller");
 
 const router = express.Router();
 
-// Create Student Route
+// ---------------------------------------------------------------------------------------
+
+// Create User Route
 router.post(
-  "/create-student",
+  "/create-user",
   protect,
   authorize("admin"),
   upload.single("profileImage"), // handle file upload
-  createStudentValidator,
+  createUserValidator,
   validateRequest,
-  createStudent,
+  createUser,
 );
 
-// Update Student by id Route
+// Update User by id Route
 router.put(
-  "/update-student/:id",
+  "/update-user/:id",
   protect,
   authorize("admin"),
   upload.single("profileImage"), // handle file upload
-  updateStudentValidator,
+  updateUserByIdValidator,
   validateRequest,
-  updateStudent,
+  updateUserById,
 );
 
-// Delete Student by id Route
+// Delete User by id Route
 router.delete(
-  "/delete-student/:id",
+  "/delete-user/:id",
   protect,
   authorize("admin"),
-  deleteStudentValidator,
+  deleteUserByIdValidator,
   validateRequest,
-  deleteStudent,
+  deleteUserById,
 );
 
-// Get Student by id Route
+// Get User by id Route
 router.get(
-  "/get-student/:id",
+  "/get-user/:id",
   protect,
   authorize("admin"),
-  getStudentByIdValidator,
+  getUserByIdValidator,
   validateRequest,
-  getStudentById,
+  getUserById,
 );
 
 // Get all users Route
@@ -77,24 +75,24 @@ router.get(
 );
 
 // Create Admin Route
-router.post(
-  "/create-admin",
-  protect,
-  authorize("admin"),
-  upload.single("profileImage"), // handle file upload
-  createAdminValidator,
-  validateRequest,
-  createAdmin,
-);
+// router.post(
+//   "/create-admin",
+//   protect,
+//   authorize("admin"),
+//   upload.single("profileImage"), // handle file upload
+//   createAdminValidator,
+//   validateRequest,
+//   createAdmin,
+// );
 
 // Get admin by id Route
-router.get(
-  "/get-admin/:id",
-  protect,
-  authorize("admin"),
-  getAdminByIdValidator,
-  validateRequest,
-  getAdminById,
-);
+// router.get(
+//   "/get-admin/:id",
+//   protect,
+//   authorize("admin"),
+//   getAdminByIdValidator,
+//   validateRequest,
+//   getAdminById,
+// );
 
 module.exports = router;
