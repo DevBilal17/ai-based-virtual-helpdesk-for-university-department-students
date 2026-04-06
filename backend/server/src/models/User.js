@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema(
       default: "IT",
     },
 
+    profileImage: {
+      type: String,
+      default: "",
+    },
+
     // ================= STUDENT FIELDS =================
     registrationNumber: {
       type: String,

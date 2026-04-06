@@ -1,4 +1,5 @@
 const express = require("express");
+const upload = require("../middlewares/upload");
 const protect = require("../middlewares/protect.middleware");
 const authorize = require("../middlewares/authorization.middleware");
 const {
@@ -28,6 +29,7 @@ router.post(
   "/create-student",
   protect,
   authorize("admin"),
+  upload.single("profileImage"), // handle file upload
   createStudentValidator,
   validateRequest,
   createStudent,
@@ -38,6 +40,7 @@ router.put(
   "/update-student/:id",
   protect,
   authorize("admin"),
+  upload.single("profileImage"), // handle file upload
   updateStudentValidator,
   validateRequest,
   updateStudent,
@@ -78,6 +81,7 @@ router.post(
   "/create-admin",
   protect,
   authorize("admin"),
+  upload.single("profileImage"), // handle file upload
   createAdminValidator,
   validateRequest,
   createAdmin,

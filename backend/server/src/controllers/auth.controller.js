@@ -52,6 +52,7 @@ const login = async (req, res) => {
         role: user.role,
         registrationNumber: user.registrationNumber || null,
         email: user.email,
+        profileImage: user.profileImage,
       },
     });
   } catch (error) {
