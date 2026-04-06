@@ -42,10 +42,11 @@ const userSchema = new mongoose.Schema(
       default: "IT",
     },
 
-    profileImage: {
-      type: String,
-      default: "",
-    },
+    // We can add profileImage field later when implementing file upload functionality
+    // profileImage: {
+    //   type: String,
+    //   default: "",
+    // },
 
     // ================= STUDENT FIELDS =================
     registrationNumber: {

@@ -1,5 +1,5 @@
 const express = require("express");
-const upload = require("../middlewares/upload");
+// const upload = require("../middlewares/upload");
 const protect = require("../middlewares/protect.middleware");
 const authorize = require("../middlewares/authorization.middleware");
 const {
@@ -27,7 +27,7 @@ router.post(
   "/create-user",
   protect,
   authorize("admin"),
-  upload.single("profileImage"), // handle file upload
+  // upload.single("profileImage"), // handle file upload
   createUserValidator,
   validateRequest,
   createUser,
@@ -38,7 +38,7 @@ router.put(
   "/update-user/:id",
   protect,
   authorize("admin"),
-  upload.single("profileImage"), // handle file upload
+  // upload.single("profileImage"), // handle file upload
   updateUserByIdValidator,
   validateRequest,
   updateUserById,

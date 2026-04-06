@@ -13,19 +13,19 @@ const DashAdminProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [adminData, setAdminData] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const adminId = currentUser?.data?.user?.id;
+  const userId = currentUser?.data?.user?.id;
 
-  // Fetch Admin Data
+  // Fetch User Data
   useEffect(() => {
-    const fetchAdmin = async () => {
+    const fetchUser = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/user/get-admin/${adminId}`);
-        setAdminData(res.data.data.admin);
-        console.log("Admin Data:", res.data.data.admin);
+        const res = await axios.get(`/user/get-user/${userId}`);
+        setUserData(res.data.data.user);
+        console.log("User Data:", res.data.data.user);
       } catch (error) {
         console.error(error);
       } finally {
@@ -33,8 +33,8 @@ const DashAdminProfile = () => {
       }
     };
 
-    if (adminId) fetchAdmin();
-  }, [adminId]);
+    if (userId) fetchUser();
+  }, []);
 
   // Logout Handler
   const handleLogout = () => {
@@ -86,7 +86,7 @@ const DashAdminProfile = () => {
                 <label className="text-sm text-gray-400">Name</label>
                 <input
                   type="text"
-                  value={adminData?.name || ""}
+                  value={userData?.name || ""}
                   readOnly
                   className="w-full mt-1 px-3 py-2 bg-[#111827] border border-gray-700 rounded-lg text-sm focus:outline-none"
                 />
@@ -97,7 +97,7 @@ const DashAdminProfile = () => {
                 <label className="text-sm text-gray-400">Email</label>
                 <input
                   type="text"
-                  value={adminData?.email || ""}
+                  value={userData?.email || ""}
                   readOnly
                   className="w-full mt-1 px-3 py-2 bg-[#111827] border border-gray-700 rounded-lg text-sm focus:outline-none"
                 />
@@ -108,7 +108,7 @@ const DashAdminProfile = () => {
                 <label className="text-sm text-gray-400">Department</label>
                 <input
                   type="text"
-                  value={adminData?.department || ""}
+                  value={userData?.department || ""}
                   readOnly
                   className="w-full mt-1 px-3 py-2 bg-[#111827] border border-gray-700 rounded-lg text-sm focus:outline-none"
                 />
@@ -119,7 +119,7 @@ const DashAdminProfile = () => {
                 <label className="text-sm text-gray-400">Designation</label>
                 <input
                   type="text"
-                  value={adminData?.designation || ""}
+                  value={userData?.designation || ""}
                   readOnly
                   className="w-full mt-1 px-3 py-2 bg-[#111827] border border-gray-700 rounded-lg text-sm focus:outline-none"
                 />

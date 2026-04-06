@@ -204,22 +204,32 @@ const deleteUserById = async (req, res) => {
 // ================= GET USER BY ID =================
 const getUserById = async (req, res) => {
   try {
-    const studentId = req.params.id;
+    const userId = req.params.id;
 
-    const student = await User.findOne({
-      _id: studentId,
-      role: "student",
-    }).select("-password");
-
-    if (!student || student.role !== "student") {
-      return response(res, 404, false, "Student not found");
+    // ================= VALIDATION =================
+    if (!userId) {
+      return response(res, 400, false, "User ID is required");
     }
 
-    return response(res, 200, true, "Student fetched successfully", {
-      student,
+    // ================= FIND USER =================
+    const user = await User.findById(userId).select("-password");
+
+    // ================= NOT FOUND =================
+    if (!user) {
+      return response(res, 404, false, "User not found");
+    }
+
+    // ================= SUCCESS =================
+    return response(res, 200, true, "User fetched successfully", {
+      user,
     });
   } catch (error) {
-    console.error("Get Student By ID Error:", error.message);
+    console.error("Get User By ID Error:", error.message);
+
+    // ================= INVALID OBJECT ID =================
+    if (error.name === "CastError") {
+      return response(res, 400, false, "Invalid user ID");
+    }
 
     return response(res, 500, false, "Internal Server Error");
   }
