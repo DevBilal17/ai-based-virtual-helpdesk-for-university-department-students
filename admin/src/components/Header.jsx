@@ -101,7 +101,7 @@ const Header = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-[#111827] px-3 py-1.5 rounded-lg transition">
+            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-[#1F2937] px-3 py-1.5 rounded-lg transition">
               <button
                 onClick={() => navigate("/login")}
                 className="text-md text-white font-medium"

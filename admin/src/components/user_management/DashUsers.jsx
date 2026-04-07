@@ -18,12 +18,13 @@ import {
 } from "../../redux/slices/userSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../../assets/profile_pic.png";
+import FullScreenLoader from "../common/FullScreenLoader.jsx";
 
 const DashUsers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { users, pagination, stats, usersLoading } = useSelector(
+  const { users, pagination, stats, usersLoading, usersError } = useSelector(
     (state) => state.user,
   );
 
@@ -69,6 +70,18 @@ const DashUsers = () => {
 
     return () => clearTimeout(delay);
   }, [search]);
+
+  // ================= LOADING =================
+  if (usersLoading) return <FullScreenLoader />;
+
+  // ================= ERROR =================
+  if (usersError) {
+    return (
+      <div className="text-center mt-10 text-red-500 font-semibold">
+        {usersError}
+      </div>
+    );
+  }
 
   // ================= HELPER =================
   const truncate = (text, maxLength = 20) => {
@@ -200,16 +213,18 @@ const DashUsers = () => {
               key={user._id}
               className="grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
             >
-              <div className="flex items-center gap-3">
+              <div
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() =>
+                  navigate(`/dashboard/users/user-details/${user._id}`)
+                }
+              >
                 <img
                   src={
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
                     profile_pic
                   }
                   alt="avatar"
-                  onClick={() =>
-                    navigate(`/dashboard/users/user-details/${user._id}`)
-                  }
                   className="w-10 h-10 rounded-lg object-cover border border-gray-600 cursor-pointer"
                 />
                 <span>{truncate(user.name)}</span>
