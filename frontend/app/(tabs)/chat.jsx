@@ -10,13 +10,13 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import GlassmorphismCard from "../components/GlassmorphismCard/GlassmorphismCard";
+import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { Ionicons } from "@expo/vector-icons";
-import MessageBox from "../components/Chat/MessageBox";
+import MessageBox from "../../components/Chat/MessageBox";
 import { Controller, useForm } from "react-hook-form";
 import { router } from "expo-router";
-import GlassmorphismInput from "../components/Forms/GlassmorphismInput";
-import TypingBubble from "../components/Chat/TypingBubble";
+import GlassmorphismInput from "../../components/Forms/GlassmorphismInput";
+import TypingBubble from "../../components/Chat/TypingBubble";
 const chat = () => {
   const {
     control,
@@ -148,8 +148,8 @@ const renderChatBoxItem = ({ item }) => {
       isUser={item.sender == "user" ? true : false}
       image={
         item.sender == "user"
-          ? require("../assets/images/profile-img.png")
-          : require("../assets/icons/message-bot.png")
+          ? require("../../assets/images/profile-img.png")
+          : require("../../assets/icons/message-bot.png")
       }
       question={item.sender === "user" ? item.text : undefined}
       answer={item.sender === "bot" ? item.text : undefined}

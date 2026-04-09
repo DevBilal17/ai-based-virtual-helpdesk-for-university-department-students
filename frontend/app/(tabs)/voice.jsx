@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard'
+import { Ionicons } from '@expo/vector-icons'
 
 const voice = () => {
   return (
