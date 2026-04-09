@@ -111,7 +111,7 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(user);
-
+    //  console.log({user,token})
     // Response
     return response(res, 200, true, "Login successful", {
       token,

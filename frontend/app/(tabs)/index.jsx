@@ -1,16 +1,16 @@
 import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import GlassmorphismCard from '../components/GlassmorphismCard/GlassmorphismCard'
+import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard'
 import { Ionicons } from '@expo/vector-icons'
-import ModuleBox from '../components/Home/ModuleBox'
-import HistoryChatBox from '../components/Home/HistoryChatBox'
+import ModuleBox from '../../components/Home/ModuleBox'
+import HistoryChatBox from '../../components/Home/HistoryChatBox'
 import { router } from 'expo-router'
 
 const {width,height} = Dimensions.get("window")
 const index = () => {
   return (
-    <ImageBackground source={require("../assets/images/on-boarding-bg-1.png")} style={{flex:1}}>
+    <ImageBackground source={require("../../assets/images/on-boarding-bg-1.png")} style={{flex:1}}>
       <SafeAreaView style={styles.container}>
         {/* Header View */}
         <View style={styles.headerViewContainer}>
@@ -52,7 +52,7 @@ const index = () => {
               overflow:"hidden"
             }}
           >
-            <Image source={require("../assets/images/profile-img.png")} style={{
+            <Image source={require("../../assets/images/profile-img.png")} style={{
               flex:1
             }}   
             resizeMode='cover'
@@ -67,7 +67,7 @@ const index = () => {
         <View style={styles.greetingContainer}>
           <View style={styles.greetingNameTextContainer}>
             <Text style={styles.greetingText}>Hi, Ali</Text>
-            <Image source={require("../assets/icons/hand.png")} 
+            <Image source={require("../../assets/icons/hand.png")} 
              style={{width:30,height:38}}
             />
           </View>

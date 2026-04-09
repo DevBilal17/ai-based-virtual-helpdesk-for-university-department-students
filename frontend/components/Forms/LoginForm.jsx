@@ -35,7 +35,7 @@ export default function LoginForm() {
 
       // Save token in AsyncStorage
       await setItem("token", response.data.token);
-      await User("user", response.data.user);
+      await setItem("user", response?.data?.user.id);
       if (data.remember == "true") {
         await setItem("loggedIn", "true");
       }
@@ -46,8 +46,9 @@ export default function LoginForm() {
         text2: "Welcome back!",
       });
       // Navigate to home screen
-      router.replace("/(tabs)");
+      router.replace("/");
     } catch (err) {
+      console.log(err)
       console.log("Login Failed ", err?.data?.message);
 
       Toast.show({

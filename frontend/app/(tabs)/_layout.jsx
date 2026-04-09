@@ -31,16 +31,17 @@ const TabLayout = () => {
         tabBarInactiveTintColor: "#C0C0C0",
       
         tabBarStyle: {
-          position: "absolute", 
-          bottom: 20,
-          left: 20,
-          right: 20,
+          // position: "absolute", 
+          // bottom: 20,
+          // left: 20,
+          // right: 20,
           backgroundColor: "#1c1d1e",
           height: 60,
-          borderRadius: 30,
+          // borderRadius: 30,
+          width:100 + "%",
           borderTopWidth: 0,
           elevation: 5, 
-          marginHorizontal:15
+          // marginHorizontal:15
         },
 
         
@@ -51,7 +52,15 @@ const TabLayout = () => {
         tabBarShowLabel: false,
         
       })}
-    />
+      
+    >
+      <Tabs.Screen
+        name="voice"
+        options={{
+          href: null, 
+        }}
+      />
+    </Tabs>
   )
 }
 
