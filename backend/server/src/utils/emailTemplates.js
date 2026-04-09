@@ -1,34 +1,39 @@
 // emailTemplates.js
 
-// Create User Account Email Template
-const createUserEmailNotificationTemplate = (
-  name,
-  email,
-  tempPassword,
-  registrationNumber,
-  degreeType,
-  degreeTitle,
-  semester,
-  department,
-  program,
-  session,
-) => {
+// ================= CREATE USER EMAIL TEMPLATE =================
+const createUserEmailNotificationTemplate = (user, tempPassword) => {
+  const isStudent = user.role === "student";
+
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-      <h2 style="color: #1a73e8;">Hello ${name},</h2>
-      <p>Your student account has been created successfully. Please find the information below:</p>
+      <h2 style="color: #1a73e8;">Hello ${user.name},</h2>
+      
+      <p>Your ${user.role} account has been created successfully. Please find your credentials below:</p>
+
       <ul>
-        <li><strong>Registration Number:</strong> ${registrationNumber}</li>
-        <li><strong>Email:</strong> ${email}</li>
+        <li><strong>Role:</strong> ${user.role}</li>
+        <li><strong>Email:</strong> ${user.email}</li>
         <li><strong>Password:</strong> ${tempPassword}</li>
-        <li><strong>Degree Type:</strong> ${degreeType || "N/A"}</li>
-        <li><strong>Degree Title:</strong> ${degreeTitle || "N/A"}</li>
-        <li><strong>Semester:</strong> ${semester || "N/A"}</li>
-        <li><strong>Department:</strong> ${department || "N/A"}</li>
-        <li><strong>Program:</strong> ${program || "N/A"}</li>
-        <li><strong>Session:</strong> ${session || "N/A"}</li>
+        <li><strong>Department:</strong> ${user.department}</li>
+
+        ${
+          isStudent
+            ? `
+          <li><strong>Registration Number:</strong> ${user.registrationNumber}</li>
+          <li><strong>Degree Type:</strong> ${user.degreeType}</li>
+          <li><strong>Degree Title:</strong> ${user.degreeTitle}</li>
+          <li><strong>Semester:</strong> ${user.semester}</li>
+          <li><strong>Program:</strong> ${user.program}</li>
+          <li><strong>Session:</strong> ${user.session}</li>
+        `
+            : `
+          <li><strong>Designation:</strong> ${user.designation}</li>
+        `
+        }
       </ul>
-      <p>You can login to your account using these credentials, and you can also change your password later.</p>
+
+      <p>You can login using these credentials and change your password later.</p>
+
       <p>Regards,<br/>IT Department</p>
     </div>
   `;

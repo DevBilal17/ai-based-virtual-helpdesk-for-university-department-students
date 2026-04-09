@@ -1,10 +1,18 @@
 const { body, param, query } = require("express-validator");
 
+const roles = ["student", "admin"];
 const departments = ["CS", "SE", "IT", "BBA", "EE"];
 const degreeTypes = ["BS", "MS", "MPhil", "PhD"];
 const programs = ["morning", "evening", "shifted", "bridging"];
 
 const createUserValidator = [
+  // ================= COMMON FIELDS =================
+  body("role")
+    .notEmpty()
+    .withMessage("Role is required")
+    .isIn(roles)
+    .withMessage(`Role must be one of ${roles.join(", ")}`),
+
   body("name")
     .notEmpty()
     .withMessage("User name is required")
@@ -18,7 +26,21 @@ const createUserValidator = [
     .withMessage("Invalid email address")
     .normalizeEmail({ gmail_remove_dots: false }),
 
+  body("department")
+    .notEmpty()
+    .withMessage("Department is required")
+    .isIn(departments)
+    .withMessage(`Department must be one of ${departments.join(", ")}`),
+
+  // ================= ADMIN FIELDS =================
+  body("designation")
+    .if(body("role").equals("admin"))
+    .notEmpty()
+    .withMessage("Designation is required for admin"),
+
+  // ================= STUDENT FIELDS =================
   body("registrationNumber")
+    .if(body("role").equals("student"))
     .notEmpty()
     .withMessage("Registration number is required")
     .matches(/^\d{4}-[A-Z]+-\d{5}$/)
@@ -27,33 +49,37 @@ const createUserValidator = [
     .toUpperCase(),
 
   body("semester")
+    .if(body("role").equals("student"))
     .notEmpty()
     .withMessage("Semester is required")
     .isInt({ min: 1, max: 8 })
     .withMessage("Semester must be between 1 and 8"),
 
-  body("department")
-    .notEmpty()
-    .withMessage("Department is required")
-    .isIn(departments)
-    .withMessage(`Department must be one of ${departments.join(", ")}`),
-
   body("degreeType")
-    .optional()
+    .if(body("role").equals("student"))
+    .notEmpty()
     .isIn(degreeTypes)
     .withMessage(`Degree type must be one of ${degreeTypes.join(", ")}`),
 
   body("degreeTitle")
-    .optional()
+    .if(body("role").equals("student"))
+    .notEmpty()
     .isString()
     .withMessage("Degree title must be a string"),
 
   body("program")
-    .optional()
+    .if(body("role").equals("student"))
+    .notEmpty()
     .isIn(programs)
     .withMessage(`Program must be one of ${programs.join(", ")}`),
 
-  body("session").optional().isString().withMessage("Session must be a string"),
+  body("session")
+    .if(body("role").equals("student"))
+    .notEmpty()
+    .isString()
+    .withMessage("Session must be a string")
+    .trim()
+    .toUpperCase(),
 ];
 
 const updateUserByIdValidator = [

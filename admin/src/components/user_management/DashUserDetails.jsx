@@ -59,7 +59,10 @@ const DashUserDetails = () => {
   const isStudent = thisUser.role === "student";
 
   const studentFields = [
-    { label: "Role", value: thisUser.role },
+    {
+      label: "Role",
+      value: thisUser.role?.charAt(0).toUpperCase() + thisUser.role?.slice(1),
+    },
     { label: "Name", value: thisUser.name },
     { label: "Email", value: thisUser.email },
     { label: "Department", value: thisUser.department },
@@ -67,12 +70,19 @@ const DashUserDetails = () => {
     { label: "Degree Type", value: thisUser.degreeType },
     { label: "Degree Title", value: thisUser.degreeTitle },
     { label: "Semester", value: thisUser.semester },
-    { label: "Program", value: thisUser.program },
+    {
+      label: "Program",
+      value:
+        thisUser.program?.charAt(0).toUpperCase() + thisUser.program?.slice(1),
+    },
     { label: "Session", value: thisUser.session },
   ];
 
   const adminFields = [
-    { label: "Role", value: thisUser.role },
+    {
+      label: "Role",
+      value: thisUser.role?.charAt(0).toUpperCase() + thisUser.role?.slice(1),
+    },
     { label: "Name", value: thisUser.name },
     { label: "Email", value: thisUser.email },
     { label: "Department", value: thisUser.department },
@@ -115,7 +125,7 @@ const DashUserDetails = () => {
       <div className="flex flex-col items-center justify-center">
         {/* ================= PROFILE IMAGE ================= */}
         {/* Profile Avatar */}
-        <div className="mb-10">
+        <div className="mb-4">
           <div className="p-1 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500">
             <div className="p-1 rounded-full bg-[#0B0F19]">
               <img
@@ -129,6 +139,11 @@ const DashUserDetails = () => {
             </div>
           </div>
         </div>
+
+        {/* User's Name */}
+        <span className="mb-10 text-gray-200 text-xl font-bold">
+          {thisUser.name}
+        </span>
 
         {/* ================= USER DETAILS ================= */}
         <div className="w-full max-w-2xl bg-[#111827] rounded-lg border border-gray-700 overflow-hidden">

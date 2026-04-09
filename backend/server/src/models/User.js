@@ -32,12 +32,14 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
+      required: [true, "Role is required"],
       enum: ["student", "admin"],
       default: "student",
     },
 
     department: {
       type: String,
+      required: [true, "Department is required"],
       enum: ["CS", "SE", "IT", "BBA", "EE"],
       default: "IT",
     },

@@ -11,59 +11,69 @@ const sendEmail = require("../utils/sendEmail");
 const createUser = async (req, res) => {
   try {
     const {
+      role,
       name,
       email,
-      registrationNumber,
-      semester,
       department,
+      designation,
+      registrationNumber,
       degreeType,
       degreeTitle,
+      semester,
       program,
       session,
     } = req.body;
 
-    // Check if student already exists
-    const existingUser = await User.findOne({ email });
+    // ================= CHECK EXISTING USER =================
+    const existingUser = await User.findOne({
+      $or: [{ email }, { registrationNumber }],
+    });
     if (existingUser) {
-      return response(res, 400, false, "Student already exists");
+      return response(res, 400, false, "User already exists");
     }
 
-    // Generate temporary password
+    // ================= GENERATE TEMP PASSWORD =================
     const tempPassword = Math.random().toString(36).slice(-8);
 
-    const student = await User.create({
+    // ================= BUILD USER OBJECT =================
+    let userData = {
+      role,
       name,
       email,
       password: tempPassword,
-      role: "student",
-      registrationNumber,
-      semester,
       department,
-      degreeType: degreeType || "BS",
-      degreeTitle: degreeTitle || "",
-      program: program || "morning",
-      session: session || "",
       isVerified: true,
-    });
+    };
 
-    // Prepare HTML template
-    const htmlTemplate = createStudentCredentialsTemplate(
-      student.name,
-      student.email,
+    if (role === "admin") {
+      userData.designation = designation;
+    }
+
+    if (role === "student") {
+      userData = {
+        ...userData,
+        registrationNumber,
+        degreeType,
+        degreeTitle,
+        semester,
+        program,
+        session,
+      };
+    }
+
+    // ================= CREATE USER =================
+    const user = await User.create(userData);
+
+    // ================= PREPARE EMAIL TEMPLATE =================
+    const htmlTemplate = createUserEmailNotificationTemplate(
+      user,
       tempPassword,
-      student.registrationNumber,
-      student.degreeType,
-      student.degreeTitle,
-      student.semester,
-      student.department,
-      student.program,
-      student.session,
     );
 
-    // Send email
+    // ================= SEND EMAIL =================
     const emailSent = await sendEmail({
-      email: student.email,
-      subject: "Your Student Account Credentials",
+      email: user.email,
+      subject: "Your Account Credentials",
       html: htmlTemplate,
     });
 
@@ -72,22 +82,26 @@ const createUser = async (req, res) => {
         res,
         500,
         false,
-        "Student created but email could not be sent",
+        "User created but email could not be sent",
       );
     }
 
-    const studentObject = student.toObject();
-    delete studentObject.password;
+    // ================= REMOVE PASSWORD =================
+    const userObject = user.toObject();
+    delete userObject.password;
 
+    // ================= RESPONSE =================
     return response(
       res,
       201,
       true,
-      "Student created successfully and credentials sent to email",
-      { studentObject },
+      "User created successfully and credentials sent to your email",
+      {
+        user: userObject,
+      },
     );
   } catch (error) {
-    console.error("Create Student Error:", error.message);
+    console.error("Create User Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
