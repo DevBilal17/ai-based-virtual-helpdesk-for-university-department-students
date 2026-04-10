@@ -98,7 +98,7 @@ const DashAdminProfile = () => {
         </div>
 
         {/* Info Card */}
-        <div className="w-full max-w-xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg">
+        <div className="w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg">
           <div className="flex flex-col gap-5">
             {/* Name */}
             <div>

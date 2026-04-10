@@ -8,16 +8,18 @@ const initialState = {
   usersLoading: false,
   usersError: null,
 
-  // get user by id, update user, delete user, create user
+  // get user by id, update user, delete user, add user
   thisUser: null,
   loading: false,
   error: null,
+  // addedUser: null,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    // ================= GET ALL USERS =================
     getUsersStart: (state) => {
       state.usersLoading = true;
       state.usersError = null;
@@ -35,6 +37,8 @@ const userSlice = createSlice({
       state.usersError = action.payload;
     },
 
+    // ================= GET USER BY ID =================
+
     getUserByIdStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -50,20 +54,22 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
 
-    // createUserStart: (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // },
+    // ================= ADD USER =================
 
-    // createUserSuccess: (state, action) => {
-    //   state.thisUser = action.payload;
-    //   state.loading = false;
-    // },
+    addUserStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
 
-    // createUserFailure: (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // },
+    addUserSuccess: (state, action) => {
+      state.thisUser = action.payload;
+      state.loading = false;
+    },
+
+    addUserFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
 
     // updateUserByIdStart: (state) => {
     //   state.loading = true;
@@ -104,9 +110,9 @@ export const {
   getUserByIdStart,
   getUserByIdSuccess,
   getUserByIdFailure,
-  // createUserStart,
-  // createUserSuccess,
-  // createUserFailure,
+  addUserStart,
+  addUserSuccess,
+  addUserFailure,
   // updateUserByIdStart,
   // updateUserByIdSuccess,
   // updateUserByIdFailure,
