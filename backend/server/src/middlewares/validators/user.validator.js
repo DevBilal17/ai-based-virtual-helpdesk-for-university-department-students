@@ -5,6 +5,20 @@ const departments = ["CS", "SE", "IT", "BBA", "EE"];
 const degreeTypes = ["BS", "MS", "MPhil", "PhD"];
 const programs = ["morning", "evening", "shifted", "bridging"];
 
+// Allowed update fields (global safeguard)
+const allowedFields = [
+  "name",
+  "email",
+  "department",
+  "designation",
+  "registrationNumber",
+  "degreeType",
+  "degreeTitle",
+  "semester",
+  "program",
+  "session",
+];
+
 const createUserValidator = [
   // ================= COMMON FIELDS =================
   body("role")
@@ -89,6 +103,9 @@ const updateUserByIdValidator = [
     .isMongoId()
     .withMessage("Invalid user ID"),
 
+  // Prevent role update explicitly
+  body("role").not().exists().withMessage("Role cannot be updated"),
+
   body("name")
     .optional()
     .isLength({ min: 3 })
@@ -117,6 +134,11 @@ const updateUserByIdValidator = [
     .isIn(departments)
     .withMessage(`Department must be one of ${departments.join(", ")}`),
 
+  body("designation")
+    .optional()
+    .isString()
+    .withMessage("Designation must be a string"),
+
   body("degreeType")
     .optional()
     .isIn(degreeTypes)
@@ -133,6 +155,31 @@ const updateUserByIdValidator = [
     .withMessage(`Program must be one of ${programs.join(", ")}`),
 
   body("session").optional().isString().withMessage("Session must be a string"),
+
+  // Ensure at least one field is provided
+  body().custom((value) => {
+    const hasAtLeastOneField = allowedFields.some((field) => value[field]);
+
+    if (!hasAtLeastOneField) {
+      throw new Error("At least one field must be provided for update");
+    }
+
+    return true;
+  }),
+
+  // Final safeguard: reject unknown fields
+  body().custom((value) => {
+    const keys = Object.keys(value || {});
+    const invalidFields = keys.filter(
+      (key) => !allowedFields.includes(key) && key !== "role",
+    );
+
+    if (invalidFields.length > 0) {
+      throw new Error(`Invalid fields: ${invalidFields.join(", ")}`);
+    }
+
+    return true;
+  }),
 ];
 
 const deleteUserByIdValidator = [

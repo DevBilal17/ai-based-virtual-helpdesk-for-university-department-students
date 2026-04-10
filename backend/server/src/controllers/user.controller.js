@@ -95,7 +95,7 @@ const createUser = async (req, res) => {
       res,
       201,
       true,
-      "User created successfully and credentials sent to your email",
+      "User created successfully and credentials sent to email",
       {
         user: userObject,
       },
@@ -109,42 +109,49 @@ const createUser = async (req, res) => {
 // ================= UPDATE USER BY ID =================
 const updateUserById = async (req, res) => {
   try {
-    const studentId = req.params.id;
+    const userId = req.params.id;
     const updates = req.body;
 
-    // Check if student exists
-    const student = await User.findById(studentId);
-    if (!student || student.role !== "student") {
-      return response(res, 404, false, "Student not found");
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return response(res, 404, false, "User not found");
     }
 
-    // Prevent changing role via update
-    if (updates.role) delete updates.role;
+    const allowedFields = [
+      "name",
+      "email",
+      "department",
+      "designation",
+      "registrationNumber",
+      "degreeType",
+      "degreeTitle",
+      "semester",
+      "program",
+      "session",
+    ];
 
-    // Update student fields
-    Object.keys(updates).forEach((key) => {
-      student[key] = updates[key];
+    let finalUpdates = {};
+
+    allowedFields.forEach((field) => {
+      if (updates[field] !== undefined) {
+        finalUpdates[field] = updates[field];
+      }
     });
 
-    // Save updated student
-    await student.save();
+    if (Object.keys(finalUpdates).length === 0) {
+      return response(res, 400, false, "No valid fields provided for update");
+    }
 
-    // Prepare HTML Template
-    const htmlTemplate = updateStudentCredentialsTemplate(
-      student.name,
-      student.email,
-      student.registrationNumber,
-      student.degreeType,
-      student.degreeTitle,
-      student.semester,
-      student.department,
-      student.program,
-      student.session,
-    );
+    Object.assign(user, finalUpdates);
+
+    await user.save();
+
+    const htmlTemplate = updateUserEmailNotificationTemplate(user);
 
     const emailSent = await sendEmail({
-      email: student.email,
-      subject: "Your Updated Student Account Information",
+      email: user.email,
+      subject: "Your Account Information Has Been Updated",
       html: htmlTemplate,
     });
 
@@ -153,7 +160,7 @@ const updateUserById = async (req, res) => {
         res,
         500,
         false,
-        "Student updated but email could not be sent",
+        "User updated but email could not be sent",
       );
     }
 
@@ -161,11 +168,13 @@ const updateUserById = async (req, res) => {
       res,
       200,
       true,
-      "Student updated successfully and credentials sent to email",
-      { student },
+      "User updated successfully and credentials sent to email",
+      {
+        user,
+      },
     );
   } catch (error) {
-    console.error("Update Student Error:", error.message);
+    console.error("Update User Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };
@@ -173,26 +182,22 @@ const updateUserById = async (req, res) => {
 // ================= DELETE USER BY ID =================
 const deleteUserById = async (req, res) => {
   try {
-    const studentId = req.params.id;
+    const userId = req.params.id;
 
-    // Check if student exists
-    const student = await User.findById(studentId);
+    // Check if user exists
+    const user = await User.findById(userId);
 
-    if (!student || student.role !== "student") {
-      return response(res, 404, false, "Student not found");
+    if (!user) {
+      return response(res, 404, false, "User not found");
     }
 
     // Prepare email notification before deletion
-    const htmlTemplate = deleteStudentNotificationTemplate(
-      student.name,
-      student.registrationNumber,
-      student.email,
-    );
+    const htmlTemplate = deleteUserEmailNotificationTemplate(user);
 
     // Send email notification
     const emailSent = await sendEmail({
-      email: student.email,
-      subject: "Student Account Deletion Notification",
+      email: user.email,
+      subject: "User Account Deletion Notification",
       html: htmlTemplate,
     });
 
@@ -205,12 +210,17 @@ const deleteUserById = async (req, res) => {
       );
     }
 
-    // Delete student
-    await student.deleteOne();
+    // Delete user
+    await user.deleteOne();
 
-    return response(res, 200, true, "Student deleted successfully");
+    return response(
+      res,
+      200,
+      true,
+      "User deleted successfully and notification sent to email",
+    );
   } catch (error) {
-    console.error("Delete Student Error:", error.message);
+    console.error("Delete User Error:", error.message);
     return response(res, 500, false, "Internal Server Error");
   }
 };

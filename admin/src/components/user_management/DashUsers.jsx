@@ -66,7 +66,7 @@ const DashUsers = () => {
     const delay = setTimeout(() => {
       setPage(1);
       fetchUsers();
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(delay);
   }, [search]);
