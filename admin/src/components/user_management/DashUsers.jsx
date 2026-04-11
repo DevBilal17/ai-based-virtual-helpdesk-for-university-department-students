@@ -310,7 +310,7 @@ const DashUsers = () => {
         {/* ================= SECTION 5 ================= */}
         <div className="grid md:grid-cols-4 gap-4">
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
-            <p className="text-gray-400">Total Users in the Database</p>
+            <p className="text-gray-400">Total Users in the System</p>
             <h2 className="text-4xl font-bold">{stats?.totalUsers}</h2>
           </div>
 

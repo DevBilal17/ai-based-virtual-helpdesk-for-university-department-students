@@ -63,6 +63,7 @@ const userSlice = createSlice({
 
     addUserSuccess: (state, action) => {
       state.thisUser = action.payload;
+      // state.users.unshift(action.payload.data); // instantly update UI list
       state.loading = false;
     },
 
@@ -71,35 +72,27 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
 
-    // updateUserByIdStart: (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // },
+    // ================= UPDATE USER BY ID =================
 
-    // updateUserByIdSuccess: (state, action) => {
-    //   state.thisUser = action.payload;
-    //   state.loading = false;
-    // },
+    updateUserByIdStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
 
-    // updateUserByIdFailure: (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // },
+    updateUserByIdSuccess: (state, action) => {
+      state.loading = false;
+      state.thisUser = action.payload;
 
-    // deleteUserByIdStart: (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // },
+      // update user in list (important)
+      // state.users = state.users.map((user) =>
+      //   user._id === action.payload._id ? action.payload : user,
+      // );
+    },
 
-    // deleteUserByIdSuccess: (state, action) => {
-    //   state.thisUser = action.payload;
-    //   state.loading = false;
-    // },
-
-    // deleteUserByIdFailure: (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // },
+    updateUserByIdFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -113,12 +106,9 @@ export const {
   addUserStart,
   addUserSuccess,
   addUserFailure,
-  // updateUserByIdStart,
-  // updateUserByIdSuccess,
-  // updateUserByIdFailure,
-  // deleteUserByIdStart,
-  // deleteUserByIdSuccess,
-  // deleteUserByIdFailure,
+  updateUserByIdStart,
+  updateUserByIdSuccess,
+  updateUserByIdFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

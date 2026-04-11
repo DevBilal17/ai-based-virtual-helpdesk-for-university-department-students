@@ -39,6 +39,15 @@ const DashAddUser = () => {
   // ================= HANDLE ROLE CHANGE =================
   const handleRoleChange = (e) => {
     setRole(e.target.value);
+
+    setFormData({
+      name: "",
+      email: "",
+      registrationNumber: "",
+      degreeTitle: "",
+      session: "",
+      designation: "",
+    });
   };
 
   // ================= HANDLE DEPARTMENT CHANGE =================
@@ -68,20 +77,41 @@ const DashAddUser = () => {
     try {
       dispatch(addUserStart());
 
-      const payload = {
-        ...formData,
+      let payload = {
+        name: formData.name,
+        email: formData.email,
         role,
         department,
-        degreeType,
-        semester,
-        program,
       };
+
+      if (role === "student") {
+        payload = {
+          ...payload,
+          registrationNumber: formData.registrationNumber,
+          degreeType,
+          degreeTitle: formData.degreeTitle,
+          semester,
+          program,
+          session: formData.session,
+        };
+      }
+
+      if (role === "admin") {
+        payload = {
+          ...payload,
+          designation: formData.designation,
+        };
+      }
 
       const { data } = await axiosInstance.post("/user/create-user", payload);
 
       dispatch(addUserSuccess(data));
 
       toast.success("User added successfully");
+
+      setTimeout(() => {
+        navigate("/dashboard/users");
+      }, 1000);
 
       // Reset form
       setFormData({
