@@ -18,7 +18,7 @@ const {
 
 const router = express.Router();
 
-// Login Student Route
+// User Login Route
 router.post("/login", loginValidator, validateRequest, login);
 
 // Send OTP Route
@@ -27,7 +27,7 @@ router.post("/send-otp", sendOtpValidator, validateRequest, sendOtp);
 // Verify OTP Route
 router.post("/verify-otp", verifyOtpValidator, validateRequest, verifyOtp);
 
-// Change Password
+// Student Change Password
 router.post(
   "/change-password",
   changePasswordValidator,
@@ -35,7 +35,7 @@ router.post(
   changePassword,
 );
 
-// admin change password
+// Admin Change Password
 router.post(
   "/admin-change-password",
   adminChangePasswordValidator,

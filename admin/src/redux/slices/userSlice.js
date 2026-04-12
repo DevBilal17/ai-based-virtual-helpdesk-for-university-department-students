@@ -8,11 +8,16 @@ const initialState = {
   usersLoading: false,
   usersError: null,
 
-  // get user by id, update user, delete user, add user
+  // get user by id
   thisUser: null,
   loading: false,
   error: null,
+
   // addedUser: null,
+
+  // delete user by id
+  deleteLoading: false,
+  deleteError: null,
 };
 
 const userSlice = createSlice({
@@ -93,6 +98,24 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+
+    // ================= DELETE USER =================
+    deleteUserByIdStart: (state) => {
+      state.deleteLoading = true;
+      state.deleteError = null;
+    },
+
+    deleteUserByIdSuccess: (state, action) => {
+      state.deleteLoading = false;
+
+      // Remove deleted user from list
+      // state.users = state.users.filter((user) => user._id !== action.payload);
+    },
+
+    deleteUserByIdFailure: (state, action) => {
+      state.deleteLoading = false;
+      state.deleteError = action.payload;
+    },
   },
 });
 
@@ -109,6 +132,9 @@ export const {
   updateUserByIdStart,
   updateUserByIdSuccess,
   updateUserByIdFailure,
+  deleteUserByIdStart,
+  deleteUserByIdSuccess,
+  deleteUserByIdFailure,
 } = userSlice.actions;
 
 export default userSlice.reducer;

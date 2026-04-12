@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../api/axios";
@@ -11,13 +11,25 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import FullScreenLoader from "../common/FullScreenLoader";
 import { ChevronRight } from "lucide-react";
 import profile_pic from "../../assets/profile_pic.png";
+import ConfirmModal from "../common/ConfirmModal.jsx";
+import {
+  deleteUserByIdStart,
+  deleteUserByIdSuccess,
+  deleteUserByIdFailure,
+} from "../../redux/slices/userSlice.js";
 
 const DashUserDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { thisUser, loading, error } = useSelector((state) => state.user);
+  const { thisUser, loading, error, deleteLoading, deleteError } = useSelector(
+    (state) => state.user,
+  );
+
+  // ================= DELETE MODAL STATE =================
+  const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
+  const [selectedUserId, setSelectedUserId] = useState(null); // stores user id to delete
 
   // ================= FETCH USER =================
   useEffect(() => {
@@ -96,8 +108,34 @@ const DashUserDetails = () => {
     navigate(`/dashboard/users/update-user/${id}`);
   };
 
-  const handleDelete = () => {
-    // navigate(`/dashboard/users/delete-user/${id}`);
+  // ================= HANDLE DELETE CLICK =================
+  const handleDeleteClick = (userId) => {
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+  };
+
+  // ================= HANDLE CONFIRM DELETE =================
+  const handleConfirmDelete = async () => {
+    try {
+      dispatch(deleteUserByIdStart());
+
+      await axios.delete(`/user/delete-user/${selectedUserId}`);
+
+      dispatch(deleteUserByIdSuccess(selectedUserId));
+
+      toast.success("User deleted successfully");
+
+      setIsModalOpen(false);
+      navigate("/dashboard/users");
+    } catch (error) {
+      dispatch(
+        deleteUserByIdFailure(
+          error.response?.data?.message || "Failed to delete user",
+        ),
+      );
+
+      toast.error(error.response?.data?.message || "Failed to delete user");
+    }
   };
 
   return (
@@ -181,7 +219,7 @@ const DashUserDetails = () => {
           </button>
 
           <button
-            onClick={handleDelete}
+            onClick={() => handleDeleteClick(id)}
             className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
           >
             <FaTrash />
@@ -189,6 +227,18 @@ const DashUserDetails = () => {
           </button>
         </div>
       </div>
+
+      {/* ================= CONFIRM DELETE MODAL ================= */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // close modal
+        onConfirm={handleConfirmDelete} // confirm delete
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deleteLoading} // show loading state on confirm button
+      />
     </div>
   );
 };

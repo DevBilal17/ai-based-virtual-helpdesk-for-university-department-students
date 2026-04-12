@@ -19,14 +19,26 @@ import {
 import { toast } from "react-toastify";
 import profile_pic from "../../assets/profile_pic.png";
 import FullScreenLoader from "../common/FullScreenLoader.jsx";
+import ConfirmModal from "../common/ConfirmModal.jsx";
+import {
+  deleteUserByIdStart,
+  deleteUserByIdSuccess,
+  deleteUserByIdFailure,
+} from "../../redux/slices/userSlice.js";
 
 const DashUsers = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { users, pagination, stats, usersLoading, usersError } = useSelector(
-    (state) => state.user,
-  );
+  const {
+    users,
+    pagination,
+    stats,
+    usersLoading,
+    usersError,
+    deleteLoading,
+    deleteError,
+  } = useSelector((state) => state.user);
 
   // ================= STATE =================
   const [search, setSearch] = useState("");
@@ -35,6 +47,10 @@ const DashUsers = () => {
   const [page, setPage] = useState(1);
   const [roleDropDown, setRoleDropDown] = useState(false);
   const [statusDropDown, setStatusDropDown] = useState(false);
+
+  // ================= DELETE MODAL STATE =================
+  const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
+  const [selectedUserId, setSelectedUserId] = useState(null); // stores user id to delete
 
   // ================= FETCH USERS =================
   const fetchUsers = async () => {
@@ -88,6 +104,36 @@ const DashUsers = () => {
     return text?.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
+  };
+
+  // ================= HANDLE DELETE CLICK =================
+  const handleDeleteClick = (userId) => {
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+  };
+
+  // ================= HANDLE CONFIRM DELETE =================
+  const handleConfirmDelete = async () => {
+    try {
+      dispatch(deleteUserByIdStart());
+
+      await axios.delete(`/user/delete-user/${selectedUserId}`);
+
+      dispatch(deleteUserByIdSuccess(selectedUserId));
+
+      toast.success("User deleted successfully");
+
+      setIsModalOpen(false);
+      navigate("/dashboard/users");
+    } catch (error) {
+      dispatch(
+        deleteUserByIdFailure(
+          error.response?.data?.message || "Failed to delete user",
+        ),
+      );
+
+      toast.error(error.response?.data?.message || "Failed to delete user");
+    }
   };
 
   return (
@@ -258,7 +304,10 @@ const DashUsers = () => {
                   <Pencil size={16} />
                 </button>
 
-                <button className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg">
+                <button
+                  onClick={() => handleDeleteClick(user._id)}
+                  className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg"
+                >
                   <Trash2 size={16} className="text-red-400" />
                 </button>
               </div>
@@ -330,6 +379,18 @@ const DashUsers = () => {
           </div>
         </div>
       </div>
+
+      {/* ================= CONFIRM DELETE MODAL ================= */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // close modal
+        onConfirm={handleConfirmDelete} // confirm delete
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deleteLoading} // show loading state on confirm button
+      />
     </div>
   );
 };
