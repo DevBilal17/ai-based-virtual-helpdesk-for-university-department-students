@@ -7,6 +7,7 @@ import {
   getUserByIdSuccess,
   getUserByIdFailure,
 } from "../../redux/slices/userSlice";
+import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import FullScreenLoader from "../common/FullScreenLoader";
 import { ChevronRight } from "lucide-react";
@@ -237,6 +238,7 @@ const DashUserDetails = () => {
         message="Are you sure you want to delete this user? This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
+        progressText="Deleting..."
         loading={deleteLoading} // show loading state on confirm button
       />
     </div>

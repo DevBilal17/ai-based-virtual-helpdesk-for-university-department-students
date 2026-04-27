@@ -9,6 +9,7 @@ const ConfirmModal = ({
   message = "Are you sure?",
   confirmText = "Confirm",
   cancelText = "Cancel",
+  progressText = "Processing...",
   loading = false,
 }) => {
   if (!isOpen) return null;
@@ -51,7 +52,7 @@ const ConfirmModal = ({
             disabled={loading}
             className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm"
           >
-            {loading ? "Processing..." : confirmText}
+            {loading ? progressText : confirmText}
           </button>
         </div>
       </div>

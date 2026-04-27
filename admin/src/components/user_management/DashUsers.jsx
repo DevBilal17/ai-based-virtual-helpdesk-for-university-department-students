@@ -389,6 +389,7 @@ const DashUsers = () => {
         message="Are you sure you want to delete this user? This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
+        progressText="Deleting..."
         loading={deleteLoading} // show loading state on confirm button
       />
     </div>

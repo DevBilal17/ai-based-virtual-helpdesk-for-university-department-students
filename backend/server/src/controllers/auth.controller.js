@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(user);
-    //  console.log({user,token})
+    console.log({ user, token });
     // Response
     return response(res, 200, true, "Login successful", {
       token,
@@ -52,7 +52,7 @@ const login = async (req, res) => {
         role: user.role,
         registrationNumber: user.registrationNumber || null,
         email: user.email,
-        profileImage: user.profileImage,
+        // profileImage: user.profileImage,
       },
     });
   } catch (error) {

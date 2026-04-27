@@ -10,7 +10,9 @@ const axiosInstance = axios.create({
 // REQUEST INTERCEPTOR
 axiosInstance.interceptors.request.use((config) => {
   const state = store.getState();
-  const token = state.user?.currentUser?.data?.token;
+  const token = state.auth?.currentUser?.data?.token;
+
+  console.log("Request Interceptor - Token:", token);
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -20,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 // RESPONSE INTERCEPTOR
-axiosInstance.interceptors.response.use(
+/*axiosInstance.interceptors.response.use(
   (response) => response,
 
   async (error) => {
@@ -41,6 +43,6 @@ axiosInstance.interceptors.response.use(
 
     return Promise.reject(error);
   },
-);
+);*/
 
 export default axiosInstance;
