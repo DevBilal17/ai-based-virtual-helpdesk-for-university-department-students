@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -11,16 +11,22 @@ import {
   Logs,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutSuccess } from "../redux/slices/authSlice.js";
+import { signOutSuccess, signOutFailure } from "../redux/slices/authSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../assets/profile_pic.png";
+import ConfirmModal from "./common/ConfirmModal.jsx";
 
 const DashSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser, logoutLoading, logoutError } = useSelector(
+    (state) => state.auth,
+  );
+
+  // ================= LOGOUT MODAL STATE =================
+  const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
 
   // Sidebar Navigation Tabs
   const navigationTabs = [
@@ -65,11 +71,22 @@ const DashSidebar = () => {
     },
   ];
 
-  // Logout Handler
-  const handleLogout = () => {
-    dispatch(signOutSuccess());
-    toast.success("Logged out successfully");
-    navigate("/login");
+  // ================= HANDLE LOGOUT CLICK =================
+  const handleLogoutClick = () => {
+    setIsModalOpen(true);
+  };
+
+  // ================= HANDLE CONFIRM LOGOUT =================
+  const handleConfirmLogout = async () => {
+    try {
+      dispatch(signOutSuccess());
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      dispatch(
+        signOutFailure(error.response?.data?.message || "Failed to logout"),
+      );
+    }
   };
 
   return (
@@ -138,7 +155,7 @@ const DashSidebar = () => {
       {/* Bottom Logout Section */}
       <div className="border-t-2 border-gray-800 p-4">
         <div
-          onClick={handleLogout}
+          onClick={() => handleLogoutClick()}
           className="flex items-center justify-between cursor-pointer hover:bg-[#111827] px-3 py-2 rounded-lg transition"
         >
           <div className="flex items-center gap-3">
@@ -161,6 +178,19 @@ const DashSidebar = () => {
           />
         </div>
       </div>
+
+      {/* ================= CONFIRM LOGOUT MODAL ================= */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // close modal
+        onConfirm={handleConfirmLogout} // confirm logout
+        title="Confirm Logout"
+        message="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Cancel"
+        progressText="Logging out..."
+        loading={logoutLoading} // show loading state on confirm logout
+      />
     </aside>
   );
 };

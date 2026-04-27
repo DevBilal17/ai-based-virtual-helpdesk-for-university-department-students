@@ -8,19 +8,25 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LogOut, ChevronRight } from "lucide-react";
-import { signOutSuccess } from "../redux/slices/authSlice.js";
+import { signOutSuccess, signOutFailure } from "../redux/slices/authSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../assets/profile_pic.png";
 import FullScreenLoader from "./common/FullScreenLoader.jsx";
+import ConfirmModal from "./common/ConfirmModal.jsx";
 
 const DashAdminProfile = () => {
-  const { currentUser } = useSelector((state) => state.auth);
+  const { currentUser, logoutLoading, logoutError } = useSelector(
+    (state) => state.auth,
+  );
   console.log("Current User:", currentUser);
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState(null);
+
+  // ================= LOGOUT MODAL STATE =================
+  const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
 
   const userId = currentUser?.data?.user?.id;
 
@@ -58,11 +64,22 @@ const DashAdminProfile = () => {
     );
   }
 
-  // Logout Handler
-  const handleLogout = () => {
-    dispatch(signOutSuccess());
-    toast.success("Logged out successfully");
-    navigate("/login");
+  // ================= HANDLE LOGOUT CLICK =================
+  const handleLogoutClick = () => {
+    setIsModalOpen(true);
+  };
+
+  // ================= HANDLE CONFIRM LOGOUT =================
+  const handleConfirmLogout = async () => {
+    try {
+      dispatch(signOutSuccess());
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      dispatch(
+        signOutFailure(error.response?.data?.message || "Failed to logout"),
+      );
+    }
   };
 
   return (
@@ -146,7 +163,7 @@ const DashAdminProfile = () => {
 
             {/* Logout Button */}
             <button
-              onClick={handleLogout}
+              onClick={() => handleLogoutClick()}
               className="mt-4 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition"
             >
               <LogOut size={18} />
@@ -155,6 +172,19 @@ const DashAdminProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* ================= CONFIRM LOGOUT MODAL ================= */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // close modal
+        onConfirm={handleConfirmLogout} // confirm logout
+        title="Confirm Logout"
+        message="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Cancel"
+        progressText="Logging out..."
+        loading={logoutLoading} // show loading state on confirm logout
+      />
     </div>
   );
 };
