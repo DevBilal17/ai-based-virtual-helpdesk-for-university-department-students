@@ -257,7 +257,7 @@ const DashUsers = () => {
           {users?.map((user) => (
             <div
               key={user._id}
-              className="grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
+              className="bg-[#0B0F19] grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
             >
               <div
                 className="flex items-center gap-3 cursor-pointer"

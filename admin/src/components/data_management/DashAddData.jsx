@@ -114,7 +114,7 @@ const DashAddData = () => {
   };
 
   return (
-    <div className="px-3 pt-3 pb-20 w-full">
+    <div className="p-3">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-lg text-gray-400 mb-6 bg-[#0B0F19] rounded-lg border border-gray-700 p-3">
         <span
@@ -135,7 +135,7 @@ const DashAddData = () => {
       </div>
 
       {/* ================= HEADING ================= */}
-      <div className="flex flex-col gap-1 mb-6">
+      <div className="flex flex-col gap-1 mb-6 px-3">
         <h1 className="text-3xl font-semibold text-gray-200">
           Upload and Add a new File
         </h1>
@@ -146,7 +146,7 @@ const DashAddData = () => {
       </div>
 
       {/* ================= FORM CARD ================= */}
-      <div className="bg-[#0B0F19] rounded-lg border border-gray-700 p-6 flex flex-col gap-5">
+      <div className="bg-[#0B0F19] rounded-lg border border-gray-700 p-6 flex flex-col gap-5 mx-3 mb-10">
         {/* file name */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-400">
