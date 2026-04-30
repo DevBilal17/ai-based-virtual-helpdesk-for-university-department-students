@@ -9,12 +9,15 @@ import {
   Settings,
   Bell,
   Logs,
+  SidebarClose,
+  SidebarOpen,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess, signOutFailure } from "../redux/slices/authSlice.js";
 import { toast } from "react-toastify";
 import profile_pic from "../assets/profile_pic.png";
 import ConfirmModal from "./common/ConfirmModal.jsx";
+import { toggleSidebar } from "../redux/slices/layoutSlice.js";
 
 const DashSidebar = () => {
   const navigate = useNavigate();
@@ -24,6 +27,10 @@ const DashSidebar = () => {
   const { currentUser, logoutLoading, logoutError } = useSelector(
     (state) => state.auth,
   );
+
+  const { isSidebarCollapsed } = useSelector((state) => state.layout);
+
+  // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // controls sidebar collapse/expand - FUTURE FEATURE
 
   // ================= LOGOUT MODAL STATE =================
   const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
@@ -41,23 +48,23 @@ const DashSidebar = () => {
       path: "/dashboard/users",
     },
     {
-      name: "FAQ Management",
-      icon: HelpCircle,
-      path: "/dashboard/faqs",
-    },
-    {
       name: "Data Management",
       icon: Database,
       path: "/dashboard/data",
+    },
+    {
+      name: "FAQ Management",
+      icon: HelpCircle,
+      path: "/dashboard/faqs",
     },
   ];
 
   // Sidebar System Tabs
   const systemTabs = [
     {
-      name: "Settings",
-      icon: Settings,
-      path: "/dashboard/settings",
+      name: "User Activity",
+      icon: Logs,
+      path: "/dashboard/user-logs",
     },
     {
       name: "Notifications",
@@ -65,9 +72,9 @@ const DashSidebar = () => {
       path: "/dashboard/notifications",
     },
     {
-      name: "User Logs",
-      icon: Logs,
-      path: "/dashboard/user-logs",
+      name: "Settings",
+      icon: Settings,
+      path: "/dashboard/settings",
     },
   ];
 
@@ -89,19 +96,69 @@ const DashSidebar = () => {
     }
   };
 
+  // ================= ACTIVE TAB CHECKER =================
+  // CHANGE:
+  // This will keep parent tab active for nested routes as well.
+  // Example:
+  // /dashboard/users
+  // /dashboard/users/add-user
+  // /dashboard/users/update-user/:id
+  // /dashboard/users/user-details/:id
+
+  const isTabActive = (tabPath) => {
+    if (tabPath === "/dashboard") {
+      return location.pathname === "/dashboard";
+    }
+
+    return location.pathname.startsWith(tabPath);
+  };
+
   return (
-    <aside className="w-64 min-h-screen bg-[#0B0F19] border-r-2 border-gray-800 flex flex-col">
+    <aside
+      className={`
+        ${isSidebarCollapsed ? "w-[60px]" : "w-64"}
+          min-h-screen bg-[#0B0F19] border-r-2 border-gray-800 flex flex-col
+          transition-all duration-500
+      `}
+    >
       {/* Scrollable Section */}
       <div className="flex-1 overflow-y-auto px-3 py-3">
         {/* Navigation Title */}
-        <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
-          Navigation
-        </h2>
+        {isSidebarCollapsed ? (
+          <div className="flex items-center justify-between">
+            <SidebarOpen
+              size={22}
+              className="text-gray-400 mb-4 ml-1.5 cursor-pointer hover:text-white transition"
+              onClick={() => dispatch(toggleSidebar())}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs text-gray-400 uppercase mb-4 tracking-wide">
+              Navigation
+            </h2>
+            <SidebarClose
+              size={22}
+              className="text-gray-400 mb-4 cursor-pointer hover:text-white transition"
+              onClick={() => dispatch(toggleSidebar())}
+            />
+          </div>
+        )}
+
+        {isSidebarCollapsed ? (
+          <div
+            className={"mt-2 mb-4 border-t border-gray-700 transition-all mx-2"}
+          />
+        ) : (
+          ""
+        )}
 
         {/* Navigation Tabs */}
         <div className="flex flex-col gap-3">
           {navigationTabs.map((tab, index) => {
-            const isActive = location.pathname === tab.path;
+            // CHANGE:
+            // Use custom function for nested route active state
+            const isActive = isTabActive(tab.path);
 
             return (
               <div
@@ -116,21 +173,37 @@ const DashSidebar = () => {
                 `}
               >
                 <tab.icon size={18} />
-                <span className="text-sm font-medium">{tab.name}</span>
+                <span
+                  className={`${isSidebarCollapsed ? "hidden" : "block"} text-sm font-medium`}
+                >
+                  {tab.name}
+                </span>
               </div>
             );
           })}
         </div>
 
         {/* System Title */}
-        <h2 className="text-xs text-gray-400 uppercase mt-6 mb-4 tracking-wide">
+        <h2
+          className={`${isSidebarCollapsed ? "hidden" : "block"} mt-6 text-xs text-gray-400 uppercase mb-4 tracking-wide`}
+        >
           System
         </h2>
+
+        {isSidebarCollapsed ? (
+          <div
+            className={"my-4 border-t border-gray-700 transition-all mx-2"}
+          />
+        ) : (
+          ""
+        )}
 
         {/* System Tabs */}
         <div className="flex flex-col gap-3">
           {systemTabs.map((tab, index) => {
-            const isActive = location.pathname === tab.path;
+            // CHANGE:
+            // Use custom function for nested route active state
+            const isActive = isTabActive(tab.path);
 
             return (
               <div
@@ -145,7 +218,11 @@ const DashSidebar = () => {
                 `}
               >
                 <tab.icon size={18} />
-                <span className="text-sm font-medium">{tab.name}</span>
+                <span
+                  className={`${isSidebarCollapsed ? "hidden" : "block"} text-sm font-medium`}
+                >
+                  {tab.name}
+                </span>
               </div>
             );
           })}
@@ -154,29 +231,37 @@ const DashSidebar = () => {
 
       {/* Bottom Logout Section */}
       <div className="border-t-2 border-gray-800 p-4">
-        <div
-          onClick={() => handleLogoutClick()}
-          className="flex items-center justify-between cursor-pointer hover:bg-[#111827] px-3 py-2 rounded-lg transition"
-        >
-          <div className="flex items-center gap-3">
-            <img
-              src={
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
-                profile_pic
-              }
-              alt="avatar"
-              className="w-9 h-9 rounded-full border border-gray-600"
-            />
-            <span className="text-sm text-white font-medium">
-              {currentUser?.data?.user?.name || "Admin User"}
-            </span>
-          </div>
+        {!isSidebarCollapsed ? (
+          <div
+            onClick={() => handleLogoutClick()}
+            className="flex items-center justify-between cursor-pointer hover:bg-[#111827] px-3 py-2 rounded-lg transition"
+          >
+            <div className="flex items-center gap-3">
+              <img
+                src={
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
+                  profile_pic
+                }
+                alt="avatar"
+                className="w-9 h-9 rounded-full border border-gray-600"
+              />
+              <span className="text-sm text-white font-medium">
+                {currentUser?.data?.user?.name || "Admin User"}
+              </span>
+            </div>
 
+            <LogOut
+              size={18}
+              className="text-gray-400 hover:text-red-500 transition"
+            />
+          </div>
+        ) : (
           <LogOut
             size={18}
-            className="text-gray-400 hover:text-red-500 transition"
+            className="text-gray-400 hover:text-red-500 cursor-pointer transition"
+            onClick={() => handleLogoutClick()}
           />
-        </div>
+        )}
       </div>
 
       {/* ================= CONFIRM LOGOUT MODAL ================= */}
