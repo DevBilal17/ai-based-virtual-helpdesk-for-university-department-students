@@ -217,43 +217,6 @@ const getAllUsersValidator = [
     .withMessage("Role must be student, admin or all"),
 ];
 
-// -----------------------------------------------------------------------------------------------
-
-// const createAdminValidator = [
-//   body("name")
-//     .notEmpty()
-//     .withMessage("Name is required")
-//     .isLength({ min: 3 })
-//     .withMessage("Name must be at least 3 characters")
-//     .trim(),
-
-//   body("email")
-//     .notEmpty()
-//     .withMessage("Email is required")
-//     .isEmail()
-//     .withMessage("Please provide a valid email")
-//     .normalizeEmail({ gmail_remove_dots: false }),
-
-//   body("department")
-//     .notEmpty()
-//     .withMessage("Department is required")
-//     .isIn(departments)
-//     .withMessage(`Department must be one of ${departments.join(", ")}`),
-
-//   body("designation")
-//     .optional()
-//     .isString()
-//     .withMessage("Designation must be a string"),
-// ];
-
-// const getAdminByIdValidator = [
-//   param("id")
-//     .notEmpty()
-//     .withMessage("Admin ID is required")
-//     .isMongoId()
-//     .withMessage("Invalid admin ID"),
-// ];
-
 module.exports = {
   createUserValidator,
   updateUserByIdValidator,

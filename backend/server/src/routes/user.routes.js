@@ -74,25 +74,4 @@ router.get(
   getAllUsers,
 );
 
-// Create Admin Route
-// router.post(
-//   "/create-admin",
-//   protect,
-//   authorize("admin"),
-//   upload.single("profileImage"), // handle file upload
-//   createAdminValidator,
-//   validateRequest,
-//   createAdmin,
-// );
-
-// Get admin by id Route
-// router.get(
-//   "/get-admin/:id",
-//   protect,
-//   authorize("admin"),
-//   getAdminByIdValidator,
-//   validateRequest,
-//   getAdminById,
-// );
-
 module.exports = router;

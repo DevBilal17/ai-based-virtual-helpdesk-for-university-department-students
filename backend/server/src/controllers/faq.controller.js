@@ -41,7 +41,43 @@ const getAllFAQS = async (req, res) => {};
 const getFAQById = async (req, res) => {};
 
 // ================= UPDATE FAQ BY ID =================
-const updateFAQById = async (req, res) => {};
+const updateFAQById = async (req, res) => {
+  try {
+    const faqId = req.params.id;
+    const updates = req.body;
+
+    const fetchedFAQ = await FAQ.findById(faqId);
+
+    if (!fetchedFAQ) {
+      return response(res, 404, false, "FAQ not found");
+    }
+
+    const allowedFields = ["question", "answer", "category", "status"];
+
+    let finalUpdates = {};
+
+    allowedFields.forEach((field) => {
+      if (updates[field] !== undefined) {
+        finalUpdates[field] = updates[field];
+      }
+    });
+
+    if (Object.keys(finalUpdates).length === 0) {
+      return response(res, 400, false, "No valid fields provided for update");
+    }
+
+    Object.assign(fetchedFAQ, finalUpdates);
+
+    await fetchedFAQ.save();
+
+    return response(res, 200, true, "FAQ updated successfully", {
+      faq: fetchedFAQ,
+    });
+  } catch (error) {
+    console.error("Update FAQ Error:", error.message);
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
 
 // ================= DELETE FAQ BY ID =================
 const deleteFAQById = async (req, res) => {};
