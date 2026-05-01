@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "../api/axios.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { KeyRound } from "lucide-react";
 
 const PutVerificationCode = () => {
   const navigate = useNavigate();
@@ -126,17 +127,29 @@ const PutVerificationCode = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f172a]">
-      <div className="w-full max-w-md bg-[#111827] p-8 rounded-xl shadow-lg">
-        {/* Title */}
-        <h1 className="text-2xl font-semibold text-white text-center mb-6">
-          Enter Verification Code
-        </h1>
+    <div className="min-h-screen flex items-center justify-center bg-[#0B0F19]">
+      <div className="w-full max-w-md bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
+        {/* Put Verification Code Title */}
+        <div className="flex items-center justify-center gap-3">
+          <KeyRound size={26} className="text-blue-600" />
+          <h1 className="text-3xl font-semibold text-gray-200">
+            Put Verification Code
+          </h1>
+        </div>
+
+        <div
+          className={
+            "w-full mx-auto my-6 border-t-2 border-gray-700 transition-all"
+          }
+        />
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* OTP Inputs */}
-          <div className="flex justify-between gap-3" onPaste={handlePaste}>
+          <div
+            className="flex justify-between gap-10 mb-2"
+            onPaste={handlePaste}
+          >
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -146,25 +159,25 @@ const PutVerificationCode = () => {
                 ref={(el) => (inputsRef.current[index] = el)}
                 onChange={(e) => handleChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-14 h-14 text-center text-xl rounded-md bg-[#1f2937] text-white border border-gray-700 focus:border-blue-500 outline-none"
+                className="w-full text-center text-xl p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ))}
           </div>
 
           {/* Timer */}
-          <div className="text-center text-gray-400 text-sm">
+          {/* <div className="text-center text-gray-400 text-sm">
             {timeLeft > 0 ? (
               <p>Code expires in {formatTime(timeLeft)}</p>
             ) : (
               <p className="text-red-400">Code expired</p>
             )}
-          </div>
+          </div> */}
 
-          {/* Button */}
+          {/* Verify Code Button */}
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 transition text-white p-3 rounded-md font-medium disabled:opacity-50"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition duration-200"
           >
             {loading ? "Verifying..." : "Verify Code"}
           </button>
@@ -173,7 +186,7 @@ const PutVerificationCode = () => {
         {/* Resend OTP */}
         <div className="text-center mt-4 text-sm">
           {timeLeft > 0 ? (
-            <span className="text-gray-500">
+            <span className="text-gray-400">
               Resend available after {formatTime(timeLeft)}
             </span>
           ) : (
