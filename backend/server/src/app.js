@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const dataRoutes = require("./routes/data.routes.js");
+const faqRoutes = require("./routes/faq.routes.js");
 const response = require("./utils/response");
 
 const app = express();
@@ -39,6 +40,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/data", dataRoutes);
+app.use("/api/faq", faqRoutes);
 
 // ================= DEFAULT 404 =================
 app.use((req, res, next) => {
