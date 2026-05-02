@@ -35,10 +35,116 @@ const addFAQ = async (req, res) => {
 };
 
 // ================= GET ALL FAQS =================
-const getAllFAQS = async (req, res) => {};
+const getAllFAQS = async (req, res) => {
+  try {
+    // ================= QUERY PARAMS =================
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const category = req.query.category || "all";
+    const status = req.query.status || "all";
+
+    const skip = (page - 1) * limit;
+
+    // ================= FILTER OBJECT =================
+    let filter = {};
+
+    // Category filter
+    if (category !== "all") {
+      filter.category = category;
+    }
+
+    // Status filter
+    if (status !== "all") {
+      filter.status = status;
+    }
+
+    // Search filter (question and answer)
+    if (search) {
+      filter.$or = [
+        { question: { $regex: search, $options: "i" } },
+        { answer: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // ================= FETCH FAQS =================
+    const faqs = await FAQ.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    // ================= TOTAL COUNT =================
+    const totalFAQS = await FAQ.countDocuments();
+
+    const totalFAQSFetched = await FAQ.countDocuments(filter);
+
+    const totalPages = Math.ceil(totalFAQS / limit);
+
+    // ================= STATS =================
+
+    // FAQs added last month
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+    const faqsLastMonth = await FAQ.countDocuments({
+      createdAt: { $gte: lastMonth },
+    });
+
+    // ================= RESPONSE =================
+    return response(res, 200, true, "FAQs fetched successfully", {
+      faqs,
+      pagination: {
+        totalFAQS,
+        currentPage: page,
+        totalPages,
+        pageSize: limit,
+      },
+      stats: {
+        totalFAQS,
+        totalFAQSFetched,
+        faqsLastMonth,
+      },
+    });
+  } catch (error) {
+    console.error("Get All FAQs Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
 
 // ================= GET FAQ BY ID =================
-const getFAQById = async (req, res) => {};
+const getFAQById = async (req, res) => {
+  try {
+    const faqId = req.params.id;
+
+    // ================= VALIDATION =================
+    if (!faqId) {
+      return response(res, 400, false, "FAQ ID is required");
+    }
+
+    // ================= FIND FAQ =================
+    const faq = await FAQ.findById(faqId);
+
+    // ================= NOT FOUND =================
+    if (!faq) {
+      return response(res, 404, false, "FAQ not found");
+    }
+
+    // ================= SUCCESS =================
+    return response(res, 200, true, "FAQ fetched successfully", {
+      faq,
+    });
+  } catch (error) {
+    console.error("Get FAQ By ID Error:", error.message);
+
+    // ================= INVALID OBJECT ID =================
+    if (error.name === "CastError") {
+      return response(res, 400, false, "Invalid FAQ ID");
+    }
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
 
 // ================= UPDATE FAQ BY ID =================
 const updateFAQById = async (req, res) => {
@@ -80,7 +186,25 @@ const updateFAQById = async (req, res) => {
 };
 
 // ================= DELETE FAQ BY ID =================
-const deleteFAQById = async (req, res) => {};
+const deleteFAQById = async (req, res) => {
+  try {
+    const faqId = req.params.id;
+
+    const faq = await FAQ.findById(faqId);
+
+    if (!faq) {
+      return response(res, 404, false, "FAQ not found");
+    }
+
+    await faq.deleteOne();
+
+    return response(res, 200, true, "FAQ deleted successfully");
+  } catch (error) {
+    console.error("Delete FAQ Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
 
 // ================= CHANGE FAQ STATUS BY ID =================
 const changeFAQStatusById = async (req, res) => {};

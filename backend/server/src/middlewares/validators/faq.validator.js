@@ -16,10 +16,33 @@ const categories = [
   "scholarship",
 ];
 
+// allowed categories for get all faqs (includes 'all' for filtering)
+const allowedCategories = [
+  "general",
+  "technical",
+  "security",
+  "fee",
+  "admissions",
+  "attendance",
+  "result",
+  "courses",
+  "examination",
+  "rules",
+  "events",
+  "library",
+  "scholarship",
+  "all",
+];
+
 const statuses = ["active", "inactive"];
+
+// allowed statuses for get all faqs (includes 'all' for filtering)
+const allowedStatuses = ["active", "inactive", "all"];
 
 // Allowed update fields (global safeguard)
 const allowedFields = ["question", "answer", "category", "status"];
+
+// =======================================================================================
 
 // ================= ADD FAQ VALIDATOR =================
 const addFAQValidator = [
@@ -53,10 +76,38 @@ const addFAQValidator = [
 ];
 
 // ================= GET ALL FAQS VALIDATOR =================
-const getAllFAQSValidator = [];
+const getAllFAQSValidator = [
+  query("page")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Page must be a positive integer"),
+
+  query("limit")
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage("Limit must be between 1 and 100"),
+
+  query("search").optional().isString().withMessage("Search must be a string"),
+
+  query("category")
+    .optional()
+    .isIn(allowedCategories)
+    .withMessage(`Category must be one of ${allowedCategories.join(", ")}`),
+
+  query("status")
+    .optional()
+    .isIn(allowedStatuses)
+    .withMessage(`Status must be one of ${allowedStatuses.join(", ")}`),
+];
 
 // ================= GET FAQ BY ID VALIDATOR =================
-const getFAQByIdValidator = [];
+const getFAQByIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("FAQ ID is required")
+    .isMongoId()
+    .withMessage("Invalid FAQ ID"),
+];
 
 // ================= UPDATE FAQ BY ID VALIDATOR =================
 const updateFAQByIdValidator = [
@@ -115,7 +166,13 @@ const updateFAQByIdValidator = [
 ];
 
 // ================= DELETE FAQ BY ID VALIDATOR =================
-const deleteFAQByIdValidator = [];
+const deleteFAQByIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("FAQ ID is required")
+    .isMongoId()
+    .withMessage("Invalid FAQ ID"),
+];
 
 // ================= CHANGE FAQ STATUS BY ID VALIDATOR =================
 const changeFAQStatusByIdValidator = [];
