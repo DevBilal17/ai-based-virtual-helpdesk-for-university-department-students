@@ -65,7 +65,7 @@ const Header = () => {
           {currentUser ? (
             <button
               onClick={() => navigate("/dashboard/notifications")}
-              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600 p-2.5 rounded-full transition"
+              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600/50 p-2.5 rounded-full transition"
             >
               <Bell size={20} />
             </button>
@@ -77,7 +77,7 @@ const Header = () => {
           {currentUser ? (
             <button
               onClick={() => navigate("/dashboard/settings")}
-              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600 p-2.5 rounded-full transition"
+              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600/50 p-2.5 rounded-full transition"
             >
               <Settings size={20} />
             </button>
@@ -89,7 +89,7 @@ const Header = () => {
           {currentUser ? (
             <div
               onClick={() => navigate("/dashboard/profile")}
-              className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition"
+              className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-indigo-600/50 px-3 py-1.5 rounded-lg transition"
             >
               <img
                 src={
@@ -109,7 +109,7 @@ const Header = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition">
+            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-indigo-600/50 px-3 py-1.5 rounded-lg transition">
               <button
                 onClick={() => navigate("/login")}
                 className="text-md text-white font-medium"

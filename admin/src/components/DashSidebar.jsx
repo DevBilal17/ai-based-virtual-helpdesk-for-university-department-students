@@ -11,6 +11,7 @@ import {
   Logs,
   SidebarClose,
   SidebarOpen,
+  MapPinned,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess, signOutFailure } from "../redux/slices/authSlice.js";
@@ -54,6 +55,11 @@ const DashSidebar = () => {
       name: "FAQ Management",
       icon: HelpCircle,
       path: "/dashboard/faqs",
+    },
+    {
+      name: "Location Management",
+      icon: MapPinned,
+      path: "/dashboard/locations",
     },
   ];
 
@@ -166,7 +172,7 @@ const DashSidebar = () => {
                   ${
                     isActive
                       ? "bg-indigo-600 text-white"
-                      : "text-gray-400 hover:bg-indigo-600 hover:text-white"
+                      : "text-gray-400 hover:bg-indigo-600/50 hover:text-white"
                   }
                 `}
               >
@@ -211,7 +217,7 @@ const DashSidebar = () => {
                   ${
                     isActive
                       ? "bg-indigo-600 text-white"
-                      : "text-gray-400 hover:bg-indigo-600 hover:text-white"
+                      : "text-gray-400 hover:bg-indigo-600/50 hover:text-white"
                   }
                 `}
               >
@@ -232,7 +238,7 @@ const DashSidebar = () => {
         {!isSidebarCollapsed ? (
           <div
             onClick={() => handleLogoutClick()}
-            className="flex items-center justify-between cursor-pointer hover:bg-[#111827] px-3 py-2 rounded-lg transition"
+            className="flex items-center justify-between cursor-pointer bg-red-500/20 hover:bg-red-700/40 transition duration-200 rounded-lg px-3 py-2"
           >
             <div className="flex items-center gap-3">
               <img

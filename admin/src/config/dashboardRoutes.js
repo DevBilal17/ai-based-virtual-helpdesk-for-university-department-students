@@ -36,6 +36,12 @@ const DashNotifications = lazy(
   () => import("../components/DashNotifications.jsx"),
 );
 const DashUserLogs = lazy(() => import("../components/DashUserLogs.jsx"));
+const DashLocations = lazy(
+  () => import("../components/location_management/DashLocations.jsx"),
+);
+const DashAddLocation = lazy(
+  () => import("../components/location_management/DashAddLocation.jsx"),
+);
 
 // Define the dashboard routes
 export const dashboardRoutes = [
@@ -108,5 +114,15 @@ export const dashboardRoutes = [
     path: "user-logs",
     component: DashUserLogs,
     label: "User Logs",
+  },
+  {
+    path: "locations",
+    component: DashLocations,
+    label: "Locations",
+  },
+  {
+    path: "locations/add-location",
+    component: DashAddLocation,
+    label: "Add Location",
   },
 ];

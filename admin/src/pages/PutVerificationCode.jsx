@@ -128,7 +128,7 @@ const PutVerificationCode = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0B0F19]">
-      <div className="w-full max-w-md bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
+      <div className="w-full max-w-md bg-[#0f172a] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
         {/* Put Verification Code Title */}
         <div className="flex items-center justify-center gap-3">
           <KeyRound size={26} className="text-blue-600" />

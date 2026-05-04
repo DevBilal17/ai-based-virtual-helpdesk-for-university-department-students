@@ -56,10 +56,12 @@ const DashFAQs = () => {
     "scholarship",
   ];
 
+  const statuses = ["all", "active", "inactive"];
+
   // ================= STATE =================
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const [status, setStatus] = useState("active");
+  const [status, setStatus] = useState("all");
   const [page, setPage] = useState(1);
   const [categoryDropDown, setCategoryDropDown] = useState(false);
   const [statusDropDown, setStatusDropDown] = useState(false);
@@ -244,7 +246,7 @@ const DashFAQs = () => {
 
             {statusDropDown && (
               <div className="absolute w-full mt-2 bg-[#111827] rounded-lg border border-gray-700 z-10">
-                {["active", "inactive"].map((s) => (
+                {statuses.map((s) => (
                   <div
                     key={s}
                     onClick={() => {
