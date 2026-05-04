@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice.js";
 import userReducer from "./slices/userSlice.js";
 import dataReducer from "./slices/dataSlice.js";
 import layoutReducer from "./slices/layoutSlice.js";
+import faqReducer from "./slices/faqSlice.js";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   data: dataReducer,
   layout: layoutReducer,
+  faq: faqReducer,
 });
 
 const persistConfig = {

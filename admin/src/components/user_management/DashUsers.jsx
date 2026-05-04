@@ -162,7 +162,7 @@ const DashUsers = () => {
 
           <button
             onClick={() => navigate("/dashboard/users/add-user")}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-800 transition duration-300 px-6 rounded-lg text-lg"
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-800 text-white transition duration-300 px-6 rounded-lg text-lg"
           >
             <UserPlus size={18} />
             Add User

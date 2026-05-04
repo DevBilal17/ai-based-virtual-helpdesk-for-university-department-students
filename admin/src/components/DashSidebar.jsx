@@ -30,8 +30,6 @@ const DashSidebar = () => {
 
   const { isSidebarCollapsed } = useSelector((state) => state.layout);
 
-  // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // controls sidebar collapse/expand - FUTURE FEATURE
-
   // ================= LOGOUT MODAL STATE =================
   const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
 
@@ -117,7 +115,7 @@ const DashSidebar = () => {
     <aside
       className={`
         ${isSidebarCollapsed ? "w-[60px]" : "w-64"}
-          min-h-screen bg-[#0B0F19] border-r-2 border-gray-800 flex flex-col
+          min-h-screen bg-[#0f172a] border-r-2 border-gray-800 flex flex-col
           transition-all duration-500
       `}
     >
@@ -167,8 +165,8 @@ const DashSidebar = () => {
                 className={`flex items-center gap-4 px-2 py-2 rounded-lg cursor-pointer transition-all
                   ${
                     isActive
-                      ? "bg-[#1F2937] text-white"
-                      : "text-gray-400 hover:bg-[#111827] hover:text-white"
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-400 hover:bg-indigo-600 hover:text-white"
                   }
                 `}
               >
@@ -212,8 +210,8 @@ const DashSidebar = () => {
                 className={`flex items-center gap-4 px-2 py-2 rounded-lg cursor-pointer transition-all
                   ${
                     isActive
-                      ? "bg-[#1F2937] text-white"
-                      : "text-gray-400 hover:bg-[#111827] hover:text-white"
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-400 hover:bg-indigo-600 hover:text-white"
                   }
                 `}
               >

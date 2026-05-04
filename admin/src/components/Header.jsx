@@ -22,7 +22,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0B0F19] border-b-2 border-gray-800 shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-[#0f172a] border-b-2 border-gray-800 shadow-md">
       <div className="flex items-center justify-between px-6 py-3">
         {/* LEFT: App Name */}
         <div
@@ -62,26 +62,34 @@ const Header = () => {
         {/* RIGHT: Icons + Profile */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
-          <button
-            onClick={() => navigate("/dashboard/notifications")}
-            className="text-gray-300 cursor-pointer hover:text-white hover:bg-[#1F2937] p-2.5 rounded-full transition"
-          >
-            <Bell size={20} />
-          </button>
+          {currentUser ? (
+            <button
+              onClick={() => navigate("/dashboard/notifications")}
+              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600 p-2.5 rounded-full transition"
+            >
+              <Bell size={20} />
+            </button>
+          ) : (
+            ""
+          )}
 
           {/* Settings */}
-          <button
-            onClick={() => navigate("/dashboard/settings")}
-            className="text-gray-300 cursor-pointer hover:text-white hover:bg-[#1F2937] p-2.5 rounded-full transition"
-          >
-            <Settings size={20} />
-          </button>
+          {currentUser ? (
+            <button
+              onClick={() => navigate("/dashboard/settings")}
+              className="text-gray-300 cursor-pointer hover:text-white hover:bg-indigo-600 p-2.5 rounded-full transition"
+            >
+              <Settings size={20} />
+            </button>
+          ) : (
+            ""
+          )}
 
           {/* Profile Section */}
           {currentUser ? (
             <div
               onClick={() => navigate("/dashboard/profile")}
-              className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-[#1F2937] px-3 py-1.5 rounded-lg transition"
+              className="ml-4 flex items-center gap-3 cursor-pointer hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition"
             >
               <img
                 src={
@@ -101,14 +109,14 @@ const Header = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-[#1F2937] px-3 py-1.5 rounded-lg transition">
+            <div className="flex items-center justify-center gap-2 cursor-pointer hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition">
               <button
                 onClick={() => navigate("/login")}
                 className="text-md text-white font-medium"
               >
                 Login
               </button>
-              <LogInIcon size={20} className="text-gray-300" />
+              <LogInIcon size={20} className="text-white" />
             </div>
           )}
         </div>

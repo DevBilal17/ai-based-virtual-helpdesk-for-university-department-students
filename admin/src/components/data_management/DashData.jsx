@@ -145,7 +145,7 @@ const DashData = () => {
 
           <button
             onClick={() => navigate("/dashboard/data/add-data")}
-            className="flex items-center gap-2 text-white bg-indigo-600 hover:bg-indigo-800 transition duration-300 px-6 rounded-lg text-lg"
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-800 text-white transition duration-300 px-6 rounded-lg text-lg"
           >
             <FileText size={18} />
             Add File
