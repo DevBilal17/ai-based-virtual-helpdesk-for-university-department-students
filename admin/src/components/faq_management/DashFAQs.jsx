@@ -15,6 +15,9 @@ import {
   getAllFaqsStart,
   getAllFaqsSuccess,
   getAllFaqsFailure,
+  changeFaqStatusStart,
+  changeFaqStatusSuccess,
+  changeFaqStatusFailure,
 } from "../../redux/slices/faqSlice.js";
 import { toast } from "react-toastify";
 import FullScreenLoader from "../common/FullScreenLoader.jsx";
@@ -37,6 +40,7 @@ const DashFAQs = () => {
     faqsError,
     deleteFaqLoading,
     deleteFaqError,
+    changeStatusLoading,
   } = useSelector((state) => state.faq);
 
   const categories = [
@@ -157,6 +161,34 @@ const DashFAQs = () => {
     }
   };
 
+  // ================= HANDLE STATUS TOGGLE =================
+  const handleToggleStatus = async (faq) => {
+    try {
+      // prevent multiple clicks while request is in-flight
+      if (changeStatusLoading) return;
+
+      dispatch(changeFaqStatusStart());
+
+      const newStatus = faq.status === "active" ? "inactive" : "active";
+
+      const res = await axios.put(`/faq/change-faq-status/${faq._id}`, {
+        status: newStatus,
+      });
+
+      dispatch(changeFaqStatusSuccess(res.data.data.faq));
+
+      toast.success("FAQ status updated successfully");
+    } catch (error) {
+      dispatch(
+        changeFaqStatusFailure(
+          error.response?.data?.message || "Failed to update status",
+        ),
+      );
+
+      toast.error(error.response?.data?.message || "Failed to update status");
+    }
+  };
+
   return (
     <div className="p-3">
       {/* ================= SECTION 1: Breadcrumb ================= */}
@@ -271,7 +303,7 @@ const DashFAQs = () => {
             <span>Question Preview</span>
             <span className="ml-32">Category</span>
             <span className="text-right">Last Modified</span>
-            <span className="text-right">FAQ Status</span>
+            <span className="text-right">Status</span>
             <span className="text-right">Actions</span>
           </div>
 
@@ -302,16 +334,26 @@ const DashFAQs = () => {
                   : "-"}
               </span>
 
-              <div className="text-right">
-                <span
-                  className={`text-xs px-3 py-1 w-20 text-center uppercase rounded-full ${
-                    faq.status === "active"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-gray-500/20 text-gray-400"
+              {/* ================= STATUS TOGGLE ================= */}
+              <div className="flex justify-end">
+                <div
+                  onClick={() => handleToggleStatus(faq)}
+                  className={`w-10 h-5 flex items-center rounded-full transition ${
+                    faq.status === "active" ? "bg-indigo-600" : "bg-gray-600"
+                  } ${
+                    changeStatusLoading
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }`}
                 >
-                  {faq.status}
-                </span>
+                  <div
+                    className={`bg-white w-[19px] h-[19px] rounded-full shadow-md transform transition ${
+                      faq.status === "active"
+                        ? "translate-x-5"
+                        : "translate-x-0"
+                    }`}
+                  />
+                </div>
               </div>
 
               <div className="flex justify-end gap-2">

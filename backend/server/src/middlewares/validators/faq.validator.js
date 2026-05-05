@@ -175,7 +175,19 @@ const deleteFAQByIdValidator = [
 ];
 
 // ================= CHANGE FAQ STATUS BY ID VALIDATOR =================
-const changeFAQStatusByIdValidator = [];
+const changeFAQStatusByIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("FAQ ID is required")
+    .isMongoId()
+    .withMessage("Invalid FAQ ID"),
+
+  body("status")
+    .notEmpty()
+    .withMessage("Status is required")
+    .isIn(statuses)
+    .withMessage(`Status must be one of ${statuses.join(", ")}`),
+];
 
 // ================= GET FAQS FOR STUDENTS VALIDATOR =================
 const getFAQSValidator = [];

@@ -207,7 +207,32 @@ const deleteFAQById = async (req, res) => {
 };
 
 // ================= CHANGE FAQ STATUS BY ID =================
-const changeFAQStatusById = async (req, res) => {};
+const changeFAQStatusById = async (req, res) => {
+  try {
+    const faqId = req.params.id;
+    const { status } = req.body;
+
+    // ================= FIND FAQ =================
+    const faq = await FAQ.findById(faqId);
+
+    if (!faq) {
+      return response(res, 404, false, "FAQ not found");
+    }
+
+    // ================= UPDATE STATUS =================
+    faq.status = status;
+
+    await faq.save();
+
+    return response(res, 200, true, "FAQ status updated successfully", {
+      faq,
+    });
+  } catch (error) {
+    console.error("Change FAQ Status Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
 
 // ================= GET FAQS FOR STUDENTS =================
 const getFAQS = async (req, res) => {};

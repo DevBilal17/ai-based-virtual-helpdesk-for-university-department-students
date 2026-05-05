@@ -21,6 +21,10 @@ const DashAddFAQ = () => {
   const [category, setCategory] = useState("general");
   const [status, setStatus] = useState("active");
 
+  // ================= CHARACTER LIMITS =================
+  const QUESTION_MAX_LENGTH = 200;
+  const ANSWER_MAX_LENGTH = 2000;
+
   // ================= HANDLE SUBMIT =================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -143,9 +147,15 @@ const DashAddFAQ = () => {
                 rows="4"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
+                maxLength={QUESTION_MAX_LENGTH}
                 placeholder="Enter question for FAQ"
                 className="w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+
+              {/* ================= CHARACTER COUNT (QUESTION) ================= */}
+              <div className="text-xs text-gray-400 text-right mt-1">
+                {question.length} / {QUESTION_MAX_LENGTH}
+              </div>
             </div>
 
             {/* Answer */}
@@ -158,9 +168,15 @@ const DashAddFAQ = () => {
                 rows="4"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
+                maxLength={ANSWER_MAX_LENGTH}
                 placeholder="Enter answer for FAQ"
                 className="w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+
+              {/* ================= CHARACTER COUNT (ANSWER) ================= */}
+              <div className="text-xs text-gray-400 text-right mt-1">
+                {answer.length} / {ANSWER_MAX_LENGTH}
+              </div>
             </div>
 
             {/* SUBMIT BUTTON */}

@@ -26,6 +26,10 @@ const initialState = {
   // delete faq by id
   deleteFaqLoading: false,
   deleteFaqError: null,
+
+  // change faq status
+  changeStatusLoading: false,
+  changeStatusError: null,
 };
 
 const faqSlice = createSlice({
@@ -126,6 +130,26 @@ const faqSlice = createSlice({
       state.deleteFaqLoading = false;
       state.deleteFaqError = action.payload;
     },
+
+    // ================= CHANGE FAQ STATUS =================
+    changeFaqStatusStart: (state) => {
+      state.changeStatusLoading = true;
+      state.changeStatusError = null;
+    },
+
+    changeFaqStatusSuccess: (state, action) => {
+      state.changeStatusLoading = false;
+
+      // update status in list (important)
+      state.faqs = state.faqs.map((faq) =>
+        faq._id === action.payload._id ? action.payload : faq,
+      );
+    },
+
+    changeFaqStatusFailure: (state, action) => {
+      state.changeStatusLoading = false;
+      state.changeStatusError = action.payload;
+    },
   },
 });
 
@@ -145,6 +169,9 @@ export const {
   deleteFaqByIdStart,
   deleteFaqByIdSuccess,
   deleteFaqByIdFailure,
+  changeFaqStatusStart,
+  changeFaqStatusSuccess,
+  changeFaqStatusFailure,
 } = faqSlice.actions;
 
 export default faqSlice.reducer;

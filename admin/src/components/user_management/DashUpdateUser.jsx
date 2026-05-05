@@ -195,7 +195,9 @@ const DashUpdateUser = () => {
 
         {/* Form */}
         {loading ? (
-          <span className="text-gray-400">Loading user data...</span>
+          <div className="flex items-center justify-center w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
+            <span className="text-gray-400">Loading User's data...</span>
+          </div>
         ) : (
           <div className="w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
             {/* ROLE (READ ONLY) */}
