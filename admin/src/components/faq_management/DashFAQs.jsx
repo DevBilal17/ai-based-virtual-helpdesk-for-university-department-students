@@ -192,7 +192,7 @@ const DashFAQs = () => {
   return (
     <div className="p-3">
       {/* ================= SECTION 1: Breadcrumb ================= */}
-      <div className="flex items-center gap-2 text-lg text-gray-400 mb-6 bg-[#0B0F19] rounded-lg border border-gray-700 p-3">
+      <div className="flex items-center gap-2 text-lg text-gray-400 mb-6 bg-[#0B0F19] rounded-lg border-2 border-gray-800 p-3">
         <span
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer hover:text-white"

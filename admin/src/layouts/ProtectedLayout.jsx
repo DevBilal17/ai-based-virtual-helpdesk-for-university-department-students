@@ -20,12 +20,19 @@ const ProtectedLayout = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <DashSidebar />
+    <div className="h-screen flex overflow-hidden overflow-x-hidden">
+      {/* ================= SIDEBAR ================= */}
+      {/* CHANGE: Added h-full + overflow-y-auto to isolate sidebar scrolling */}
+      {/* CHANGE: Prevent horizontal scroll in sidebar */}
+      <div className="h-full overflow-y-auto overflow-x-hidden">
+        <DashSidebar />
+      </div>
 
-      <div className="flex-1 flex flex-col">
-        {/* MAIN CONTENT SCROLL ONLY */}
-        <main className="flex-1 overflow-y-auto bg-[#0B0F19]">
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="flex-1 flex flex-col h-full">
+        {/* CHANGE: Added overflow-y-auto and h-full to isolate main content scrolling */}
+        {/* CHANGE: Prevent horizontal scroll + keep vertical scroll */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-[#0B0F19] border-l border-gray-800 h-full">
           <Outlet />
         </main>
       </div>

@@ -6,7 +6,7 @@ const DashboardSkeleton = () => {
       {/* Sidebar Skeleton */}
       <div className="w-64 bg-[#111827] p-4 hidden md:block">
         <div className="space-y-4">
-          {[...Array(9)].map((_, i) => (
+          {[...Array(10)].map((_, i) => (
             <div
               key={i}
               className="h-10 rounded-md animate-pulse bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"
@@ -16,9 +16,9 @@ const DashboardSkeleton = () => {
       </div>
 
       {/* Main Content Skeleton */}
-      <div className="flex-1 p-6 space-y-6">
+      <div className="flex-1 p-4 space-y-4">
         {/* Header Skeleton */}
-        <div className="h-8 w-1/3 rounded-md animate-pulse bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"></div>
+        <div className="h-12 w-full rounded-md animate-pulse bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"></div>
 
         {/* Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -32,7 +32,7 @@ const DashboardSkeleton = () => {
 
         {/* Table/List Skeleton */}
         <div className="space-y-3">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(6)].map((_, i) => (
             <div
               key={i}
               className="h-12 rounded-md animate-pulse bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700"

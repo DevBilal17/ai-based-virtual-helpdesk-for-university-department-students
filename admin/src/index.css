@@ -5,3 +5,38 @@
 .input {
   @apply w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
+
+/* ================= CUSTOM SCROLLBAR (GLOBAL) ================= */
+/* CHANGE: Smooth, dark-themed scrollbars for entire app */
+
+/* Works for Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 12px; /* was 8px */
+  height: 12px; /* for horizontal (just in case) */
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0f19; /* matches main bg */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 10px;
+  border: 2px solid #0b0f19; /* creates spacing effect */
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151; /* gray-700 */
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #1f2937 #0b0f19;
+}
+
+/* Smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}

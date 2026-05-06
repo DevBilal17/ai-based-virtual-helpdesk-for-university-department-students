@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0f172a] border-b-2 border-gray-800 shadow-md">
-      <div className="flex items-center justify-between px-6 py-3">
+      <div className="flex items-center justify-between px-6 py-2">
         {/* LEFT: App Name */}
         <div
           onClick={() => navigate("/dashboard")}

@@ -33,7 +33,7 @@ const RootRedirect = () => {
 const App = () => {
   return (
     <BrowserRouter>
-      <Header />
+      {/* <Header /> */}
 
       <Suspense fallback={<DashboardSkeleton />}>
         <Routes>
@@ -68,7 +68,7 @@ const App = () => {
         </Routes>
       </Suspense>
 
-      <Footer />
+      {/* <Footer /> */}
 
       {/* Toast container to show notifications */}
       <ToastContainer
@@ -80,7 +80,7 @@ const App = () => {
         pauseOnHover
         draggable
         theme="colored"
-        style={{ marginTop: "55px" }}
+        style={{ marginTop: "4px" }}
       />
     </BrowserRouter>
   );

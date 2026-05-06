@@ -157,7 +157,7 @@ const DashUpdateUser = () => {
   return (
     <div className="px-3 pt-3 pb-20 w-full">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-lg text-gray-400 mb-10 bg-[#0B0F19] rounded-lg border border-gray-700 p-3">
+      <div className="flex items-center gap-2 text-lg text-gray-400 mb-10 bg-[#0B0F19] rounded-lg border-2 border-gray-800 p-3">
         <span
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer hover:text-white"
