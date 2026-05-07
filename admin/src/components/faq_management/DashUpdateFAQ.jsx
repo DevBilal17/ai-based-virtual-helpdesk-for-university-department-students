@@ -25,6 +25,7 @@ const DashUpdateFAQ = () => {
   const [answer, setAnswer] = useState("");
   const [category, setCategory] = useState("general");
   const [status, setStatus] = useState("active");
+  const [categoryDropDown, setCategoryDropDown] = useState(false);
 
   // ================= CHARACTER LIMITS =================
   const QUESTION_MAX_LENGTH = 200;
@@ -146,30 +147,95 @@ const DashUpdateFAQ = () => {
           <div className="w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
             {/* FORM */}
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Category */}
+              {/* ================= CATEGORY ================= */}
               <div className="mb-4">
                 <label className="block mb-2 text-sm font-medium text-gray-400">
                   Select FAQ Category
                 </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="general">General</option>
-                  <option value="technical">Technical</option>
-                  <option value="security">Security</option>
-                  <option value="fee">Fee</option>
-                  <option value="admissions">Admissions</option>
-                  <option value="attendance">Attendance</option>
-                  <option value="result">Result</option>
-                  <option value="courses">Courses</option>
-                  <option value="examination">Examination</option>
-                  <option value="rules">Rules</option>
-                  <option value="events">Events</option>
-                  <option value="library">Library</option>
-                  <option value="scholarship">Scholarship</option>
-                </select>
+
+                {/* Dropdown Container */}
+                <div className="relative">
+                  {/* Selected Value */}
+                  <div
+                    onClick={() => setCategoryDropDown(!categoryDropDown)}
+                    className="w-full flex items-center justify-between p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 cursor-pointer hover:border-gray-600 transition duration-200"
+                  >
+                    <span className="capitalize">{category}</span>
+
+                    <ChevronRight
+                      size={16}
+                      className={`transition duration-200 ${
+                        categoryDropDown ? "rotate-90" : ""
+                      }`}
+                    />
+                  </div>
+
+                  {/* Dropdown Menu */}
+                  {categoryDropDown && (
+                    <div
+                      className="
+          absolute
+          left-0
+          right-0
+          mt-2
+          bg-[#111827]
+          border-2
+          border-gray-700
+          rounded-lg
+          shadow-lg
+          z-50
+          max-h-52
+          overflow-y-auto
+
+          scrollbar-thin
+          scrollbar-track-[#0B0F19]
+          scrollbar-thumb-gray-700
+          hover:scrollbar-thumb-gray-600
+        "
+                    >
+                      {[
+                        "general",
+                        "technical",
+                        "security",
+                        "fee",
+                        "admissions",
+                        "attendance",
+                        "result",
+                        "courses",
+                        "examination",
+                        "rules",
+                        "events",
+                        "library",
+                        "scholarship",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          onClick={() => {
+                            setCategory(item);
+                            setCategoryDropDown(false);
+                          }}
+                          className={`
+              px-4
+              py-3
+              text-sm
+              capitalize
+              cursor-pointer
+              transition
+              duration-150
+
+              ${
+                category === item
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-300 hover:bg-gray-800"
+              }
+            `}
+                        >
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Status */}

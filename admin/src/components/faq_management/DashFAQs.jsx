@@ -7,8 +7,9 @@ import {
   Pencil,
   Trash2,
   MessageCirclePlus,
+  X,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios.js";
 import {
@@ -18,18 +19,17 @@ import {
   changeFaqStatusStart,
   changeFaqStatusSuccess,
   changeFaqStatusFailure,
-} from "../../redux/slices/faqSlice.js";
-import { toast } from "react-toastify";
-import FullScreenLoader from "../common/FullScreenLoader.jsx";
-import ConfirmModal from "../common/ConfirmModal.jsx";
-import {
   deleteFaqByIdStart,
   deleteFaqByIdSuccess,
   deleteFaqByIdFailure,
 } from "../../redux/slices/faqSlice.js";
+import { toast } from "react-toastify";
+import FullScreenLoader from "../common/FullScreenLoader.jsx";
+import ConfirmModal from "../common/ConfirmModal.jsx";
 
 const DashFAQs = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const {
@@ -69,6 +69,7 @@ const DashFAQs = () => {
   const [page, setPage] = useState(1);
   const [categoryDropDown, setCategoryDropDown] = useState(false);
   const [statusDropDown, setStatusDropDown] = useState(false);
+  const [routeLoading, setRouteLoading] = useState(false);
 
   // ================= DELETE MODAL STATE =================
   const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
@@ -96,10 +97,39 @@ const DashFAQs = () => {
     }
   };
 
-  // ================= USE EFFECT =================
+  // ================= ROUTE LOAD =================
   useEffect(() => {
-    fetchFaqs();
-  }, [page, category, status]);
+    const run = async () => {
+      if (location.pathname === "/dashboard/faqs") {
+        setRouteLoading(true);
+        await fetchFaqs();
+        setRouteLoading(false);
+      }
+    };
+    run();
+  }, [location.pathname]);
+
+  // ================= FILTER CHANGE AUTO FETCH =================
+  useEffect(() => {
+    if (!routeLoading) {
+      // reset to first page when filters change
+      setPage(1);
+      fetchFaqs();
+    }
+  }, [category, status]);
+
+  // ================= PAGE CHANGE AUTO FETCH =================
+  useEffect(() => {
+    if (!routeLoading) {
+      fetchFaqs();
+    }
+  }, [page]);
+
+  // ================= CLEAR SEARCH =================
+  const clearSearch = () => {
+    setSearch("");
+    setPage(1);
+  };
 
   // ================= SEARCH (DEBOUNCE) =================
   useEffect(() => {
@@ -111,24 +141,26 @@ const DashFAQs = () => {
     return () => clearTimeout(delay);
   }, [search]);
 
-  // ================= LOADING =================
-  if (faqsLoading) return <FullScreenLoader />;
-
-  // ================= ERROR =================
-  if (faqsError) {
-    return (
-      <div className="text-center mt-10 text-red-500 font-semibold">
-        {faqsError}
-      </div>
-    );
-  }
-
   // ================= HELPER =================
   const truncate = (text, maxLength = 20) => {
     return text?.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
   };
+
+  // ================= PAGINATION VALUES =================
+
+  const currentPage = pagination?.currentPage || 1;
+
+  const totalPages = pagination?.totalPages || 1;
+
+  const totalEntries = pagination?.totalFAQSFetched || 0;
+
+  // Start entry number
+  const startEntry = totalEntries === 0 ? 0 : (currentPage - 1) * 10 + 1;
+
+  // End entry number
+  const endEntry = Math.min(currentPage * 10, totalEntries);
 
   // ================= HANDLE DELETE CLICK =================
   const handleDeleteClick = (faqId) => {
@@ -189,6 +221,18 @@ const DashFAQs = () => {
     }
   };
 
+  // ================= LOADER =================
+  if (routeLoading) return <FullScreenLoader />;
+
+  // ================= ERROR =================
+  if (faqsError) {
+    return (
+      <div className="text-center mt-10 text-red-500 font-semibold">
+        {faqsError}
+      </div>
+    );
+  }
+
   return (
     <div className="p-3">
       {/* ================= SECTION 1: Breadcrumb ================= */}
@@ -235,6 +279,9 @@ const DashFAQs = () => {
               placeholder="Search FAQs here..."
               className="bg-transparent outline-none ml-2 w-full text-sm"
             />
+            {search && (
+              <X size={16} className="cursor-pointer" onClick={clearSearch} />
+            )}
           </div>
 
           {/* Category Dropdown */}
@@ -248,7 +295,7 @@ const DashFAQs = () => {
             </div>
 
             {categoryDropDown && (
-              <div className="absolute w-full mt-2 bg-[#111827] rounded-lg border border-gray-700 z-10">
+              <div className="absolute w-40 max-h-60 overflow-y-auto mt-2 bg-[#111827] rounded-lg border border-gray-700 z-10">
                 {categories.map((c) => (
                   <div
                     key={c}
@@ -299,120 +346,132 @@ const DashFAQs = () => {
         {/* ================= SECTION 4: FAQS List ================= */}
         <div className="bg-[#111827] rounded-lg border border-gray-700 overflow-hidden">
           {/* Head */}
-          <div className="grid grid-cols-5 px-6 py-3 text-sm text-gray-400 border-b border-gray-700 uppercase">
-            <span>Question Preview</span>
-            <span className="ml-32">Category</span>
-            <span className="text-right">Last Modified</span>
-            <span className="text-right">Status</span>
+          <div className="grid grid-cols-[3fr_1fr_1fr_1fr_1fr] px-6 py-3 text-sm text-gray-400 border-b border-gray-700 uppercase">
+            <span className="text-left">Question Preview</span>
+            <span className="text-center">Category</span>
+            <span className="text-center">Last Modified</span>
+            <span className="text-center">Status</span>
             <span className="text-right">Actions</span>
           </div>
 
           {/* Body */}
-          {faqs?.map((faq) => (
-            <div
-              key={faq._id}
-              className="bg-[#0B0F19] grid grid-cols-5 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
-            >
-              <div className="flex flex-col items-start gap-1">
-                <span className="text-sm">{truncate(faq.question, 30)}</span>
-                <span className="text-xs text-gray-400">
-                  {truncate(faq.answer, 50)}
+          {faqsLoading ? (
+            <div className="flex items-center justify-center py-6 bg-[#0B0F19] text-lg text-gray-400 animate-pulse">
+              <span>Loading FAQs...</span>
+            </div>
+          ) : faqs?.length === 0 ? (
+            <div className="flex items-center justify-center py-6 bg-[#0B0F19] text-lg text-red-500">
+              <span>No FAQs found.</span>
+            </div>
+          ) : (
+            faqs?.map((faq) => (
+              <div
+                key={faq._id}
+                className="bg-[#0B0F19] grid grid-cols-[3fr_1fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
+              >
+                <div className="flex flex-col items-start gap-1">
+                  <span className="text-sm">{truncate(faq.question, 50)}</span>
+                  <span className="text-xs text-gray-400">
+                    {truncate(faq.answer, 60)}
+                  </span>
+                </div>
+
+                <span className="text-center">
+                  {faq.category?.charAt(0).toUpperCase() +
+                    faq.category?.slice(1)}
                 </span>
-              </div>
 
-              <span className="ml-32">
-                {faq.category?.charAt(0).toUpperCase() + faq.category?.slice(1)}
-              </span>
+                <span className="text-center">
+                  {faq.updatedAt
+                    ? new Date(faq.updatedAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "-"}
+                </span>
 
-              <span className="text-right">
-                {faq.updatedAt
-                  ? new Date(faq.updatedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "-"}
-              </span>
-
-              {/* ================= STATUS TOGGLE ================= */}
-              <div className="flex justify-end">
-                <div
-                  onClick={() => handleToggleStatus(faq)}
-                  className={`w-10 h-5 flex items-center rounded-full transition ${
-                    faq.status === "active" ? "bg-indigo-600" : "bg-gray-600"
-                  } ${
-                    changeStatusLoading
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }`}
-                >
+                {/* ================= STATUS TOGGLE ================= */}
+                <div className="flex items-center justify-center">
                   <div
-                    className={`bg-white w-[19px] h-[19px] rounded-full shadow-md transform transition ${
-                      faq.status === "active"
-                        ? "translate-x-5"
-                        : "translate-x-0"
+                    onClick={() => handleToggleStatus(faq)}
+                    className={`w-10 h-5 flex items-center rounded-full transition ${
+                      faq.status === "active" ? "bg-indigo-600" : "bg-gray-600"
+                    } ${
+                      changeStatusLoading
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
                     }`}
-                  />
+                  >
+                    <div
+                      className={`bg-white w-[19px] h-[19px] rounded-full shadow-md transform transition ${
+                        faq.status === "active"
+                          ? "translate-x-5"
+                          : "translate-x-0"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() =>
+                      navigate(`/dashboard/faqs/update-faq/${faq._id}`)
+                    }
+                    className="p-2 bg-gray-600 hover:bg-gray-700 transition duration-200 rounded-lg"
+                  >
+                    <Pencil size={16} />
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteClick(faq._id)}
+                    className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg"
+                  >
+                    <Trash2 size={16} className="text-red-400" />
+                  </button>
                 </div>
               </div>
+            ))
+          )}
 
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() =>
-                    navigate(`/dashboard/faqs/update-faq/${faq._id}`)
-                  }
-                  className="p-2 bg-gray-600 hover:bg-gray-700 transition duration-200 rounded-lg"
-                >
-                  <Pencil size={16} />
-                </button>
-
-                <button
-                  onClick={() => handleDeleteClick(faq._id)}
-                  className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg"
-                >
-                  <Trash2 size={16} className="text-red-400" />
-                </button>
-              </div>
+          {/* ================= PAGINATION ================= */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-4 text-sm text-gray-400 border-t border-gray-800 bg-[#111827]">
+            {/* ================= LEFT SIDE ================= */}
+            <div>
+              Showing {startEntry} to {endEntry} of {totalEntries} entries
             </div>
-          ))}
 
-          {/* Pagination */}
-          <div className="flex justify-between px-6 py-4 text-base text-gray-400">
-            <span>
-              Showing {pagination?.currentPage} of {pagination?.totalPages}{" "}
-              pages
-            </span>
-
-            <span className="ml-2">|</span>
-
-            <span className="flex-1 ml-2">
-              Total FAQs fetched: {stats?.totalFAQSFetched}
-            </span>
-
-            <div className="flex gap-4">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                <ChevronLeft size={18} />
+            {/* ================= RIGHT SIDE ================= */}
+            <div className="flex items-center gap-4">
+              {/* Previous Button */}
+              <button
+                disabled={currentPage === 1 || faqsLoading}
+                onClick={() => setPage((prev) => prev - 1)}
+                className={`transition duration-200 ${
+                  currentPage === 1 || faqsLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:text-white"
+                }`}
+              >
+                <ChevronLeft size={20} />
               </button>
 
-              {[...Array(pagination?.totalPages || 1)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i + 1)}
-                  className={
-                    page === i + 1
-                      ? "bg-indigo-600 px-3 py-1 rounded-lg text-white"
-                      : ""
-                  }
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {/* Current Page / Total Pages */}
+              <span className="text-white font-medium">
+                {currentPage} / {totalPages}
+              </span>
 
+              {/* Next Button */}
               <button
-                disabled={page === pagination?.totalPages}
-                onClick={() => setPage(page + 1)}
+                disabled={currentPage === totalPages || faqsLoading}
+                onClick={() => setPage((prev) => prev + 1)}
+                className={`transition duration-200 ${
+                  currentPage === totalPages || faqsLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:text-white"
+                }`}
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={20} />
               </button>
             </div>
           </div>
@@ -422,17 +481,23 @@ const DashFAQs = () => {
         <div className="grid md:grid-cols-3 gap-4">
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
             <p className="text-gray-400">Total FAQs</p>
-            <h2 className="text-4xl font-bold">{stats?.totalFAQS}</h2>
+            <h2 className="text-4xl font-bold">
+              {faqsLoading ? "-" : stats?.totalFAQS}
+            </h2>
           </div>
 
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
             <p className="text-gray-400">Total FAQs fetched</p>
-            <h2 className="text-4xl font-bold">{stats?.totalFAQSFetched}</h2>
+            <h2 className="text-4xl font-bold">
+              {faqsLoading ? "-" : stats?.totalFAQSFetched}
+            </h2>
           </div>
 
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
             <p className="text-gray-400">FAQs Added Last Month</p>
-            <h2 className="text-4xl font-bold">{stats?.faqsLastMonth}</h2>
+            <h2 className="text-4xl font-bold">
+              {faqsLoading ? "-" : stats?.faqsLastMonth}
+            </h2>
           </div>
         </div>
       </div>

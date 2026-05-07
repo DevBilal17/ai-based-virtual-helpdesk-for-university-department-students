@@ -73,12 +73,17 @@ const getAllFAQS = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    // ================= TOTAL COUNT =================
+    // ================= TOTAL COUNTS =================
+
+    // Total FAQs in database (without filters)
     const totalFAQS = await FAQ.countDocuments();
 
+    // Total FAQs after applying filters/search
     const totalFAQSFetched = await FAQ.countDocuments(filter);
 
-    const totalPages = Math.ceil(totalFAQS / limit);
+    // IMPORTANT:
+    // total pages should ALWAYS be based on FILTERED FAQs
+    const totalPages = Math.ceil(totalFAQSFetched / limit) || 1;
 
     // ================= STATS =================
 
@@ -93,12 +98,19 @@ const getAllFAQS = async (req, res) => {
     // ================= RESPONSE =================
     return response(res, 200, true, "FAQs fetched successfully", {
       faqs,
+
       pagination: {
+        // total FAQs in database
         totalFAQS,
+
+        // total FAQs after applying filters/search
+        totalFAQSFetched,
+
         currentPage: page,
         totalPages,
         pageSize: limit,
       },
+
       stats: {
         totalFAQS,
         totalFAQSFetched,
