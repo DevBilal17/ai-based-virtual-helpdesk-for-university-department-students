@@ -4,14 +4,18 @@ const addDataValidator = [
   body("file_name")
     .notEmpty()
     .withMessage("File name is required")
-    .isLength({ min: 3 })
-    .withMessage("File name must be at least 3 characters"),
+    .isString()
+    .trim()
+    .isLength({ min: 4, max: 100 })
+    .withMessage("File name must be between 4 and 100 characters"),
 
   body("file_description")
     .notEmpty()
     .withMessage("File description is required")
-    .isLength({ min: 5 })
-    .withMessage("Description must be at least 5 characters"),
+    .isString()
+    .trim()
+    .isLength({ min: 4, max: 500 })
+    .withMessage("File description must be between 4 and 500 characters"),
 ];
 
 const getAllDataValidator = [

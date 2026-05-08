@@ -14,13 +14,17 @@ const DashAddData = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading } = useSelector((state) => state.data);
+  const { addFileLoading } = useSelector((state) => state.data);
 
   const [fileName, setFileName] = useState("");
   const [fileDescription, setFileDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
   const [previewProgress, setPreviewProgress] = useState(0);
+
+  // ================= CHARACTER LIMITS =================
+  const FILE_NAME_MAX_LENGTH = 100;
+  const FILE_DESCRIPTION_MAX_LENGTH = 500;
 
   const allowedTypes = [
     "application/pdf",
@@ -157,9 +161,16 @@ const DashAddData = () => {
             type="text"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+            maxLength={FILE_NAME_MAX_LENGTH}
             placeholder="Enter file name"
+            required
             className="w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+
+          {/* ================= CHARACTER COUNT (FILE NAME) ================= */}
+          <div className="text-xs text-gray-400 text-right mt-1">
+            {fileName.length} / {FILE_NAME_MAX_LENGTH}
+          </div>
         </div>
 
         {/* description */}
@@ -172,9 +183,15 @@ const DashAddData = () => {
             rows="4"
             value={fileDescription}
             onChange={(e) => setFileDescription(e.target.value)}
+            maxLength={FILE_DESCRIPTION_MAX_LENGTH}
             placeholder="Enter file description"
+            required
             className="w-full p-3 bg-[#111827] border-2 border-gray-700 rounded-lg text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {/* ================= CHARACTER COUNT (FILE DESCRIPTION) ================= */}
+          <div className="text-xs text-gray-400 text-right mt-1">
+            {fileDescription.length} / {FILE_DESCRIPTION_MAX_LENGTH}
+          </div>
         </div>
 
         {/* ================= FILE UPLOAD SECTION ================= */}
@@ -214,10 +231,10 @@ const DashAddData = () => {
         <div>
           <button
             onClick={handleAddFile}
-            disabled={loading}
+            disabled={addFileLoading}
             className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-60"
           >
-            {loading ? "Adding..." : "Add File"}
+            {addFileLoading ? "Adding..." : "Add File"}
           </button>
         </div>
       </div>

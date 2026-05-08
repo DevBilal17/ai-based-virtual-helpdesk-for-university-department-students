@@ -32,13 +32,13 @@ axiosInstance.interceptors.response.use(
       console.log("Unauthorized / Token expired");
 
       // Clear Redux state
-      store.dispatch(signOutSuccess());
+      // store.dispatch(signOutSuccess());
 
       // Clear persisted storage (PROFESSIONAL WAY)
-      await persistor.purge();
+      // await persistor.purge();
 
       // Redirect to login
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
 
     return Promise.reject(error);

@@ -5,39 +5,41 @@ import {
   Trash2,
   File,
   FileText,
+  X,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios.js";
 import {
   getAllDataStart,
   getAllDataSuccess,
   getAllDataFailure,
-} from "../../redux/slices/dataSlice.js";
-import { toast } from "react-toastify";
-import FullScreenLoader from "../common/FullScreenLoader.jsx";
-import ConfirmModal from "../common/ConfirmModal.jsx";
-import {
   deleteDataByIdStart,
   deleteDataByIdSuccess,
   deleteDataByIdFailure,
 } from "../../redux/slices/dataSlice.js";
+import { toast } from "react-toastify";
+import FullScreenLoader from "../common/FullScreenLoader.jsx";
+import ConfirmModal from "../common/ConfirmModal.jsx";
 
 const DashData = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const {
     files,
     pagination,
+    stats,
     filesLoading,
     filesError,
-    deleteLoading,
-    deleteError,
+    deleteFileLoading,
+    deleteFileError,
   } = useSelector((state) => state.data);
 
   // ================= STATE =================
   const [page, setPage] = useState(1);
+  const [routeLoading, setRouteLoading] = useState(false);
 
   // ================= DELETE MODAL STATE =================
   const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
@@ -49,8 +51,10 @@ const DashData = () => {
       dispatch(getAllDataStart());
 
       const res = await axios.get("/data/get-all-data", {
-        // params: { page, limit: 5, search, role },
+        params: { page, limit: 10 },
       });
+
+      console.log("Fetched Files:", res.data.data); // Debug log
 
       dispatch(getAllDataSuccess(res.data.data));
     } catch (error) {
@@ -65,22 +69,24 @@ const DashData = () => {
     }
   };
 
-  // ================= USE EFFECT =================
+  // ================= ROUTE LOAD =================
   useEffect(() => {
-    fetchFiles();
+    const run = async () => {
+      if (location.pathname === "/dashboard/data") {
+        setRouteLoading(true);
+        await fetchFiles();
+        setRouteLoading(false);
+      }
+    };
+    run();
+  }, [location.pathname]);
+
+  // ================= PAGE CHANGE AUTO FETCH =================
+  useEffect(() => {
+    if (!routeLoading) {
+      fetchFiles();
+    }
   }, [page]);
-
-  // ================= LOADING =================
-  if (filesLoading) return <FullScreenLoader />;
-
-  // ================= ERROR =================
-  if (filesError) {
-    return (
-      <div className="text-center mt-10 text-red-500 font-semibold">
-        {filesError}
-      </div>
-    );
-  }
 
   // ================= HELPER =================
   const truncate = (text, maxLength = 20) => {
@@ -88,6 +94,20 @@ const DashData = () => {
       ? text.substring(0, maxLength) + "..."
       : text;
   };
+
+  // ================= PAGINATION VALUES =================
+
+  const currentPage = pagination?.currentPage || 1;
+
+  const totalPages = pagination?.totalPages || 1;
+
+  const totalEntries = pagination?.totalFilesFetched || 0;
+
+  // Start entry number
+  const startEntry = totalEntries === 0 ? 0 : (currentPage - 1) * 10 + 1;
+
+  // End entry number
+  const endEntry = Math.min(currentPage * 10, totalEntries);
 
   // ================= HANDLE DELETE CLICK =================
   const handleDeleteClick = (fileId) => {
@@ -119,6 +139,18 @@ const DashData = () => {
     }
   };
 
+  // ================= LOADER =================
+  if (routeLoading) return <FullScreenLoader />;
+
+  // ================= ERROR =================
+  if (filesError) {
+    return (
+      <div className="text-center mt-10 text-red-500 font-semibold">
+        {filesError}
+      </div>
+    );
+  }
+
   return (
     <div className="p-3">
       {/* ================= SECTION 1: Breadcrumb ================= */}
@@ -133,6 +165,7 @@ const DashData = () => {
         <span className="text-white font-medium">Data Management</span>
       </div>
 
+      {/* Main Content */}
       <div className="px-2 pt-2 pb-20 space-y-6 text-gray-200">
         {/* ================= SECTION 2 ================= */}
         <div className="flex flex-col md:flex-row md:justify-between gap-4">
@@ -155,89 +188,133 @@ const DashData = () => {
         {/* ================= SECTION 3 ================= */}
         <div className="bg-[#111827] rounded-lg border border-gray-700 overflow-hidden">
           {/* Head */}
-          <div className="grid grid-cols-6 px-6 py-3 text-sm text-gray-400 border-b border-gray-700 uppercase">
-            <span>File Name</span>
-            <span>File Description</span>
-            <span className="text-right">Uploaded at</span>
-            <span className="text-right">Uploaded by</span>
-            <span className="text-right">Updated At</span>
+          <div className="grid grid-cols-[3fr_1fr_1fr_1fr] px-6 py-3 text-sm text-gray-400 border-b border-gray-700 uppercase">
+            {/* <span className="text-left">File Name</span> */}
+            {/* <span className="text-center">File Description</span> */}
+            <span className="text-left">File File Info</span>
+            <span className="text-center">Uploaded at</span>
+            <span className="text-center">Uploaded by</span>
             <span className="text-right">Actions</span>
           </div>
 
           {/* Body */}
-          {files?.map((file) => (
-            <div
-              key={file._id}
-              className="bg-[#0B0F19] grid grid-cols-6 px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
-            >
-              <span>{truncate(file.file_name, 20)}</span>
-
-              <span>{truncate(file.file_description, 30)}</span>
-
-              <span className="text-right">
-                {file.createdAt
-                  ? new Date(file.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "-"}
-              </span>
-
-              <span className="text-right">{file.uploaded_by_name}</span>
-
-              <span className="text-right">
-                {file.updatedAt
-                  ? new Date(file.updatedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })
-                  : "-"}
-              </span>
-
-              <button
-                onClick={() => handleDeleteClick(file._id)}
-                className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg self-end justify-self-end"
-              >
-                <Trash2 size={16} className="text-red-400" />
-              </button>
+          {filesLoading ? (
+            <div className="flex items-center justify-center py-6 bg-[#0B0F19] text-lg text-gray-400 animate-pulse">
+              <span>Loading files...</span>
             </div>
-          ))}
+          ) : files?.length === 0 ? (
+            <div className="flex items-center justify-center py-6 bg-[#0B0F19] text-lg text-red-500">
+              <span>No files found.</span>
+            </div>
+          ) : (
+            files?.map((file) => (
+              <div
+                key={file._id}
+                className="bg-[#0B0F19] grid grid-cols-[3fr_1fr_1fr_1fr] px-6 py-4 items-center border-b border-gray-800 text-sm hover:bg-gray-800 transition duration-200"
+              >
+                <div className="flex flex-col items-start gap-1">
+                  <span className="text-sm">
+                    {truncate(file.file_name, 60)}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {truncate(file.file_description, 75)}
+                  </span>
+                </div>
 
-          {/* Pagination */}
-          <div className="flex justify-between px-6 py-4 text-base text-gray-400">
-            <span>
-              Showing {pagination?.currentPage} of {pagination?.totalPages}{" "}
-              pages
-            </span>
+                <span className="text-center">
+                  {file.createdAt
+                    ? new Date(file.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "-"}
+                </span>
 
-            <div className="flex gap-4">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                <ChevronLeft size={18} />
-              </button>
+                <span className="text-center">{file.uploaded_by_name}</span>
 
-              {[...Array(pagination?.totalPages || 1)].map((_, i) => (
                 <button
-                  key={i}
-                  onClick={() => setPage(i + 1)}
-                  className={
-                    page === i + 1
-                      ? "bg-indigo-600 px-3 py-1 rounded-lg text-white"
-                      : ""
-                  }
+                  onClick={() => handleDeleteClick(file._id)}
+                  className="p-2 bg-red-500/20 hover:bg-red-700/20 transition duration-200 rounded-lg self-end justify-self-end"
+                  disabled={deleteFileLoading}
                 >
-                  {i + 1}
+                  <Trash2 size={16} className="text-red-400" />
                 </button>
-              ))}
+              </div>
+            ))
+          )}
 
+          {/* ================= PAGINATION ================= */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-4 text-sm text-gray-400 border-t border-gray-800 bg-[#111827]">
+            {/* ================= LEFT SIDE ================= */}
+            <div className="flex items-center gap-2">
+              <span>
+                Showing {startEntry} to {endEntry} of {totalEntries} entries
+              </span>
+              <span>|</span>
+              <span>
+                Total files fetched:{" "}
+                {filesLoading ? "-" : stats?.totalFilesFetched}
+              </span>
+            </div>
+
+            {/* ================= RIGHT SIDE ================= */}
+            <div className="flex items-center gap-4">
+              {/* Previous Button */}
               <button
-                disabled={page === pagination?.totalPages}
-                onClick={() => setPage(page + 1)}
+                disabled={currentPage === 1 || filesLoading}
+                onClick={() => setPage((prev) => prev - 1)}
+                className={`transition duration-200 ${
+                  currentPage === 1 || filesLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:text-white"
+                }`}
               >
-                <ChevronRight size={18} />
+                <ChevronLeft size={20} />
+              </button>
+
+              {/* Current Page / Total Pages */}
+              <span className="text-white font-medium">
+                {currentPage} / {totalPages}
+              </span>
+
+              {/* Next Button */}
+              <button
+                disabled={currentPage === totalPages || filesLoading}
+                onClick={() => setPage((prev) => prev + 1)}
+                className={`transition duration-200 ${
+                  currentPage === totalPages || filesLoading
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:text-white"
+                }`}
+              >
+                <ChevronRight size={20} />
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* ================= SECTION 5: Stats Cards ================= */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
+            <p className="text-gray-400">Total Files in the System</p>
+            <h2 className="text-4xl font-bold">
+              {filesLoading ? "-" : stats?.totalFiles}
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
+            <p className="text-gray-400">Total Files Fetched</p>
+            <h2 className="text-4xl font-bold">
+              {filesLoading ? "-" : stats?.totalFilesFetched}
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
+            <p className="text-gray-400">Files Added Last Month</p>
+            <h2 className="text-4xl font-bold">
+              {filesLoading ? "-" : stats?.filesLastMonth}
+            </h2>
           </div>
         </div>
       </div>
@@ -252,7 +329,7 @@ const DashData = () => {
         confirmText="Delete"
         cancelText="Cancel"
         progressText="Deleting..."
-        loading={deleteLoading} // show loading state on confirm button
+        loading={deleteFileLoading} // show loading state on confirm button
       />
     </div>
   );

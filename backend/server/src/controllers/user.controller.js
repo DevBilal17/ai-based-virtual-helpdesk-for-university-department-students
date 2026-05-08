@@ -267,6 +267,7 @@ const getAllUsers = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
     const role = req.query.role || "all";
+    const department = req.query.department || "all";
 
     const skip = (page - 1) * limit;
 
@@ -276,6 +277,11 @@ const getAllUsers = async (req, res) => {
     // Role filter
     if (role !== "all") {
       filter.role = role;
+    }
+
+    // Department filter
+    if (department !== "all") {
+      filter.department = department;
     }
 
     // Search filter (name, email, department)
@@ -292,14 +298,19 @@ const getAllUsers = async (req, res) => {
       .select("-password")
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     // ================= TOTAL COUNT =================
+
+    // Total users in database (without filters)
     const totalUsers = await User.countDocuments();
 
+    // Total users after applying filters/search
     const totalUsersFetched = await User.countDocuments(filter);
 
-    const totalPages = Math.ceil(totalUsers / limit);
+    // IMPORTANT:
+    // total pages should ALWAYS be based on FILTERED Users
+    const totalPages = Math.ceil(totalUsersFetched / limit) || 1;
 
     // ================= STATS =================
     const totalStudents = await User.countDocuments({ role: "student" });
@@ -316,8 +327,14 @@ const getAllUsers = async (req, res) => {
     // ================= RESPONSE =================
     return response(res, 200, true, "Users fetched successfully", {
       users,
+
       pagination: {
+        // total users in database
         totalUsers,
+
+        // total Users after applying filters/search
+        totalUsersFetched,
+
         currentPage: page,
         totalPages,
         pageSize: limit,

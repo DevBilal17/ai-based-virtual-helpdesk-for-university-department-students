@@ -9,15 +9,23 @@ const initialState = {
   usersError: null,
 
   // get user by id
-  thisUser: null,
-  loading: false,
-  error: null,
+  fetchedUser: null,
+  userLoading: false,
+  userError: null,
 
-  // addedUser: null,
+  // add user
+  addedUser: null,
+  addUserLoading: false,
+  addUserError: null,
+
+  // update user by id
+  updatedUser: null,
+  updateUserLoading: false,
+  updateUserError: null,
 
   // delete user by id
-  deleteLoading: false,
-  deleteError: null,
+  deleteUserLoading: false,
+  deleteUserError: null,
 };
 
 const userSlice = createSlice({
@@ -25,19 +33,19 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     // ================= GET ALL USERS =================
-    getUsersStart: (state) => {
+    getAllUsersStart: (state) => {
       state.usersLoading = true;
       state.usersError = null;
     },
 
-    getUsersSuccess: (state, action) => {
+    getAllUsersSuccess: (state, action) => {
       state.users = action.payload.users;
       state.pagination = action.payload.pagination;
       state.stats = action.payload.stats;
       state.usersLoading = false;
     },
 
-    getUsersFailure: (state, action) => {
+    getAllUsersFailure: (state, action) => {
       state.usersLoading = false;
       state.usersError = action.payload;
     },
@@ -45,84 +53,86 @@ const userSlice = createSlice({
     // ================= GET USER BY ID =================
 
     getUserByIdStart: (state) => {
-      state.loading = true;
-      state.error = null;
+      state.userLoading = true;
+      state.userError = null;
     },
 
     getUserByIdSuccess: (state, action) => {
-      state.thisUser = action.payload;
-      state.loading = false;
+      state.fetchedUser = action.payload;
+      state.userLoading = false;
     },
 
     getUserByIdFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.userLoading = false;
+      state.userError = action.payload;
     },
 
     // ================= ADD USER =================
 
     addUserStart: (state) => {
-      state.loading = true;
-      state.error = null;
+      state.addUserLoading = true;
+      state.addUserError = null;
     },
 
     addUserSuccess: (state, action) => {
-      state.thisUser = action.payload;
-      // state.users.unshift(action.payload.data); // instantly update UI list
-      state.loading = false;
+      state.addUserLoading = false;
+      state.addedUser = action.payload;
+
+      // add new user to list (important)
+      state.users.push(action.payload);
     },
 
     addUserFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.addUserLoading = false;
+      state.addUserError = action.payload;
     },
 
     // ================= UPDATE USER BY ID =================
 
     updateUserByIdStart: (state) => {
-      state.loading = true;
-      state.error = null;
+      state.updateUserLoading = true;
+      state.updateUserError = null;
     },
 
     updateUserByIdSuccess: (state, action) => {
-      state.loading = false;
-      state.thisUser = action.payload;
+      state.updateUserLoading = false;
+      state.updatedUser = action.payload;
 
       // update user in list (important)
-      // state.users = state.users.map((user) =>
-      //   user._id === action.payload._id ? action.payload : user,
-      // );
+      state.users = state.users.map((user) =>
+        user._id === action.payload._id ? action.payload : user,
+      );
     },
 
     updateUserByIdFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.updateUserLoading = false;
+      state.updateUserError = action.payload;
     },
 
     // ================= DELETE USER =================
     deleteUserByIdStart: (state) => {
-      state.deleteLoading = true;
-      state.deleteError = null;
+      state.deleteUserLoading = true;
+      state.deleteUserError = null;
     },
 
     deleteUserByIdSuccess: (state, action) => {
-      state.deleteLoading = false;
+      state.deleteUserLoading = false;
 
       // Remove deleted user from list
-      // state.users = state.users.filter((user) => user._id !== action.payload);
+      state.users = state.users.filter((user) => user._id !== action.payload);
     },
 
     deleteUserByIdFailure: (state, action) => {
-      state.deleteLoading = false;
-      state.deleteError = action.payload;
+      state.deleteUserLoading = false;
+      state.deleteUserError = action.payload;
     },
   },
 });
 
 export const {
-  getUsersStart,
-  getUsersSuccess,
-  getUsersFailure,
+  getAllUsersStart,
+  getAllUsersSuccess,
+  getAllUsersFailure,
   getUserByIdStart,
   getUserByIdSuccess,
   getUserByIdFailure,

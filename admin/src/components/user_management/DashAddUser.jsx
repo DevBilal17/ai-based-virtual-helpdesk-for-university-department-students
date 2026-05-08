@@ -14,7 +14,7 @@ import profile_pic from "../../assets/profile_pic.png";
 const DashAddUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading } = useSelector((state) => state.user);
+  const { addUserLoading, addUserError } = useSelector((state) => state.user);
 
   const [role, setRole] = useState("student");
   const [department, setDepartment] = useState("IT");
@@ -376,10 +376,10 @@ const DashAddUser = () => {
             {/* SUBMIT BUTTON */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={addUserLoading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition duration-200"
             >
-              {loading ? "Adding User..." : "Add User"}
+              {addUserLoading ? "Adding User..." : "Add User"}
             </button>
           </form>
         </div>

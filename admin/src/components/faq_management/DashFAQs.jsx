@@ -477,10 +477,10 @@ const DashFAQs = () => {
           </div>
         </div>
 
-        {/* ================= SECTION 5 ================= */}
+        {/* ================= SECTION 5: Stats Cards ================= */}
         <div className="grid md:grid-cols-3 gap-4">
           <div className="flex flex-col gap-3 bg-[#111827] p-4 rounded-lg">
-            <p className="text-gray-400">Total FAQs</p>
+            <p className="text-gray-400">Total FAQs in the System</p>
             <h2 className="text-4xl font-bold">
               {faqsLoading ? "-" : stats?.totalFAQS}
             </h2>

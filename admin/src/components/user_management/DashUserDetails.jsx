@@ -6,6 +6,9 @@ import {
   getUserByIdStart,
   getUserByIdSuccess,
   getUserByIdFailure,
+  deleteUserByIdStart,
+  deleteUserByIdSuccess,
+  deleteUserByIdFailure,
 } from "../../redux/slices/userSlice";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -13,20 +16,19 @@ import FullScreenLoader from "../common/FullScreenLoader";
 import { ChevronRight } from "lucide-react";
 import profile_pic from "../../assets/profile_pic.png";
 import ConfirmModal from "../common/ConfirmModal.jsx";
-import {
-  deleteUserByIdStart,
-  deleteUserByIdSuccess,
-  deleteUserByIdFailure,
-} from "../../redux/slices/userSlice.js";
 
 const DashUserDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { thisUser, loading, error, deleteLoading, deleteError } = useSelector(
-    (state) => state.user,
-  );
+  const {
+    fetchedUser,
+    userLoading,
+    userError,
+    deleteUserLoading,
+    deleteUserError,
+  } = useSelector((state) => state.user);
 
   // ================= DELETE MODAL STATE =================
   const [isModalOpen, setIsModalOpen] = useState(false); // controls modal visibility
@@ -39,6 +41,8 @@ const DashUserDetails = () => {
         dispatch(getUserByIdStart());
 
         const res = await axios.get(`/user/get-user/${id}`);
+
+        console.log("Fetched User:", res.data.data.user);
 
         dispatch(getUserByIdSuccess(res.data.data.user));
       } catch (err) {
@@ -54,52 +58,55 @@ const DashUserDetails = () => {
   }, [id, dispatch]);
 
   // ================= LOADING =================
-  if (loading) return <FullScreenLoader />;
+  if (userLoading) return <FullScreenLoader />;
 
   // ================= ERROR =================
-  if (error) {
+  if (userError) {
     return (
       <div className="text-center mt-10 text-red-500 font-semibold">
-        {error}
+        {userError}
       </div>
     );
   }
 
   // ================= NO USER =================
-  if (!thisUser) return null;
+  if (!fetchedUser) return null;
 
   // ================= ROLE-BASED FIELDS =================
-  const isStudent = thisUser.role === "student";
+  const isStudent = fetchedUser.role === "student";
 
   const studentFields = [
     {
       label: "Role",
-      value: thisUser.role?.charAt(0).toUpperCase() + thisUser.role?.slice(1),
+      value:
+        fetchedUser.role?.charAt(0).toUpperCase() + fetchedUser.role?.slice(1),
     },
-    { label: "Name", value: thisUser.name },
-    { label: "Email", value: thisUser.email },
-    { label: "Department", value: thisUser.department },
-    { label: "Registration Number", value: thisUser.registrationNumber },
-    { label: "Degree Type", value: thisUser.degreeType },
-    { label: "Degree Title", value: thisUser.degreeTitle },
-    { label: "Semester", value: thisUser.semester },
+    { label: "Name", value: fetchedUser.name },
+    { label: "Email", value: fetchedUser.email },
+    { label: "Department", value: fetchedUser.department },
+    { label: "Registration Number", value: fetchedUser.registrationNumber },
+    { label: "Degree Type", value: fetchedUser.degreeType },
+    { label: "Degree Title", value: fetchedUser.degreeTitle },
+    { label: "Semester", value: fetchedUser.semester },
     {
       label: "Program",
       value:
-        thisUser.program?.charAt(0).toUpperCase() + thisUser.program?.slice(1),
+        fetchedUser.program?.charAt(0).toUpperCase() +
+        fetchedUser.program?.slice(1),
     },
-    { label: "Session", value: thisUser.session },
+    { label: "Session", value: fetchedUser.session },
   ];
 
   const adminFields = [
     {
       label: "Role",
-      value: thisUser.role?.charAt(0).toUpperCase() + thisUser.role?.slice(1),
+      value:
+        fetchedUser.role?.charAt(0).toUpperCase() + fetchedUser.role?.slice(1),
     },
-    { label: "Name", value: thisUser.name },
-    { label: "Email", value: thisUser.email },
-    { label: "Department", value: thisUser.department },
-    { label: "Designation", value: thisUser.designation },
+    { label: "Name", value: fetchedUser.name },
+    { label: "Email", value: fetchedUser.email },
+    { label: "Department", value: fetchedUser.department },
+    { label: "Designation", value: fetchedUser.designation },
   ];
 
   const fields = isStudent ? studentFields : adminFields;
@@ -181,37 +188,44 @@ const DashUserDetails = () => {
 
         {/* User's Name */}
         <span className="mb-10 text-gray-200 text-xl font-bold">
-          {thisUser.name}
+          {fetchedUser.name}
         </span>
 
         {/* ================= USER DETAILS ================= */}
-        <div className="w-full max-w-2xl bg-[#111827] rounded-lg border border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-gray-700">
-            <h2 className="text-xl font-semibold text-gray-200">
-              User Information
-            </h2>
+        {userLoading ? (
+          <div className="flex items-center justify-center w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
+            <span className="text-gray-400">Loading User's data...</span>
           </div>
+        ) : (
+          <div className="w-full max-w-2xl bg-[#111827] rounded-lg border border-gray-700 overflow-hidden">
+            <div className="p-4 border-b border-gray-700">
+              <h2 className="text-xl font-semibold text-gray-200">
+                User Information
+              </h2>
+            </div>
 
-          <div className="grid grid-cols-2">
-            {fields.map((field, index) => (
-              <React.Fragment key={index}>
-                {/* LEFT COLUMN (Label) */}
-                <div className="px-4 py-3 font-medium text-gray-400 border-r border-b border-gray-700">
-                  {field.label}
-                </div>
+            <div className="grid grid-cols-2">
+              {fields.map((field, index) => (
+                <React.Fragment key={index}>
+                  {/* LEFT COLUMN (Label) */}
+                  <div className="px-4 py-3 font-medium text-gray-400 border-r border-b border-gray-700">
+                    {field.label}
+                  </div>
 
-                {/* RIGHT COLUMN (Value) */}
-                <div className="px-4 py-3 text-gray-300 border-b border-gray-700">
-                  {field.value || "-"}
-                </div>
-              </React.Fragment>
-            ))}
+                  {/* RIGHT COLUMN (Value) */}
+                  <div className="px-4 py-3 text-gray-300 border-b border-gray-700">
+                    {field.value || "-"}
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* ================= ACTION BUTTONS ================= */}
         <div className="flex gap-4 mt-6">
           <button
+            disabled={userLoading}
             onClick={handleEdit}
             className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
@@ -220,6 +234,7 @@ const DashUserDetails = () => {
           </button>
 
           <button
+            disabled={userLoading}
             onClick={() => handleDeleteClick(id)}
             className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
           >
@@ -239,7 +254,7 @@ const DashUserDetails = () => {
         confirmText="Delete"
         cancelText="Cancel"
         progressText="Deleting..."
-        loading={deleteLoading} // show loading state on confirm button
+        loading={deleteUserLoading} // show loading state on confirm button
       />
     </div>
   );

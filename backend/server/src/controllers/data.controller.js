@@ -63,17 +63,27 @@ const getAllData = async (req, res) => {
   try {
     // ================= PAGINATION =================
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+
+    const files = await DATA.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // latest first
 
     const totalFiles = await DATA.countDocuments();
 
-    const files = await DATA.find()
-      .sort({ createdAt: -1 }) // latest first
-      .skip(skip)
-      .limit(limit);
+    // const totalFilesFetched = await DATA.countDocuments();
 
     const totalPages = Math.ceil(totalFiles / limit);
+
+    // Files added last month
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+    const filesLastMonth = await DATA.countDocuments({
+      createdAt: { $gte: lastMonth },
+    });
 
     return response(res, 200, true, "Files fetched successfully", {
       files,
@@ -81,7 +91,13 @@ const getAllData = async (req, res) => {
         currentPage: page,
         totalPages,
         totalFiles,
+        totalFilesFetched: totalFiles,
         filesPerPage: limit,
+      },
+      stats: {
+        totalFiles,
+        totalFilesFetched: totalFiles, // since we are not applying any filters/search, totalFilesFetched will be same as totalFiles
+        filesLastMonth,
       },
     });
   } catch (error) {

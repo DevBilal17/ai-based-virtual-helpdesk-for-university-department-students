@@ -71,7 +71,7 @@ const getAllFAQS = async (req, res) => {
     const faqs = await FAQ.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ updatedAt: -1 });
 
     // ================= TOTAL COUNTS =================
 

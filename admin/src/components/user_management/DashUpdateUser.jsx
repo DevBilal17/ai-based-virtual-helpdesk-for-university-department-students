@@ -20,7 +20,13 @@ const DashUpdateUser = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { thisUser, loading, error } = useSelector((state) => state.user);
+  const {
+    fetchedUser,
+    userLoading,
+    userError,
+    updateUserLoading,
+    updateUserError,
+  } = useSelector((state) => state.user);
 
   const [role, setRole] = useState("");
   const [department, setDepartment] = useState("IT");
@@ -142,14 +148,13 @@ const DashUpdateUser = () => {
   };
 
   // ================= LOADING =================
-  // if (loading && !thisUser) return <FullScreenLoader />;
-  // if (loading) return <FullScreenLoader />;
+  // if (userLoading) return <FullScreenLoader />;
 
   // ================= ERROR =================
-  if (error) {
+  if (userError) {
     return (
       <div className="text-center mt-10 text-red-500 font-semibold">
-        {error}
+        {userError}
       </div>
     );
   }
@@ -194,7 +199,7 @@ const DashUpdateUser = () => {
         </div>
 
         {/* Form */}
-        {loading ? (
+        {userLoading ? (
           <div className="flex items-center justify-center w-full max-w-2xl bg-[#0B0F19] border-2 border-gray-800 rounded-lg p-6 shadow-lg mx-auto">
             <span className="text-gray-400">Loading User's data...</span>
           </div>
@@ -374,10 +379,10 @@ const DashUpdateUser = () => {
               {/* SUBMIT */}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={updateUserLoading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
               >
-                {loading ? "Updating User..." : "Update User"}
+                {updateUserLoading ? "Updating User..." : "Update User"}
               </button>
             </form>
           </div>

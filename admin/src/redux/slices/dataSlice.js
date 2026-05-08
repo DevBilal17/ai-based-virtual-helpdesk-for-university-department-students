@@ -4,23 +4,23 @@ const initialState = {
   // get all files
   files: [],
   pagination: null,
+  stats: null,
   filesLoading: false,
   filesError: null,
 
   // add file
-  loading: false,
-  error: null,
   addedFile: null,
+  addFileLoading: false,
+  addFileError: null,
 
   // delete file
-  deleteLoading: false,
-  deleteError: null,
+  deleteFileLoading: false,
+  deleteFileError: null,
 };
 
 const dataSlice = createSlice({
   name: "data",
   initialState,
-
   reducers: {
     // ================= GET ALL DATA =================
     getAllDataStart: (state) => {
@@ -29,9 +29,10 @@ const dataSlice = createSlice({
     },
 
     getAllDataSuccess: (state, action) => {
-      state.filesLoading = false;
       state.files = action.payload.files;
       state.pagination = action.payload.pagination;
+      state.stats = action.payload.stats;
+      state.filesLoading = false;
     },
 
     getAllDataFailure: (state, action) => {
@@ -41,35 +42,39 @@ const dataSlice = createSlice({
 
     // ================= ADD DATA =================
     addDataStart: (state) => {
-      state.loading = true;
-      state.error = null;
+      state.addFileLoading = true;
+      state.addFileError = null;
     },
 
     addDataSuccess: (state, action) => {
-      state.loading = false;
+      state.addFileLoading = false;
       state.addedFile = action.payload;
+
+      // add new file to list (important)
+      state.files.push(action.payload);
     },
 
     addDataFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.addFileLoading = false;
+      state.addFileError = action.payload;
     },
 
     // ================= DELETE DATA =================
     deleteDataByIdStart: (state) => {
-      state.deleteLoading = true;
-      state.deleteError = null;
+      state.deleteFileLoading = true;
+      state.deleteFileError = null;
     },
 
     deleteDataByIdSuccess: (state, action) => {
-      state.deleteLoading = false;
+      state.deleteFileLoading = false;
 
+      // Remove deleted file from list
       state.files = state.files.filter((file) => file._id !== action.payload);
     },
 
     deleteDataByIdFailure: (state, action) => {
-      state.deleteLoading = false;
-      state.deleteError = action.payload;
+      state.deleteFileLoading = false;
+      state.deleteFileError = action.payload;
     },
   },
 });
