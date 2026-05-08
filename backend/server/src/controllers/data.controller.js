@@ -2,7 +2,8 @@ const response = require("../utils/response");
 const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
 const DATA = require("../models/DATA");
-
+const axios = require("axios");
+const FormData = require("form-data");
 // ================= ADD DATA =================
 const addData = async (req, res) => {
   try {
@@ -37,9 +38,13 @@ const addData = async (req, res) => {
         streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
 
-    const uploadedFile = await uploadToCloudinary();
-
-    const newData = await DATA.create({
+    let uploadedFile = await uploadToCloudinary();
+    //Prepare data for Python RAG Microservice
+    const formData = new FormData();
+    formData.append("file", req.file.buffer, req.file.originalname);
+    formData.append("file_name", file_name.trim());
+    formData.append("mongo_id", "");
+    let newData = await DATA.create({
       file_name: file_name.trim(),
       file_description,
       file_link: uploadedFile.secure_url,
@@ -47,10 +52,43 @@ const addData = async (req, res) => {
       uploaded_by_name: req.user.name,
       uploaded_by_id: req.user.id,
     });
+    // Call Python to process Embeddings
+    // We send the file again so Python can read content locally
+    try {
+      pythonResponse = await axios.post(
+        `${process.env.PYTHON_URL}/documents/upload`,
+        formData,
+        {
+          headers: { ...formData.getHeaders() },
+        },
+      );
+      console.log(pythonResponse);
+    } catch (pyError) {
+      console.error("Python RAG Error:", pyError.message);
 
-    return response(res, 201, true, "File uploaded successfully", {
-      data: newData,
-    });
+      // 1️⃣ Delete from MongoDB
+      if (newData?._id) {
+        await DATA.findByIdAndDelete(newData._id);
+      }
+
+      // 2️⃣ Delete from Cloudinary
+      const publicId = uploadedFile?.public_id;
+
+      if (publicId) {
+        await cloudinary.uploader.destroy(publicId, {
+          resource_type: "raw",
+        });
+      }
+
+      return response(res, 500, false, "Python processing failed");
+    }
+    return response(
+      res,
+      201,
+      true,
+      "File uploaded and RAG indexed successfully",
+      { data: newData },
+    );
   } catch (error) {
     console.error("Add Data Error:", error.message);
 

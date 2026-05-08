@@ -1,12 +1,155 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeItem } from '../../utils/asyncStorage';
+import { router } from "expo-router";
+const Profile = () => {
+ 
+  const user = useSelector((state)=>state.auth.user)
+  const dispatch = useDispatch()
+  
+   const handleLogout = () => {
+      Alert.alert("Logout", "Are you sure you want to sign out?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            await removeItem("loggedIn");
+            await removeItem("active_chat_id");
+            router.replace("/login");
+          },
+        },
+      ]);
+    };
 
-const profile = () => {
+  const MenuOption = ({ icon, title, subtitle, isLast }) => (
+    <TouchableOpacity style={[styles.menuItem, !isLast && styles.menuBorder]}>
+      <View style={styles.menuIconContainer}>
+        <Ionicons name={icon} size={22} color="#635BFF" />
+      </View>
+      <View style={styles.menuTextContainer}>
+        <Text style={styles.menuTitle}>{title}</Text>
+        {subtitle && <Text style={styles.menuSubtitle}>{subtitle}</Text>}
+      </View>
+      <Ionicons name="chevron-forward" size={18} color="rgba(255,255,255,0.3)" />
+    </TouchableOpacity>
+  );
+
   return (
-    <View>
-      <Text>profile</Text>
-    </View>
-  )
-}
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header / ID Card Section */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Student Profile</Text>
+          <TouchableOpacity style={styles.editButton}>
+            <Ionicons name="pencil" size={18} color="white" />
+          </TouchableOpacity>
+        </View>
 
-export default profile
+        <GlassmorphismCard  gradientStyle={styles.cardGradient}>
+         <View style={styles.profileCard}>
+           <View style={styles.avatarContainer}>
+            <Image 
+              source={require("../../assets/images/profile-img.png")} 
+              style={styles.avatar} 
+            />
+            <View style={styles.statusBadge} />
+          </View>
+          
+          <Text style={styles.userName}>{user.name}</Text>
+          <View style={styles.roleBadge}>
+             <Text style={styles.roleText}>{user.role}</Text>
+          </View>
+
+          <View style={styles.infoGrid}>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Reg. Number</Text>
+              <Text style={styles.infoValue}>{user.registrationNumber}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Department</Text>
+              <Text style={styles.infoValue}>{user.department}</Text>
+            </View>
+          </View>
+         </View>
+        </GlassmorphismCard>
+
+        {/* Account Settings */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Account Settings</Text>
+          <GlassmorphismCard style={styles.menuCard} gradientStyle={styles.menuGradient}>
+            <MenuOption icon="mail-outline" title="Email" subtitle={user.email} />
+            <MenuOption icon="shield-checkmark-outline" title="Privacy & Security" isLast={true}/>
+            {/* <MenuOption icon="notifications-outline" title="Notifications" isLast={true} /> */}
+          </GlassmorphismCard>
+        </View>
+
+        {/* Support Section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Support</Text>
+          <GlassmorphismCard style={styles.menuCard} gradientStyle={styles.menuGradient}>
+            <MenuOption icon="help-buoy-outline" title="Help Center" />
+            <MenuOption icon="document-text-outline" title="Terms of Service" isLast={true} />
+          </GlassmorphismCard>
+        </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <LinearGradient
+            colors={['#EF4444', '#991B1B']}
+            style={styles.logoutGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+          >
+            <Ionicons name="log-out" size={20} color="white" style={{ marginRight: 10 }} />
+            <Text style={styles.logoutText}>Sign Out</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#0C1013", paddingHorizontal: 20 , },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 20 },
+  headerTitle: { color: 'white', fontSize: 24, fontWeight: '700' },
+  editButton: { backgroundColor: '#1C2D47', padding: 10, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  
+  profileCard: { borderRadius: 24,  padding:20,alignItems: 'center' },
+  cardGradient: { padding: 25, borderRadius: 24 },
+  avatarContainer: { position: 'relative', marginBottom: 15 },
+  avatar: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: '#635BFF' },
+  statusBadge: { position: 'absolute', bottom: 5, right: 5, width: 18, height: 18, borderRadius: 9, backgroundColor: '#10B981', borderWidth: 3, borderColor: '#1C2D47' },
+  
+  userName: { color: 'white', fontSize: 20, fontWeight: '700', marginBottom: 5 },
+  roleBadge: { backgroundColor: 'rgba(99, 91, 255, 0.2)', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20, marginBottom: 20 },
+  roleText: { color: '#635BFF', fontSize: 12, fontWeight: '600', textTransform: 'uppercase' },
+  
+  infoGrid: { flexDirection: 'row', width: '100%', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.1)', paddingTop: 20 },
+  infoItem: { flex: 1, alignItems: 'center' },
+  infoLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 12, marginBottom: 5 },
+  infoValue: { color: 'white', fontSize: 13, fontWeight: '600' },
+
+  sectionContainer: { marginTop: 30 },
+  sectionTitle: { color: 'rgba(255,255,255,0.5)', fontSize: 14, fontWeight: '600', marginBottom: 15, marginLeft: 5, textTransform: 'uppercase', letterSpacing: 1 },
+  menuCard: { borderRadius: 20, overflow: 'hidden' },
+  menuGradient: { paddingHorizontal: 15 },
+  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15 },
+  menuBorder: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  menuIconContainer: { width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(99, 91, 255, 0.1)', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  menuTextContainer: { flex: 1 },
+  menuTitle: { color: 'white', fontSize: 16, fontWeight: '500' },
+  menuSubtitle: { color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 2 },
+
+  logoutButton: { marginTop: 40, marginBottom: 20, borderRadius: 16, overflow: 'hidden' },
+  logoutGradient: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 15 },
+  logoutText: { color: 'white', fontSize: 16, fontWeight: '700' },
+});
+
+export default Profile;

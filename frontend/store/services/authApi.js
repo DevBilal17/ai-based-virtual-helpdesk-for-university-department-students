@@ -1,12 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from "../../utils/constants";
 
 export const authApi = createApi({
   reducerPath: "authApi",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://10.173.231.123:5000/api/", 
-    
+    baseUrl: `${BASE_URL}/api/`,
+
     prepareHeaders: async (headers) => {
       const token = await AsyncStorage.getItem("token");
       if (token) {
@@ -53,15 +54,22 @@ export const authApi = createApi({
       }),
     }),
 
-
     // New Password
-    newPassword : builder.mutation({
-      query:(body)=>({
-        url:"auth/change-password",
-        method:"POST",
-        body
-      })
-    })
+    newPassword: builder.mutation({
+      query: (body) => ({
+        url: "auth/change-password",
+        method: "POST",
+        body,
+      }),
+    }),
+
+     // ================= GET PROFILE =================
+    getProfile: builder.query({
+      query: () => ({
+        url: "users/profile",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -70,5 +78,6 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
-  useNewPasswordMutation
+  useNewPasswordMutation,
+  useGetProfileQuery
 } = authApi;

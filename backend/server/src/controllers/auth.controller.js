@@ -52,6 +52,7 @@ const login = async (req, res) => {
         role: user.role,
         registrationNumber: user.registrationNumber || null,
         email: user.email,
+        department : user.department
         // profileImage: user.profileImage,
       },
     });
@@ -79,7 +80,7 @@ const sendOtp = async (req, res) => {
     const otp = user.generateOTP();
 
     // Save hashed OTP + expiry
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     // Send email
     const html = otpTemplate(user.name, otp);
@@ -148,7 +149,7 @@ const verifyOtp = async (req, res) => {
     user.otpAttempts = 0;
     user.otp = null;
     user.otpExpiry = null;
-    await user.save();
+    await user.save({validateBeforeSave: false});
 
     return response(res, 200, true, "OTP verified successfully", { email });
   } catch (error) {
@@ -171,7 +172,7 @@ const changePassword = async (req, res) => {
       return response(res, 400, false, "User not exist");
     }
     user.password = password;
-    user.save();
+    user.save({validateBeforeSave: false});
     return response(res, 200, true, "Password reset successfully");
   } catch (error) {
     console.error("Create Admin Error:", error.message);
@@ -222,10 +223,36 @@ const adminChangePassword = async (req, res) => {
   }
 };
 
+// ================= GET LOGGED IN USER PROFILE =================
+const getProfile = async (req, res) => {
+  try {
+    // req.user comes from auth middleware
+    const userId = req.user.id;
+
+    // ================= FIND USER =================
+    const user = await User.findById(userId).select("-password");
+
+    // ================= USER NOT FOUND =================
+    if (!user) {
+      return response(res, 404, false, "User not found");
+    }
+
+    // ================= SUCCESS =================
+    return response(res, 200, true, "Profile fetched successfully", {
+      user,
+    });
+  } catch (error) {
+    console.error("Get Profile Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
 module.exports = {
   login,
   sendOtp,
   verifyOtp,
   changePassword,
   adminChangePassword,
+  getProfile
 };

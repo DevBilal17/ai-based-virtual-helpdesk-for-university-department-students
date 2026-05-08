@@ -7,7 +7,7 @@ from langchain_chroma import Chroma
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough,RunnableParallel
 
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 
@@ -105,24 +105,34 @@ Return ONLY JSON in this format:
         )
 
         # 5. Chain 
-        chain = (
-            {
-                "context": retriever,
-                "question": RunnablePassthrough()
-            }
-            | prompt
-            | llm
-            | JsonOutputParser()
+        # 5. Advanced Chain Structure
+        # We use RunnableParallel to get the context docs AND the LLM response at once
+        map_chain = RunnableParallel(
+            {"context": retriever, "question": RunnablePassthrough()}
         )
+        
+        # This part generates the JSON
+        generation_chain = prompt | llm | JsonOutputParser()
 
         # 6. Run Query
-        answer = chain.invoke(query)
-
+        # 6. Run Execution
+        # First, find the docs
+        input_data = map_chain.invoke(query)
+        # Second, generate answer based on those docs
+        ai_json_response = generation_chain.invoke(input_data)
+        # 7. Extract Source Names from the retrieved docs
+        source_files = list(set([
+            doc.metadata.get("source", "Unknown") 
+            for doc in input_data["context"]
+        ]))
         return APIResponse(
             statusCode=200,
             success=True,
             message="Query processed successfully",
-            data={"answer": answer}
+            data={
+                "answer": ai_json_response, # This is your JSON {answer, code, etc.}
+                "sources": source_files    # Now you actually have the sources!
+            }
         )
 
     except Exception as e:

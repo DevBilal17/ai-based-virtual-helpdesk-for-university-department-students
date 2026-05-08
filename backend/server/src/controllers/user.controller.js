@@ -354,10 +354,73 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+
+// ================= REGISTER ADMIN =================
+const registerAdmin = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      department,
+      designation,
+    } = req.body;
+
+    // Check required fields
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !department ||
+      !designation
+    ) {
+      return response(res, 400, false, "All fields are required");
+    }
+
+    // Check existing admin
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return response(res, 400, false, "Admin already exists");
+    }
+
+    // Create admin
+    const admin = await User.create({
+      name,
+      email,
+      password,
+      department,
+      designation,
+      role: "admin",
+    });
+
+    return response(res, 201, true, "Admin created successfully", {
+      admin: {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
+        department: admin.department,
+        designation: admin.designation,
+      },
+    });
+  } catch (error) {
+    console.error("Register Admin Error:", error.message);
+
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
+
+
+
+
 module.exports = {
   createUser,
   updateUserById,
   deleteUserById,
   getUserById,
   getAllUsers,
+  registerAdmin,
+
 };
