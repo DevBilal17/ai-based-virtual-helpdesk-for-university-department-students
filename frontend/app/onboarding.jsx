@@ -7,13 +7,14 @@ import { setItem } from "../utils/asyncStorage";
 import { SafeAreaView } from "react-native-safe-area-context";
 const onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const handleSkip = () => {
-    setItem("onboardingCompleted", "true");
-    router.replace("/login"); // ← use replace to prevent back navigation
+const handleSkip = async () => {
+    await setItem("onboardingCompleted", "true");
+    router.replace("/login");
   };
-  const handleDone = () => {
-    setItem("onboardingCompleted", "true");
-    router.replace("/login"); // ← use replace to prevent back navigation
+
+  const handleDone = async () => {
+    await setItem("onboardingCompleted", "true");
+    router.replace("/login");
   };
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>

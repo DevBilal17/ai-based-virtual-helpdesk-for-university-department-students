@@ -8,15 +8,15 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import GlassmorphismCard from "../components/GlassmorphismCard/GlassmorphismCard";
+import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { useForm } from "react-hook-form";
-import LinearGradientFormSubmitButton from "../components/Forms/LinearGradientFormSubmitButton";
+import LinearGradientFormSubmitButton from "../../components/Forms/LinearGradientFormSubmitButton";
 import { router, useLocalSearchParams } from "expo-router";
-import GlassmorphismOtpInput from "../components/Forms/GlassmorphismOtpInput";
+import GlassmorphismOtpInput from "../../components/Forms/GlassmorphismOtpInput";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { getItem } from "../utils/asyncStorage";
-import { useVerifyOtpMutation } from "../store/services/authApi";
+import { getItem } from "../../utils/asyncStorage";
+import { useVerifyOtpMutation } from "../../store/services/authApi";
 import Toast from "react-native-toast-message";
 const VerificationCode = () => {
   const { email } = useLocalSearchParams();
@@ -98,7 +98,7 @@ const VerificationCode = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar />
       <ImageBackground
-        source={require("../assets/images/on-boarding-bg-1.png")}
+        source={require("../../assets/images/on-boarding-bg-1.png")}
         style={styles.container}
       >
         {/* Back Button */}

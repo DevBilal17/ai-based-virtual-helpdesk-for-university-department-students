@@ -1,219 +1,255 @@
-import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, Image, ScrollView, Dimensions } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard'
-import { Ionicons } from '@expo/vector-icons'
-import ModuleBox from '../../components/Home/ModuleBox'
-import HistoryChatBox from '../../components/Home/HistoryChatBox'
-import { router } from 'expo-router'
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Platform,
+  ScrollView,
+  Dimensions,
+} from "react-native";
+import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
+import { Ionicons } from "@expo/vector-icons";
+import ModuleBox from "../../components/Home/ModuleBox";
+import HistoryChatBox from "../../components/Home/HistoryChatBox";
+import { router } from "expo-router";
+import { Alert } from "react-native";
+import { removeItem } from "../../utils/asyncStorage";
+import { useSelector } from "react-redux";
 
-const {width,height} = Dimensions.get("window")
-const index = () => {
+const { width } = Dimensions.get("window");
+
+const Home = () => {
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to sign out?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: async () => {
+          await removeItem("loggedIn");
+          await removeItem("active_chat_id");
+          router.replace("/login");
+        },
+      },
+    ]);
+  };
+
   return (
-    <ImageBackground source={require("../../assets/images/on-boarding-bg-1.png")} style={{flex:1}}>
-      <SafeAreaView style={styles.container}>
-        {/* Header View */}
-        <View style={styles.headerViewContainer}>
-          <TouchableOpacity>
-          <GlassmorphismCard
-            style={{ borderRadius: 20, height: 40, width: 40 }}
-            gradientStyle={{
-              height: 40,
-              width: 40,
-              paddingHorizontal: 0,
-              paddingVertical: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="menu-outline" size={20} color="white" />
-          </GlassmorphismCard>
-        </TouchableOpacity>
+    // Updated background logic to match your dark navy theme
+    <View style={{ flex: 1, backgroundColor: "#0C1013" }}>
+      <ImageBackground
+        source={require("../../assets/images/on-boarding-bg-1.png")}
+        style={{ flex: 1 }}
+        imageStyle={{ opacity: 0.4 }} // Lowered opacity to make the UI pop
+        blurRadius={Platform.OS === "ios" ? 60 : 30}
+      >
+        <SafeAreaView style={styles.container}>
+          {/* Header */}
+          <View style={styles.headerViewContainer}>
+            <TouchableOpacity onPress={() => router.push("/profile")}>
+              <GlassmorphismCard
+                style={styles.headerIconCard}
+                gradientStyle={styles.headerIconGradient}
+              >
+                <Ionicons name="grid-outline" size={20} color="white" />
+              </GlassmorphismCard>
+            </TouchableOpacity>
 
-         <View style={styles.onlineTextContainer}>
-           <View style={styles.onlineCircle}></View>
-           <Text style={styles.onlineText}>
-            Online
-           </Text>
-         </View>
+            <View style={styles.onlineStatusContainer}>
+              <View style={styles.pulseDot} />
+              <Text style={styles.onlineText}>AI SYSTEM ONLINE</Text>
+            </View>
 
-         <TouchableOpacity>
-          <GlassmorphismCard
-            style={{ borderRadius: 20, height: 40, width: 40 }}
-            gradientStyle={{
-              height: 40,
-              width: 40,
-              paddingHorizontal: 0,
-              paddingVertical: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow:"hidden"
-            }}
-          >
-            <Image source={require("../../assets/images/profile-img.png")} style={{
-              flex:1
-            }}   
-            resizeMode='cover'
-            />
-          </GlassmorphismCard>
-        </TouchableOpacity>
-        </View>
-
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Greeting View */}
-        <View style={styles.greetingContainer}>
-          <View style={styles.greetingNameTextContainer}>
-            <Text style={styles.greetingText}>Hi, Ali</Text>
-            <Image source={require("../../assets/icons/hand.png")} 
-             style={{width:30,height:38}}
-            />
-          </View>
-          <Text style={styles.greetingText}>How may I help you ?</Text>
-        </View>
-
-
-        {/* ModuleGrid View */}
-        <View style={styles.moduleGridContainer}>
-          <ModuleBox image={"speaking"} style={{height:250,width:width*0.5}} gradientColors={["#023E8A", "#011024"]} text={"Talk with Bot"}
-          onPress={()=>router.push("/chat")}
-          />
-          <View style={styles.moduleGridSubContainer}>
-            <ModuleBox image={"communication"} style={{height:119}} gradientColors={["#48CAE4", "#48CAE4"]} 
-            textStyle={{fontSize:16}}
-            text={"Chat with bot"}
-             onPress={()=>router.push("/chat")}
-            />
-            <ModuleBox image={"address"} style={{height:119}}  gradientColors={["#0077B6", "#0077B6"]}
-            textStyle={{fontSize:16}}
-            text={"Find Location"}
-             onPress={()=>router.push("/location")}
-            />
-          </View>
-        </View>
-
-
-
-        {/* History of Chats View */}
-        <View style={styles.historyContainer}>
-          <View style={styles.historyHeaderContainer}>
-            <Text style={styles.historyHeaderTitle}>History</Text>
-            <TouchableOpacity style={styles.showAll}>
-              <Text style={styles.showAllText}>See all</Text>
+            <TouchableOpacity onPress={handleLogout}>
+              <GlassmorphismCard
+                style={styles.headerIconCard}
+                gradientStyle={styles.headerIconLogoutGradient}
+              >
+                <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+              </GlassmorphismCard>
             </TouchableOpacity>
           </View>
-          {/* Chat List */}
-          <View style={{
-            paddingVertical:10,
-            gap:10,
-            paddingBottom:30
-          }}>
-            <HistoryChatBox/>
-            <HistoryChatBox/>
-            <HistoryChatBox/>
-            <HistoryChatBox/>
-            <HistoryChatBox/>
-            <HistoryChatBox/>
-          </View>
-        </View>
-        </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
-  )
-}
 
-export default index
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 40 }}
+          >
+            {/* Greeting */}
+            <View style={styles.greetingContainer}>
+              <View style={styles.greetingRow}>
+                <Text style={styles.greetingText}>
+                  Hi, {user?.name?.split(" ")[0]}
+                </Text>
+                <Image
+                  source={require("../../assets/icons/hand.png")}
+                  style={styles.handIcon}
+                />
+              </View>
+              <Text style={styles.subGreetingText}>
+                AI Desk is ready to assist you.
+              </Text>
+            </View>
 
+            {/* Premium Module Grid */}
+            <View style={styles.moduleGridContainer}>
+              <ModuleBox
+                image={"speaking"}
+                style={styles.largeModule}
+                // Using your brand purple with a deep navy mix
+                gradientColors={["#635BFF", "#1C2D47"]}
+                text={"Voice\nInteraction"}
+                onPress={() => router.push("/voice")}
+              />
+
+              <View style={styles.smallModuleColumn}>
+                <ModuleBox
+                  image={"communication"}
+                  style={styles.smallModule}
+                  gradientColors={["#1C2D47", "#2E3B52"]}
+                  text={"Chat Helper"}
+                  onPress={() => router.push("/chat")}
+                />
+                <ModuleBox
+                  image={"address"}
+                  style={styles.smallModule}
+                  gradientColors={["#1C2D47", "#2E3B52"]}
+                  text={"Find Office"}
+                  onPress={() => router.push("/location")}
+                />
+              </View>
+            </View>
+
+            {/* History Section */}
+            <View style={styles.historyContainer}>
+              <View style={styles.historyHeader}>
+                <Text style={styles.sectionTitle}>Recent Conversations</Text>
+                <TouchableOpacity>
+                  <Text style={styles.seeAllText}>See all</Text>
+                </TouchableOpacity>
+              </View>
+
+             <View style={styles.historyListContainer}>
+               <GlassmorphismCard
+                style={styles.historyListCard}
+                gradientStyle={styles.historyListGradient}
+              >
+                <HistoryChatBox title="Attendance Policy Query" date="Today" />
+              </GlassmorphismCard>
+
+              <GlassmorphismCard>
+                <HistoryChatBox
+                  title="Library Working Hours"
+                  date="Yesterday"
+                />
+              </GlassmorphismCard>
+              <GlassmorphismCard>
+                <HistoryChatBox title="Fee Structure 2026" date="2 days ago" />
+              </GlassmorphismCard>
+             </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </ImageBackground>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 14,
-    flex: 1,
-    // paddingVertical: 20,
-    paddingTop:20
+  container: { flex: 1, paddingHorizontal: 20, paddingTop: 10 },
+  headerViewContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    width: "100%",
   },
-  headerViewContainer : {
+  headerIconCard: { borderRadius: 14, height: 48, width: 48 },
+  headerIconGradient: {
+    height: 48,
+    width: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerIconLogoutGradient: {
+    height: 48,
+    width: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(239, 68, 68, 0.1)",
+  },
+
+  onlineStatusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#1C2D47",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  pulseDot: {
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    backgroundColor: "#635BFF",
+    shadowColor: "#635BFF",
+    shadowRadius: 10,
+    shadowOpacity: 1,
+    elevation: 8,
+  },
+  onlineText: {
+    fontSize: 10,
+    color: "#fff",
+    fontWeight: "800",
+    letterSpacing: 1,
+  },
+
+  greetingContainer: { marginBottom: 30 },
+  greetingRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  handIcon: { width: 30, height: 30 },
+  greetingText: { fontSize: 32, color: "#fff", fontWeight: "800" },
+  subGreetingText: {
+    fontSize: 16,
+    color: "rgba(255,255,255,0.5)",
+    marginTop: 5,
+    fontWeight: "500",
+  },
+
+  moduleGridContainer: { flexDirection: "row", gap: 15, height: 252 },
+  largeModule: { height: 250, flex: 1.2, borderRadius: 28 },
+  smallModuleColumn: { flex: 1, gap: 15 },
+  smallModule: { flex: 1, borderRadius: 22 },
+
+  historyContainer: { marginTop: 20 },
+  historyHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  sectionTitle: { fontSize: 18, color: "#fff", fontWeight: "700" },
+  seeAllText: { fontSize: 14, color: "#635BFF", fontWeight: "700" },
+
+  // New Styles for History Container
+  historyListCard: { borderRadius: 24, overflow: "hidden" },
+  historyListGradient: { padding: 15 },
+  historyListContainer:{
     display:"flex",
-    flexDirection:"row",
-    alignItems:"center",
-    justifyContent:"space-between",
-    paddingBottom:20
+    gap:12
   },
-  onlineTextContainer:{
-     display:"flex",
-    flexDirection:"row",
-    alignItems:"center",
-    gap:5
+  divider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    marginVertical: 5,
   },
-  onlineCircle:{
-    height:4,
-    width:4,
-    borderRadius:2,
-    backgroundColor:"#3971F3",
+});
 
-  },
-  onlineText:{
-    fontSize:12,
-    fontFamily:"Roboto",
-    color:"#C0C0C0"
-  },
-
-
-  // Greetings
-  greetingContainer:{
-    // paddingLeft:20,
-    // marginTop:20
-  },
-  greetingNameTextContainer:{
-    display:"flex",
-    flexDirection:"row",
-    alignItems:"center",
-    gap:14
-  },
-  greetingText:{
-    fontSize:24,
-    color:"#fff",
-    fontWeight:"medium"
-  },
-
-
-  // ModuleGrid View
-  moduleGridContainer:{
-    display:"flex",
-    flexDirection:"row",
-    // justifyContent:"space-between",
-    height:250,
-    width:420,
-    gap:12,
-    marginTop:20
-    // backgroundColor:"red",
-  },
-  moduleGridSubContainer:{
-    gap:12,
-    width:width * 0.4 - 10
-  },
-
-
-  // History View
-  historyContainer:{
-    marginTop:10
-  },
-  historyHeaderContainer:{
-    display:"flex",
-    flexDirection:"row",
-    justifyContent:"space-between",
-    // paddingHorizontal:20
-  },
-  historyHeaderTitle:{
-    fontSize:20,
-    color:"#fff",
-    fontFamily:"Roboto",
-  },
-  showAllText:{
-    fontSize:14,
-     color:"#A29F9F",
-    fontFamily:"Roboto",
-  }
-})
+export default Home;

@@ -1,4 +1,4 @@
-import { View, Text, Image, Dimensions } from "react-native";
+import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import TypeWriter from "react-native-typewriter";
 
@@ -14,72 +14,91 @@ const MessageBox = ({
   const [typing, setTyping] = useState(0);
 
   useEffect(() => {
-    if (!isUser && isTyping) {
-      setTyping(1); // start typing animation
+    if (!isUser) {
+      setTyping(1); // Auto-start typewriter for AI responses
     }
-  }, [isTyping]);
+  }, [answer]);
 
   return (
     <View
-      style={{
-        backgroundColor: "#36383D",
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: isUser ? 10 : 0,
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: isUser ? 0 : 10,
-        flexDirection: "row",
-        gap: 12,
-        padding: 10,
-        maxWidth: SCREEN_WIDTH * 0.9,
-        minWidth: 120,
-        alignSelf: isUser ? "flex-end" : "flex-start",
-      }}
+      style={[
+        styles.bubbleContainer,
+        isUser ? styles.userBubble : styles.botBubble,
+      ]}
     >
-      <Image
-        source={image}
-        style={{
-          height: 24,
-          width: 24,
-          borderRadius: 12,
-        }}
-        resizeMode="cover"
-      />
+      {/* 1. Show AI Avatar on the LEFT */}
+      {!isUser && (
+        <Image source={image} style={styles.avatar} resizeMode="cover" />
+      )}
 
-      <View style={{ gap: 6, flexShrink: 1 }}>
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: "500",
-            color: "#aaa",
-          }}
-        >
-          {isUser ? "You" : "AI Helpdesk"}
+      <View style={{ gap: 4, flex: 1 }}>
+        <Text style={[styles.senderName, { textAlign: isUser ? "right" : "left" }]}>
+          {isUser ? "You" : "AI Assistant"}
         </Text>
 
         {isUser ? (
-          <Text
-            style={{
-              fontSize: 16,
-              color: "#fff",
-            }}
-          >
-            {question}
-          </Text>
+          <Text style={styles.messageText}>{question}</Text>
         ) : (
           <TypeWriter
             typing={typing}
-            maxDelay={20} // speed
-            style={{
-              fontSize: 16,
-              color: "#fff",
-            }}
+            maxDelay={15} // Slightly faster for better UX
+            style={styles.messageText}
+            onTypingEnd={() => console.log("Done")}
           >
             {answer}
           </TypeWriter>
         )}
       </View>
+
+      {/* 2. Show User Avatar on the RIGHT */}
+      {isUser && (
+        <Image source={image} style={styles.avatar} resizeMode="cover" />
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  bubbleContainer: {
+    flexDirection: "row",
+    gap: 12,
+    padding: 12,
+    maxWidth: SCREEN_WIDTH * 0.85,
+    borderRadius: 20,
+    marginVertical: 4,
+  },
+  userBubble: {
+    alignSelf: "flex-end",
+    backgroundColor: "#1E2022", // Darker, sleek charcoal
+    borderBottomRightRadius: 4, // Sharp corner for user
+    borderWidth: 1,
+    borderColor: "#2A2D30",
+  },
+  botBubble: {
+    alignSelf: "flex-start",
+    backgroundColor: "#2C2E33", // Slightly lighter to distinguish
+    borderBottomLeftRadius: 4, // Sharp corner for bot
+    borderWidth: 1,
+    borderColor: "rgba(0, 255, 204, 0.2)", // Subtle AI-themed glow border
+  },
+  avatar: {
+    height: 32,
+    width: 32,
+    borderRadius: 16,
+    marginTop: 4,
+  },
+  senderName: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#00ffcc", // Electric cyan for names to look "techy"
+    marginBottom: 2,
+    opacity: 0.8,
+  },
+  messageText: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#fff",
+  },
+});
 
 export default MessageBox;

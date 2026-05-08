@@ -38,11 +38,19 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "@react-native-voice/voice",
+        {
+          "microphonePermission": "Allow AI Desk Helper to access the microphone for voice queries.",
+          "speechRecognitionPermission": "Allow AI Desk Helper to convert your speech into text."
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "tsconfigPaths": true
     }
   }
 }

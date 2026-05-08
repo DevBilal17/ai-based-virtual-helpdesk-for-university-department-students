@@ -7,7 +7,7 @@ const {width,height} = Dimensions.get("window")
 const HistoryChatBox = () => {
   return (
     <View style={{width:width*0.92,
-    height:90,backgroundColor:"#353539",paddingHorizontal:12,paddingVertical:18,display:"flex",flexDirection:"row",alignItems:"center",borderRadius:10}}>
+    paddingHorizontal:16,paddingVertical:18,display:"flex",flexDirection:"row",alignItems:"center",borderRadius:10}}>
        <Ionicons name="chatbubble-outline" size={40} color={"white"} />
        <View style={
         {
@@ -58,9 +58,9 @@ const HistoryChatBox = () => {
             }>22:10</Text>
             <Ionicons name='chevron-forward' size={20} color={"white"} />
           </View>
-          <Image source={require("../../assets/icons/more-horizontal.png")} style={{
+          {/* <Image source={require("../../assets/icons/more-horizontal.png")} style={{
             marginLeft:"auto",
-          }} />
+          }} /> */}
        </View>
     </View>
   )

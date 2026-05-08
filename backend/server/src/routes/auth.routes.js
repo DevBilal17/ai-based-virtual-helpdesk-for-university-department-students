@@ -14,7 +14,9 @@ const {
   verifyOtp,
   changePassword,
   adminChangePassword,
+  getProfile,
 } = require("../controllers/auth.controller");
+const { registerAdmin } = require("../controllers/user.controller");
 
 const router = express.Router();
 
@@ -42,5 +44,12 @@ router.post(
   validateRequest,
   adminChangePassword,
 );
+
+
+// Register an admin
+router.post("/register-admin", registerAdmin);
+
+// ================= GET PROFILE =================
+router.get("/profile",protect, getProfile);
 
 module.exports = router;

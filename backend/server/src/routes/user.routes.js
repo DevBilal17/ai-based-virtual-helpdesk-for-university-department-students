@@ -16,6 +16,7 @@ const {
   deleteUserById,
   getUserById,
   getAllUsers,
+  registerAdmin,
 } = require("../controllers/user.controller");
 
 const router = express.Router();
@@ -58,7 +59,7 @@ router.delete(
 router.get(
   "/get-user/:id",
   protect,
-  authorize("admin"),
+  authorize("admin","student"),
   getUserByIdValidator,
   validateRequest,
   getUserById,
@@ -73,5 +74,9 @@ router.get(
   validateRequest,
   getAllUsers,
 );
+
+
+
+
 
 module.exports = router;

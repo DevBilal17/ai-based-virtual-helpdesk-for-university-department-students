@@ -12,6 +12,8 @@ import { setItem } from "../../utils/asyncStorage";
 import { useLoginMutation } from "../../store/services/authApi";
 import Toast from "react-native-toast-message";
 import GlassmorphismInput from "./GlassmorphismInput";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../store/slices/authSlice";
 
 export default function LoginForm() {
   const {
@@ -26,6 +28,7 @@ export default function LoginForm() {
   });
 
   const [login, { isLoading, error }] = useLoginMutation();
+  const dispatch = useDispatch();
   const onSubmit = async (data) => {
     try {
       console.log("Form Data:", data);
@@ -35,10 +38,17 @@ export default function LoginForm() {
 
       // Save token in AsyncStorage
       await setItem("token", response.data.token);
-      await setItem("user", response?.data?.user.id);
+      await setItem("user", JSON.stringify(response?.data?.user));
       if (data.remember == "true") {
         await setItem("loggedIn", "true");
       }
+      // redux state
+      dispatch(
+        setCredentials({
+          user: response?.data?.user,
+          token: response.data.token,
+        }),
+      );
       console.log("Login Success");
       Toast.show({
         type: "success",
@@ -48,7 +58,7 @@ export default function LoginForm() {
       // Navigate to home screen
       router.replace("/");
     } catch (err) {
-      console.log(err)
+      console.log(err);
       console.log("Login Failed ", err?.data?.message);
 
       Toast.show({

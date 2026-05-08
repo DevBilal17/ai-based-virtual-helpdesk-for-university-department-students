@@ -1,66 +1,98 @@
 import { Stack } from "expo-router";
-
 import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 import "../global.css";
-import { getItem, removeItem } from "../utils/asyncStorage";
-import { Provider } from "react-redux";
+
+import { getItem } from "../utils/asyncStorage";
+
+import { Provider, useDispatch } from "react-redux";
 import { store } from "../store/store";
+
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
-export default function RootLayout() {
+
+import { setCredentials } from "../store/slices/authSlice";
+
+function AppContent() {
   const [isShowOnboarding, setIsShowOnboarding] = useState(null);
 
-  useEffect(()=>{
-    //  resetOnBoarding()
-     resetLoggedIn()
-  },[])
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    checkOnboardingStatus();
+    const initializeApp = async () => {
+      try {
+        // onboarding
+        const status = await getItem("onboardingCompleted");
+
+        setIsShowOnboarding(status !== "true");
+
+        // restore auth
+        const token = await getItem("token");
+        const user = await getItem("user");
+
+        if (token && user) {
+          dispatch(
+            setCredentials({
+              token,
+              user: JSON.parse(user),
+            })
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    initializeApp();
   }, []);
 
-  const resetOnBoarding = async()=>{
-    await removeItem("onboardingCompleted");
-  }
-  const resetLoggedIn = async()=>{
-    await removeItem("loggedIn")
-  }
-
-  const checkOnboardingStatus = async () => {
-    let status = await getItem("onboardingCompleted");
-
-    if (status === "true") {
-      setIsShowOnboarding(false);
-    } else {
-      setIsShowOnboarding(true);
-    }
-  };
-
   if (isShowOnboarding === null) {
-    return null; //or loading indicator
-  }
-
-  if (!isShowOnboarding) {
     return (
-      <Provider store={store}>
-        <Stack
-        initialRouteName="login"
-        screenOptions={{
-          headerShown: false,
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#000",
         }}
-        
-      />
-      <Toast config={toastConfig} topOffset={10}/>
-      </Provider>
+      >
+        <ActivityIndicator size="large" color="#00ffcc" />
+      </View>
     );
   }
+
+  return (
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* ONBOARDING */}
+        {isShowOnboarding ? (
+          <Stack.Screen name="onboarding" />
+        ) : (
+          <Stack.Screen name="(auth)/login" />
+        )}
+
+        {/* AUTH */}
+        <Stack.Screen name="(auth)/verificationcode" />
+        <Stack.Screen name="(auth)/resetpassword" />
+        <Stack.Screen name="(auth)/newpassword" />
+
+        {/* TABS */}
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+      </Stack>
+
+      <Toast config={toastConfig} topOffset={50} />
+    </>
+  );
+}
+
+export default function RootLayout() {
   return (
     <Provider store={store}>
-      <Stack
-      initialRouteName="onboarding"
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
-    <Toast config={toastConfig}/>
+      <AppContent />
     </Provider>
   );
 }
@@ -70,14 +102,6 @@ const toastConfig = {
     <BaseToast
       {...props}
       style={{ borderLeftColor: "green", height: 80 }}
-      contentContainerStyle={{ paddingHorizontal: 15 }}
-      text1Style={{
-        fontSize: 18,
-        fontWeight: "bold",
-      }}
-      text2Style={{
-        fontSize: 16,
-      }}
     />
   ),
 
@@ -85,13 +109,6 @@ const toastConfig = {
     <ErrorToast
       {...props}
       style={{ borderLeftColor: "red", height: 80 }}
-      text1Style={{
-        fontSize: 18,
-        fontWeight: "bold",
-      }}
-      text2Style={{
-        fontSize: 16,
-      }}
     />
   ),
 };

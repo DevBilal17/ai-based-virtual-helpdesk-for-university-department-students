@@ -25,13 +25,17 @@ async def upload_file_controller(file):
 
         embeddings = create_embeddings(file_chunks)
 
-        store_embeddings(file_chunks, embeddings, result.get("fileName"))
+        chunk_count = store_embeddings(file_chunks, embeddings, result.get("fileName"))
 
         return APIResponse(
-            statusCode=200,
+            statusCode=201, # 201 is the standard HTTP code for "Created"
             success=True,
-            message="File uploaded successfully, Embeddings Created and Stored in Vector DB",
-            data={"fileName": result.get("fileName")}
+            message="Document indexed successfully",
+            data={
+                "fileName": result.get("fileName"),
+                "totalChunks": chunk_count, # Show how many pieces the AI broke the file into
+                "status": "active"
+            }
         )
 
     except Exception as e:
