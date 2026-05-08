@@ -1,4 +1,4 @@
-import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { View, TextInput, StyleSheet, TouchableOpacity, Platform } from "react-native";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -12,54 +12,77 @@ const GlassmorphismInput = ({
   keyboardType,
   placeholder,
   iconName,
+  iconColor,
   autoCapitalize = "none",
-  isPassword = false, // Add prop to indicate password
+  isPassword = false,
   isTouchable,
   onTouchableIconPress
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [isFocused, setIsFocused] = useState(false);
+const getIconColor = () => {
+    if (iconColor) return iconColor; // Use passed color (e.g., Red for recording)
+    if (value?.length > 0) return "#635BFF"; // Brand Purple when text exists
+    return "white";
+  };
   return (
-    <View style={[styles.container]}>
-      <BlurView intensity={15} style={styles.glass}>
+    <View style={[styles.container, isFocused && styles.focusedContainer]}>
+      <BlurView intensity={25} style={styles.glass}>
         <LinearGradient
-          colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 1 }}
+          colors={
+            isFocused 
+              ? ["rgba(0,255,204,0.15)", "rgba(255,255,255,0.05)"] // Subtle glow when typing
+              : ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={[styles.gradient]}
         >
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, style]}
               placeholder={placeholder}
-              placeholderTextColor={"#F7FEFF99"}
+              placeholderTextColor={"rgba(247, 254, 255, 0.5)"}
               keyboardType={keyboardType}
               autoCapitalize={autoCapitalize}
-              onBlur={onBlur}
+              onBlur={() => {
+                onBlur?.();
+                setIsFocused(false);
+              }}
+              onFocus={() => setIsFocused(true)}
               onChangeText={onChange}
               value={value}
-              secureTextEntry={isPassword && !showPassword} // toggle visibility
+              secureTextEntry={isPassword && !showPassword}
+              multiline={true} // Allow long prompts
+              maxLength={500}
             />
 
-            {/* Left icon (optional) */}
-            {iconName &&
-              (isTouchable ? (
-                <TouchableOpacity onPress={onTouchableIconPress}>
-                  <Ionicons name={iconName} size={24} color="white" />
+            <View style={styles.iconGroup}>
+              {/* Password Toggle */}
+              {isPassword && (
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconButton}>
+                  <Ionicons
+                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    size={22}
+                    color="white"
+                  />
                 </TouchableOpacity>
-              ) : (
-                <Ionicons name={iconName} size={24} color="white" />
-              ))}
-            {/* Show/hide toggle only for password */}
-            {isPassword && (
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Ionicons
-                  name={showPassword ? "eye-outline" : "eye-off-outline"}
-                  size={24}
-                  color="white"
-                />
-              </TouchableOpacity>
-            )}
+              )}
+
+              {/* Action Icon (Send/Mic) */}
+              {iconName && (
+                <TouchableOpacity 
+                  disabled={!isTouchable} 
+                  onPress={onTouchableIconPress}
+                  style={[
+                    styles.iconButton, 
+                    value?.length > 0 && isTouchable && styles.activeSendIcon
+                  ]}
+                >
+                  <Ionicons name={iconName} size={24} color={getIconColor()} />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </LinearGradient>
       </BlurView>
@@ -67,45 +90,49 @@ const GlassmorphismInput = ({
   );
 };
 
-export default GlassmorphismInput;
-
 const styles = StyleSheet.create({
   container: {
-    maxWidth: 408,
-    width: 100 + "%",
-    borderRadius: 50,
-    backgroundColor: "rgba(247, 254, 255, 0.1)",
+    width: "100%",
+    borderRadius: 25,
+    backgroundColor: "rgba(247, 254, 255, 0.05)",
     overflow: "hidden",
-    height: "auto",
-  },
-  gradient: {
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    height: 50,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
+  focusedContainer: {
+  backgroundColor: '#1C2D47', // same as dashboard
+  borderColor: 'rgba(255,255,255,0.1)',
+  borderWidth: 1,
+},
+  gradient: {
+    minHeight: 50,
+    maxHeight: 120, // Prevents input from taking over the screen
     justifyContent: "center",
+    paddingVertical: Platform.OS === 'ios' ? 10 : 5,
   },
   inputContainer: {
-    display: "flex",
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 5,
-    paddingHorizontal: 14,
+    alignItems: "flex-end", // Aligns icons to bottom when text expands
+    paddingHorizontal: 16,
   },
   input: {
-    fontFamily: "Roboto",
     fontSize: 15,
-    fontWeight: "medium",
     color: "#fff",
-    // backgroundColor:"red",
     flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 0 : 5,
   },
-  inputError: {
-    borderColor: "red",
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5, // Align with bottom of text
   },
-  error: {
-    color: "red",
-    marginBottom: 15,
-    fontSize: 12,
+  iconButton: {
+    marginLeft: 10,
+    padding: 4,
   },
+  activeSendIcon: {
+    transform: [{ scale: 1.1 }],
+  }
 });
+
+export default GlassmorphismInput;

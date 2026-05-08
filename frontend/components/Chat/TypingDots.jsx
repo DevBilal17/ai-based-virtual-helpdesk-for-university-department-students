@@ -9,19 +9,34 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 
-const Dot = ({ delay }) => {
+const Dot = ({ delay, color = "#00ffcc" }) => {
   const translateY = useSharedValue(0);
+  const opacity = useSharedValue(0.4); // Start slightly faded
 
   useEffect(() => {
+    // Movement Animation
     translateY.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(-6, { duration: 300 }),
-          withTiming(0, { duration: 300 })
+          withTiming(-5, { duration: 400 }),
+          withTiming(0, { duration: 400 })
         ),
-        -1, // infinite
-        false
+        -1,
+        true
+      )
+    );
+
+    // Opacity Animation (Adds a "pulsing" feel)
+    opacity.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 400 }),
+          withTiming(0.4, { duration: 400 })
+        ),
+        -1,
+        true
       )
     );
   }, []);
@@ -29,35 +44,35 @@ const Dot = ({ delay }) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }],
+      opacity: opacity.value,
     };
   });
 
-  return <Animated.View style={[styles.dot, animatedStyle]} />;
+  return <Animated.View style={[styles.dot, { backgroundColor: color }, animatedStyle]} />;
 };
 
-const TypingDots = () => {
+const TypingDots = ({ color }) => {
   return (
     <View style={styles.container}>
-      <Dot delay={0} />
-      <Dot delay={150} />
-      <Dot delay={300} />
+      <Dot delay={0} color={color} />
+      <Dot delay={200} color={color} />
+      <Dot delay={400} color={color} />
     </View>
   );
 };
 
-export default TypingDots;
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 6,
-    marginLeft:5
+    alignItems: "center", // Center aligned looks better next to text
+    gap: 4,
+    marginLeft: 8,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#aaa",
+    width: 6, // Slightly smaller dots look more modern
+    height: 6,
+    borderRadius: 3,
   },
 });
+
+export default TypingDots;

@@ -9,14 +9,14 @@ import {
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import GlassmorphismCard from "../components/GlassmorphismCard/GlassmorphismCard";
+import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { useForm, Controller } from "react-hook-form";
-import GlassmorphismInput from "../components/Forms/GlassmorphismInput";
-import LinearGradientFormSubmitButton from "../components/Forms/LinearGradientFormSubmitButton";
+import GlassmorphismInput from "../../components/Forms/GlassmorphismInput";
+import LinearGradientFormSubmitButton from "../../components/Forms/LinearGradientFormSubmitButton";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useSendOtpMutation } from "../store/services/authApi";
-import { setItem } from "../utils/asyncStorage";
+import { useSendOtpMutation } from "../../store/services/authApi";
+import { setItem } from "../../utils/asyncStorage";
 import Toast from "react-native-toast-message";
 const ResetPassword = () => {
   const {
@@ -62,7 +62,7 @@ const ResetPassword = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar />
       <ImageBackground
-        source={require("../assets/images/on-boarding-bg-1.png")}
+        source={require("../../assets/images/on-boarding-bg-1.png")}
         style={styles.container}
       >
         {/* Back Button */}

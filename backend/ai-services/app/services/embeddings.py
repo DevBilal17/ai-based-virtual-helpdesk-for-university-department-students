@@ -1,19 +1,22 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 
-
-
-#Get Embedding Model
+# Professional approach: Singleton-like model getter
 def get_embedding_model():
-    embedding_model = HuggingFaceEmbeddings(
+    # This model is local, fast, and free.
+    return HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
-    return embedding_model
-
-
-#Create Embeddings
 
 def create_embeddings(chunks):
-    embedding_model = get_embedding_model()
-    vectors = embedding_model.embed_documents(chunks)
+    # In a standard LangChain flow, we pass the MODEL to the vector store.
+    # However, if you want to see the vectors for debugging:
+    model = get_embedding_model()
+    
+    # If chunks are LangChain Documents, we need to extract page_content
+    if hasattr(chunks[0], 'page_content'):
+        texts = [doc.page_content for doc in chunks]
+    else:
+        texts = chunks
+        
+    vectors = model.embed_documents(texts)
     return vectors
-
