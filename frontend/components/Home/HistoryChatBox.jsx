@@ -4,7 +4,13 @@ import { Ionicons } from '@expo/vector-icons'
 
 
 const {width,height} = Dimensions.get("window")
-const HistoryChatBox = () => {
+const HistoryChatBox = ({title,message,date}) => {
+  const formatMessage = (text) => {
+  if (!text) return "";
+  return text.length > 35 ? text.slice(0, 35) + "..." : text;
+};
+// console.log(date)
+message=formatMessage(message)
   return (
     <View style={{width:width*0.92,
     paddingHorizontal:16,paddingVertical:18,display:"flex",flexDirection:"row",alignItems:"center",borderRadius:10}}>
@@ -22,7 +28,7 @@ const HistoryChatBox = () => {
                 fontFamily:"Roboto",
                 color:"#DEDDDD"
             }
-          }>Lab Location</Text>
+          }>{title}</Text>
           <Text
           style={
             {
@@ -31,7 +37,7 @@ const HistoryChatBox = () => {
                 color:"#DEDDDD"
             }
           }
-          >Best 2026 mobile app suggestion ....</Text>
+          >{message}</Text>
        </View>
        
        <View
@@ -50,12 +56,22 @@ const HistoryChatBox = () => {
                 gap:8
             }
           }>
+           <View>
+             <Text style={
+                {
+                    fontSize:12,
+                    color:"#DEDDDD",
+                      textAlign:"center"
+                }
+            }>{date?.hours}:{date?.minutes} {date?.ampm}</Text>
             <Text style={
                 {
-                    fontSize:13,
-                    color:"#DEDDDD"
+                    fontSize:11,
+                    color:"#DEDDDD",
+                    textAlign:"center"
                 }
-            }>22:10</Text>
+            }>{date?.day}/{date?.month}/{date?.year}</Text>
+           </View>
             <Ionicons name='chevron-forward' size={20} color={"white"} />
           </View>
           {/* <Image source={require("../../assets/icons/more-horizontal.png")} style={{

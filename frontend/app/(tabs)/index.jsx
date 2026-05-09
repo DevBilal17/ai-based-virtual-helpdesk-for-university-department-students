@@ -19,7 +19,8 @@ import { router } from "expo-router";
 import { Alert } from "react-native";
 import { removeItem } from "../../utils/asyncStorage";
 import { useSelector } from "react-redux";
-
+import { useGetRecentChatsQuery } from "../../store/services/chatApi";
+import { FlatList } from "react-native";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
@@ -40,6 +41,33 @@ const Home = () => {
     ]);
   };
 
+const formatDateTime = (date) => {
+  if (!date) return null;
+
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+
+  let hours = d.getHours();
+  const minutes = d.getMinutes();
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  // convert 24h → 12h format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 becomes 12
+
+  return {
+    day: d.getDate(),
+    month: d.getMonth() + 1,
+    year: d.getFullYear(),
+    hours,
+    minutes,
+    ampm,
+  };
+};
+  const { data, isLoading, isFetching, isError } = useGetRecentChatsQuery();
+  // console.log(JSON.stringify(data.data.chats));
+  const recentChats = data?.data?.chats || [];
   return (
     // Updated background logic to match your dark navy theme
     <View style={{ flex: 1, backgroundColor: "#0C1013" }}>
@@ -134,24 +162,23 @@ const Home = () => {
                 </TouchableOpacity>
               </View>
 
-             <View style={styles.historyListContainer}>
-               <GlassmorphismCard
-                style={styles.historyListCard}
-                gradientStyle={styles.historyListGradient}
-              >
-                <HistoryChatBox title="Attendance Policy Query" date="Today" />
-              </GlassmorphismCard>
-
-              <GlassmorphismCard>
-                <HistoryChatBox
-                  title="Library Working Hours"
-                  date="Yesterday"
-                />
-              </GlassmorphismCard>
-              <GlassmorphismCard>
-                <HistoryChatBox title="Fee Structure 2026" date="2 days ago" />
-              </GlassmorphismCard>
-             </View>
+              <FlatList
+                data={recentChats}
+                scrollEnabled={false}
+                keyExtractor={(item) => item._id}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.historyListContainer}
+                renderItem={({ item }) => (
+                  <GlassmorphismCard style={styles.historyListCard}>
+                    <HistoryChatBox
+                      title={item.title || "Untitled Chat"}
+                      message={item?.messages[1]?.text || ""}
+                      date={formatDateTime(item.updatedAt)}
+                    />
+                  </GlassmorphismCard>
+                )}
+                ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+              />
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -241,9 +268,9 @@ const styles = StyleSheet.create({
   // New Styles for History Container
   historyListCard: { borderRadius: 24, overflow: "hidden" },
   historyListGradient: { padding: 15 },
-  historyListContainer:{
-    display:"flex",
-    gap:12
+  historyListContainer: {
+    display: "flex",
+    // gap: 1,
   },
   divider: {
     height: 1,

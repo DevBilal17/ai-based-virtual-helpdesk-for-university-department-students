@@ -9,15 +9,17 @@ const MessageBox = ({
   image,
   question,
   answer,
-  isTyping = false,
+  shouldAnimate = false,
 }) => {
-  const [typing, setTyping] = useState(0);
+const [typing, setTyping] = useState(0);
 
-  useEffect(() => {
-    if (!isUser) {
-      setTyping(1); // Auto-start typewriter for AI responses
-    }
-  }, [answer]);
+useEffect(() => {
+  if (!isUser && shouldAnimate) {
+    setTyping(1); // only animate NEW messages
+  } else {
+    setTyping(0); // history → no animation
+  }
+}, [answer, shouldAnimate]);
 
   return (
     <View
@@ -36,18 +38,19 @@ const MessageBox = ({
           {isUser ? "You" : "AI Assistant"}
         </Text>
 
-        {isUser ? (
-          <Text style={styles.messageText}>{question}</Text>
-        ) : (
-          <TypeWriter
-            typing={typing}
-            maxDelay={15} // Slightly faster for better UX
-            style={styles.messageText}
-            onTypingEnd={() => console.log("Done")}
-          >
-            {answer}
-          </TypeWriter>
-        )}
+       {isUser ? (
+  <Text style={styles.messageText}>{question}</Text>
+) : shouldAnimate ? (
+  <TypeWriter
+    typing={1}
+    maxDelay={15}
+    style={styles.messageText}
+  >
+    {answer}
+  </TypeWriter>
+) : (
+  <Text style={styles.messageText}>{answer}</Text>
+)}
       </View>
 
       {/* 2. Show User Avatar on the RIGHT */}

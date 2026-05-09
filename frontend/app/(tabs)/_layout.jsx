@@ -19,7 +19,11 @@ const TabLayout = () => {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "chat") {
             iconName = focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline";
-          } else if (route.name === "location") {
+          } 
+          else if (route.name === "voice") {
+            iconName = focused ? "mic" : "mic-outline";
+          }
+          else if (route.name === "location") {
             iconName = focused ? "location" : "location-outline";
           } else if (route.name === "profile") {
             iconName = focused ? "person" : "person-outline";
@@ -62,9 +66,9 @@ const TabLayout = () => {
       }}
     >
       {/* Hide the voice tab from the bottom bar */}
-      <Tabs.Screen name="voice" options={{ href: null }} />
       <Tabs.Screen name="index" />
       <Tabs.Screen name="chat" />
+      <Tabs.Screen name="voice"  />
       <Tabs.Screen name="location" />
       <Tabs.Screen name="profile" />
     </Tabs>
