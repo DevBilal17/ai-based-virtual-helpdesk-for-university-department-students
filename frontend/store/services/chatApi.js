@@ -40,7 +40,11 @@ export const chatApi = createApi({
       query: () => "chat/all",
       providesTags: ["Chat"],
     }),
-
+    
+    getRecentChats : builder.query({
+      query : () => "chat/recent",
+      providesTags : ["Chat"]
+    }),
     // 4. DELETE CHAT
     deleteChat: builder.mutation({
       query: (chatId) => ({
@@ -49,6 +53,11 @@ export const chatApi = createApi({
       }),
       invalidatesTags: ["Chat"],
     }),
+    // Chat by ID
+    getChatById: builder.query({
+  query: (chatId) => `chat/${chatId}`,
+  providesTags: ["Chat"],
+}),
   }),
 });
 
@@ -57,4 +66,6 @@ export const {
   useGetChatHistoryQuery,
   useGetUserChatsQuery,
   useDeleteChatMutation,
+  useGetRecentChatsQuery,
+  useGetChatByIdQuery,
 } = chatApi;

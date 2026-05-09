@@ -10,27 +10,76 @@ import {
 } from "react-native";
 import React, { useState, useEffect ,useCallback} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
+import GlassmorphismCard from "../../../components/GlassmorphismCard/GlassmorphismCard";
 import { Ionicons } from "@expo/vector-icons";
-import MessageBox from "../../components/Chat/MessageBox";
+import MessageBox from "../../../components/Chat/MessageBox";
 import { Controller, useForm } from "react-hook-form";
 import { router } from "expo-router";
-import GlassmorphismInput from "../../components/Forms/GlassmorphismInput";
-import TypingBubble from "../../components/Chat/TypingBubble";
-import AIVisualizer from "../../components/Chat/AIVisualizer";
+import GlassmorphismInput from "../../../components/Forms/GlassmorphismInput";
+import TypingBubble from "../../../components/Chat/TypingBubble";
+import AIVisualizer from "../../../components/Chat/AIVisualizer";
+import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
-// --- Imports for Backend & Storage ---
-import { useAskQuestionMutation } from "../../store/services/chatApi";
-import { getItem, setItem, removeItem } from "../../utils/asyncStorage"; 
+import { useAskQuestionMutation } from "../../../store/services/chatApi";
+import { getItem, setItem, removeItem } from "../../../utils/asyncStorage"; 
+import { useGetChatByIdQuery } from "../../../store/services/chatApi";
+import { useLocalSearchParams } from "expo-router";
 import Voice from '@react-native-voice/voice';
 const chat = () => {
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: { message: "" },
   });
+  const { chatId } = useLocalSearchParams();
+  const navigation = useNavigation();
 const [isListening, setIsListening] = useState(false);
   const [activeChatId, setActiveChatId] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [isHydrated, setIsHydrated] = useState(false);
   const messageValue = watch("message") || "";
+  console.log(messages)
+const {
+  data: selectedChatData,
+  isLoading: isChatLoading,
+  refetch
+} = useGetChatByIdQuery(activeChatId);
+console.log("Selected Chat Data",selectedChatData)
+useEffect(() => {
+  if (chatId) {
+    setActiveChatId(chatId);
+  }
+}, [chatId]);
+console.log(activeChatId)
+useFocusEffect(
+  useCallback(() => {
+    const loadChat = async () => {
+      const savedId = await getItem("active_chat_id");
+      if (savedId) setActiveChatId(savedId);
+    };
+
+    loadChat();
+  }, [])
+);
+useEffect(() => {
+  if (selectedChatData?.data?.chat?.messages) {
+   const formattedMessages = selectedChatData?.data?.chat?.messages?.map((msg) => ({
+    id: msg._id,
+    sender: msg.sender,
+    text: msg.text,
+    metadata: msg.metadata,
+    timestamp: msg.timestamp,
+    isHistory: true, 
+  })).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)) || [];
+
+    setMessages(formattedMessages);
+    setIsHydrated(true);
+  }
+}, [selectedChatData]);
+useEffect(() => {
+  if (activeChatId) {
+    refetch();
+  }
+}, [activeChatId]);
 // --- Voice Logic Setup ---
   useEffect(() => {
     Voice.onSpeechStart = () => setIsListening(true);
@@ -134,19 +183,27 @@ const toggleListening = async () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerViewContainer}>
-        <TouchableOpacity onPress={() => router.push("/(tabs)")} style={styles.backButton}>
-          <GlassmorphismCard style={styles.backCard} gradientStyle={styles.backGradient}>
-            <Ionicons name="arrow-back" size={20} color="white" />
-          </GlassmorphismCard>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>AI Desk Helper</Text>
-        
-        {/* Optional: New Chat Button */}
-        <TouchableOpacity onPress={startNewChat} style={{ position: 'absolute', right: 0 }}>
-             <Ionicons name="add-circle-outline" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.header}>
+  <TouchableOpacity onPress={() => navigation.openDrawer()}>
+  <GlassmorphismCard
+    style={styles.iconCard}
+    gradientStyle={styles.iconGradient}
+  >
+    <Ionicons name="menu" size={20} color="white" />
+  </GlassmorphismCard>
+</TouchableOpacity>
+
+  <Text style={styles.headerTitle}>AI Desk Helper</Text>
+
+  <TouchableOpacity onPress={startNewChat}>
+    <GlassmorphismCard
+      style={styles.iconCard}
+      gradientStyle={styles.iconGradient}
+    >
+      <Ionicons name="add" size={18} color="white" />
+    </GlassmorphismCard>
+  </TouchableOpacity>
+</View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -201,22 +258,50 @@ const toggleListening = async () => {
   );
 };
 
-const renderChatBoxItem = ({ item }) => (
+const renderChatBoxItem = ({ item }) => {
+  const shouldAnimate = !item.isHistory && item.sender === "bot";
+  return (
   <MessageBox
     isUser={item.sender === "user"}
     image={
       item.sender === "user"
-        ? require("../../assets/images/profile-img.png")
-        : require("../../assets/icons/message-bot.png")
+        ? require("../../../assets/images/profile-img.png")
+        : require("../../../assets/icons/message-bot.png")
     }
     question={item.sender === "user" ? item.text : undefined}
     answer={item.sender === "bot" ? item.text : undefined}
     // Agar MessageBox metadata support karta hai to:
     metadata={item.metadata}
+    shouldAnimate={shouldAnimate}
   />
-);
+)};
 
 const styles = StyleSheet.create({
+  header: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginVertical: 20,
+},
+
+headerTitle: {
+  color: "white",
+  fontSize: 20,
+  fontWeight: "700",
+},
+
+iconCard: {
+  borderRadius: 14,
+  height: 44,
+  width: 44,
+},
+
+iconGradient: {
+  height: 44,
+  width: 44,
+  alignItems: "center",
+  justifyContent: "center",
+},
   container: { flex: 1, backgroundColor: "#0C1013", paddingHorizontal: 14,},
   headerViewContainer: { flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 15 },
   backButton: { position: "absolute", left: 0 },
