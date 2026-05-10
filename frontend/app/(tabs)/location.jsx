@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard';
@@ -7,6 +7,7 @@ import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismC
 // If not, you can replace the Canvas view with a placeholder Image for now.
 import { Canvas } from '@react-three/fiber/native';
 import DepartmentMap from "../../components/Location/DepartmentMap"
+import { SafeAreaView } from 'react-native-safe-area-context';
 const { width } = Dimensions.get('window');
 
 const Location = () => {
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   overlayContainer: { flex: 1, paddingHorizontal: 20,zIndex: 1 },
   
   // Header Styles
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 40 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 },
   headerTitleContainer: { alignItems: 'center' },
   subTitleText: { color: '#635BFF', fontSize: 10, fontWeight: '800', letterSpacing: 1.5 },
   titleText: { color: 'white', fontSize: 18, fontWeight: '700' },

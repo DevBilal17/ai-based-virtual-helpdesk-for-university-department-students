@@ -1,4 +1,10 @@
-import { View, TextInput, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -16,11 +22,11 @@ const GlassmorphismInput = ({
   autoCapitalize = "none",
   isPassword = false,
   isTouchable,
-  onTouchableIconPress
+  onTouchableIconPress,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-const getIconColor = () => {
+  const getIconColor = () => {
     if (iconColor) return iconColor; // Use passed color (e.g., Red for recording)
     if (value?.length > 0) return "#635BFF"; // Brand Purple when text exists
     return "white";
@@ -30,8 +36,8 @@ const getIconColor = () => {
       <BlurView intensity={25} style={styles.glass}>
         <LinearGradient
           colors={
-            isFocused 
-              ? ["rgba(0,255,204,0.15)", "rgba(255,255,255,0.05)"] // Subtle glow when typing
+            isFocused
+              ? ["rgba(99, 91, 255, 0.2)", "rgba(28, 45, 71, 0.3)"] // Subtle glow when typing
               : ["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]
           }
           start={{ x: 0, y: 0 }}
@@ -53,14 +59,17 @@ const getIconColor = () => {
               onChangeText={onChange}
               value={value}
               secureTextEntry={isPassword && !showPassword}
-              multiline={true} // Allow long prompts
+              multiline={isPassword ? false : true} // Allow long prompts
               maxLength={500}
             />
 
             <View style={styles.iconGroup}>
               {/* Password Toggle */}
               {isPassword && (
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.iconButton}>
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.iconButton}
+                >
                   <Ionicons
                     name={showPassword ? "eye-outline" : "eye-off-outline"}
                     size={22}
@@ -71,12 +80,12 @@ const getIconColor = () => {
 
               {/* Action Icon (Send/Mic) */}
               {iconName && (
-                <TouchableOpacity 
-                  disabled={!isTouchable} 
+                <TouchableOpacity
+                  disabled={!isTouchable}
                   onPress={onTouchableIconPress}
                   style={[
-                    styles.iconButton, 
-                    value?.length > 0 && isTouchable && styles.activeSendIcon
+                    styles.iconButton,
+                    value?.length > 0 && isTouchable && styles.activeSendIcon,
                   ]}
                 >
                   <Ionicons name={iconName} size={24} color={getIconColor()} />
@@ -100,15 +109,21 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.1)",
   },
   focusedContainer: {
-  backgroundColor: '#1C2D47', // same as dashboard
-  borderColor: 'rgba(255,255,255,0.1)',
-  borderWidth: 1,
-},
+    // Solid color ki jagah brand purple ka subtle glow
+    // backgroundColor: "rgba(99, 91, 255, 0.1)", 
+    borderColor: "rgba(99, 91, 255, 0.5)", // Purple border glow
+    borderWidth: 1.5,
+    // Soft shadow (iOS only, for Android elevation focus works differently)
+    shadowColor: "#635BFF",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
   gradient: {
     minHeight: 50,
     maxHeight: 120, // Prevents input from taking over the screen
     justifyContent: "center",
-    paddingVertical: Platform.OS === 'ios' ? 10 : 5,
+    paddingVertical: Platform.OS === "ios" ? 10 : 5,
   },
   inputContainer: {
     flexDirection: "row",
@@ -119,7 +134,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#fff",
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 0 : 5,
+    paddingTop: Platform.OS === "ios" ? 0 : 5,
   },
   iconGroup: {
     flexDirection: "row",
@@ -132,7 +147,7 @@ const styles = StyleSheet.create({
   },
   activeSendIcon: {
     transform: [{ scale: 1.1 }],
-  }
+  },
 });
 
 export default GlassmorphismInput;

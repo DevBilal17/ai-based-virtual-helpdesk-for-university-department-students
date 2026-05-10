@@ -5,21 +5,32 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  Platform,
 } from "react-native";
+import React, { useEffect, useState } from "react";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { useForm } from "react-hook-form";
-import LinearGradientFormSubmitButton from "../../components/Forms/LinearGradientFormSubmitButton";
 import { router, useLocalSearchParams } from "expo-router";
-import GlassmorphismOtpInput from "../../components/Forms/GlassmorphismOtpInput";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+
+import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
+import GlassmorphismOtpInput from "../../components/Forms/GlassmorphismOtpInput";
+import LinearGradientFormSubmitButton from "../../components/Forms/LinearGradientFormSubmitButton";
+
 import { getItem } from "../../utils/asyncStorage";
-import { useVerifyOtpMutation } from "../../store/services/authApi";
+import {
+  useVerifyOtpMutation,
+  useSendOtpMutation,
+} from "../../store/services/authApi";
+
 import Toast from "react-native-toast-message";
+
 const VerificationCode = () => {
   const { email } = useLocalSearchParams();
+
   const [userEmail, setUserEmail] = useState(email || "");
 
   const {
@@ -27,208 +38,356 @@ const VerificationCode = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: { otp: ["", "", "", ""] },
+    defaultValues: {
+      otp: ["", "", "", ""],
+    },
   });
 
-  const [timer, setTimer] = useState(24); // countdown for resend
+  const [timer, setTimer] = useState(24);
   const [canResend, setCanResend] = useState(false);
   const [otpExpired, setOtpExpired] = useState(false);
 
   const [verifyOtp] = useVerifyOtpMutation();
+  const [sendOtp] = useSendOtpMutation();
 
-  // Load email from storage if not passed in params
+  // Load email
   useEffect(() => {
     const loadEmail = async () => {
       if (!email) {
         const storedEmail = await getItem("userEmail");
-        if (storedEmail) setUserEmail(storedEmail);
+
+        if (storedEmail) {
+          setUserEmail(storedEmail);
+        }
       }
     };
+
     loadEmail();
   }, []);
 
-  // Countdown timer for resend
+  // Timer
   useEffect(() => {
     let interval;
+
     if (timer > 0) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
     } else {
       setCanResend(true);
       clearInterval(interval);
     }
+
     return () => clearInterval(interval);
   }, [timer]);
 
-  // OTP expiry after 5 minutes
+  // OTP Expiry
   useEffect(() => {
-    const otpTimer = setTimeout(() => setOtpExpired(true), 5 * 60 * 1000);
+    const otpTimer = setTimeout(() => {
+      setOtpExpired(true);
+    }, 5 * 60 * 1000);
+
     return () => clearTimeout(otpTimer);
   }, []);
 
-  // Handle OTP submission
   const onSubmit = async (data) => {
-    if (otpExpired) return; // disable submit if expired
+    if (otpExpired) return;
+
     const otpValue = data.otp.join("");
+
     try {
-      const response = await verifyOtp({ email: userEmail, otp: otpValue }).unwrap();
-      console.log("OTP verified ", response);
-        Toast.show({
-            type: "success",
-            text1: "OTP Verified",
-            text2: response?.message || "Create new password",
-          });
-       router.push({
-            pathname: "/newpassword",
-            params: { email: userEmail },
-          }); // navigate to new password screen
+      const response = await verifyOtp({
+        email: userEmail,
+        otp: otpValue,
+      }).unwrap();
+
+      Toast.show({
+        type: "success",
+        text1: "OTP Verified",
+        text2: response?.message || "Create new password",
+      });
+
+      router.push({
+        pathname: "(auth)/newpassword",
+        params: {
+          email: userEmail,
+        },
+      });
     } catch (err) {
       console.log("OTP verify failed", err?.data?.message);
-       Toast.show({
-            type: "error",
-            text1: "Request Failed",
-            text2: err?.data?.message || "Something went wrong",
-          });
+
+      Toast.show({
+        type: "error",
+        text1: "Request Failed",
+        text2: err?.data?.message || "Something went wrong",
+      });
     }
   };
- const handleBack = () => {
+
+  const handleBack = () => {
     router.back();
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar />
+    <View style={{ flex: 1, backgroundColor: "#0C1013" }}>
       <ImageBackground
         source={require("../../assets/images/on-boarding-bg-1.png")}
-        style={styles.container}
+        style={styles.background}
+        imageStyle={{ opacity: 0.4 }}
+        blurRadius={Platform.OS === "ios" ? 60 : 30}
       >
-        {/* Back Button */}
-        <TouchableOpacity onPress={handleBack}>
-          <GlassmorphismCard
-            style={{ borderRadius: 20, height: 40, width: 40 }}
-            gradientStyle={{
-              height: 40,
-              width: 40,
-              paddingHorizontal: 0,
-              paddingVertical: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="arrow-back" size={20} color="white" />
-          </GlassmorphismCard>
-        </TouchableOpacity>
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle="light-content" />
 
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Verify Your Code</Text>
-          <Text style={styles.subtitle}>
-            A verification code has been sent to {userEmail}.Enter it belowto
-            continue.
-          </Text>
-        </View>
-        <View style={styles.formContainer}>
-          <GlassmorphismOtpInput control={control} />
-          {errors.otp && <Text style={styles.error}>{errors.otp.message}</Text>}
-        </View>
-
-        {/* Disabled when otp expired */}
-        <LinearGradientFormSubmitButton
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          text={"Continue"}
-          style={{ marginTop: 20 }}
-        />
-        <Text style={styles.timerText}>
-          {otpExpired
-            ? "OTP expired"
-            : `Don’t receive the code? Wait (${timer}s)`}
-        </Text>
-        {otpExpired && (
-          <Text style={[styles.error, { textAlign: "center" }]}>
-            OTP expired. Please request a new one.
-          </Text>
-        )}
-        {canResend && !otpExpired ? (
+          {/* Back Button */}
           <TouchableOpacity
-            onPress={async () => {
-              try {
-                // Call your sendOtp mutation
-                await sendOtp({ email: userEmail }).unwrap();
-                setTimer(24); // reset wait timer
-                setCanResend(false);
-                setOtpExpired(false);
-              } catch (err) {
-                console.log("Resend OTP failed:", err?.data?.message);
-              }
-            }}
+            onPress={handleBack}
+            style={styles.backButton}
           >
-            <Text
-              style={{ color: "#3C82F2", textAlign: "center", marginTop: 10 }}
+            <GlassmorphismCard
+              style={styles.backCard}
+              gradientStyle={styles.backGradient}
             >
-              Resend OTP
-            </Text>
+              <Ionicons
+                name="arrow-back"
+                size={20}
+                color="#fff"
+              />
+            </GlassmorphismCard>
           </TouchableOpacity>
-        ) : (
-          <Text style={styles.timerText}>Wait ({timer}s)</Text>
-        )}
+
+          {/* Header */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Verify Code</Text>
+
+            <Text style={styles.subtitle}>
+              Enter the 4-digit verification code sent to{" "}
+              {userEmail || "your email"}.
+            </Text>
+          </View>
+
+          {/* Glass Card */}
+          <View style={styles.formWrapper}>
+            <BlurView
+              intensity={20}
+              style={styles.blurContainer}
+            >
+              <LinearGradient
+                colors={[
+                  "rgba(255,255,255,0.10)",
+                  "rgba(255,255,255,0.03)",
+                ]}
+                start={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.gradientCard}
+              >
+                <Text style={styles.formTitle}>
+                  OTP Verification
+                </Text>
+
+                <View style={styles.formContainer}>
+                  <GlassmorphismOtpInput control={control} />
+
+                  {errors.otp && (
+                    <Text style={styles.error}>
+                      {errors.otp.message}
+                    </Text>
+                  )}
+                </View>
+
+                {/* Continue Button */}
+                <LinearGradientFormSubmitButton
+                  handleSubmit={handleSubmit}
+                  onSubmit={onSubmit}
+                  text={"Continue"}
+                  colors={["#635BFF", "#1C2D47"]}
+                  style={{
+                    marginTop: 35,
+                    opacity: otpExpired ? 0.6 : 1,
+                  }}
+                />
+
+                {/* Timer */}
+                <Text style={styles.timerText}>
+                  {otpExpired
+                    ? "OTP expired"
+                    : `Didn’t receive the code? Wait (${timer}s)`}
+                </Text>
+
+                {/* Expired */}
+                {otpExpired && (
+                  <Text style={styles.errorCenter}>
+                    OTP expired. Please request a new one.
+                  </Text>
+                )}
+
+                {/* Resend */}
+                {canResend && !otpExpired ? (
+                  <TouchableOpacity
+                    onPress={async () => {
+                      try {
+                        await sendOtp({
+                          email: userEmail,
+                        }).unwrap();
+
+                        setTimer(24);
+                        setCanResend(false);
+                        setOtpExpired(false);
+
+                        Toast.show({
+                          type: "success",
+                          text1: "OTP Resent",
+                          text2:
+                            "Please check your email",
+                        });
+                      } catch (err) {
+                        console.log(
+                          "Resend OTP failed:",
+                          err?.data?.message
+                        );
+
+                        Toast.show({
+                          type: "error",
+                          text1: "Failed",
+                          text2:
+                            err?.data?.message ||
+                            "Something went wrong",
+                        });
+                      }
+                    }}
+                  >
+                    <Text style={styles.resendText}>
+                      Resend OTP
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  !otpExpired && (
+                    <Text style={styles.waitText}>
+                      Wait ({timer}s)
+                    </Text>
+                  )
+                )}
+              </LinearGradient>
+            </BlurView>
+          </View>
+        </SafeAreaView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default VerificationCode;
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 14,
+  background: {
     flex: 1,
-    paddingVertical: 20,
   },
+
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+
+  backButton: {
+    marginTop: 10,
+  },
+
+  backCard: {
+    borderRadius: 15,
+    height: 45,
+    width: 45,
+  },
+
+  backGradient: {
+    height: 45,
+    width: 45,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
   titleContainer: {
-    paddingLeft: 14,
-    marginTop: 40,
+    marginTop: 35,
+    marginBottom: 35,
   },
+
   title: {
-    fontWeight: "bold",
+    fontWeight: "800",
     color: "#fff",
-    fontSize: 32,
-    //  lineHeight:22,
-    fontFamily: "Roboto",
-    textAlign: "left",
+    fontSize: 34,
   },
+
   subtitle: {
     fontSize: 16,
-    fontFamily: "Roboto",
-    lineHeight: 22,
-    color: "#C8CACD",
-    textAlign: "left",
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 8,
+    lineHeight: 24,
   },
-  inputError: {
-    borderColor: "red",
+
+  formWrapper: {
+    borderRadius: 30,
+    overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
+
+  blurContainer: {
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+
+  gradientCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 28,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 30,
+  },
+
+  formTitle: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+
+  formContainer: {
+    gap: 20,
+    alignItems: "center",
+  },
+
   error: {
     color: "#FF4C45",
-    fontSize: 16,
-    lineHeight: 22,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-  },
-  formContainer: {
-    marginTop: 40,
-  },
-  label: {
-    fontSize: 17,
-    fontFamily: "Inter",
-    marginBottom: 8,
-    fontWeight: "600",
-    color: "#ffffff",
-    marginLeft: 15,
-  },
-  timerText: {
-    fontSize: 16,
-    fontFamily: "Roboto",
-    color: "#C8CACD",
+    fontSize: 13,
+    marginTop: 10,
     textAlign: "center",
-    marginTop: 20,
+  },
+
+  errorCenter: {
+    color: "#FF4C45",
+    fontSize: 13,
+    textAlign: "center",
+    marginTop: 14,
+  },
+
+  timerText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.55)",
+    textAlign: "center",
+    marginTop: 18,
+  },
+
+  resendText: {
+    color: "#635BFF",
+    textAlign: "center",
+    marginTop: 18,
+    fontWeight: "700",
+    fontSize: 14,
+  },
+
+  waitText: {
+    color: "rgba(255,255,255,0.45)",
+    textAlign: "center",
+    marginTop: 12,
+    fontSize: 13,
   },
 });

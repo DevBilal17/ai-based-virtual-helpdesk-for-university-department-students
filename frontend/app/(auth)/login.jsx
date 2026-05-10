@@ -1,112 +1,155 @@
-import { View, Text, TouchableOpacity, ImageBackground, StatusBar, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { getItem, removeItem } from '../../utils/asyncStorage'
-import { Redirect, useNavigation, useRouter } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import GlassmorphismCard from '../../components/GlassmorphismCard/GlassmorphismCard'
-import LoginForm from '../../components/Forms/LoginForm'
-import { BlurView } from 'expo-blur'
-import { LinearGradient } from 'expo-linear-gradient'
+import {
+  View,
+  Text,
+  StatusBar,
+  ImageBackground,
+  StyleSheet,
+  Platform,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Redirect } from "expo-router";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 
-const login = () => {
-  const [isLoggedIn,setIsLoggedIn] = useState(false)
+import LoginForm from "../../components/Forms/LoginForm";
 
-  useEffect(()=>{
-    checkLoggedInStatus()
-  },[])
+import { getItem, removeItem } from "../../utils/asyncStorage";
+
+const Login = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const [checkingAuth, setCheckingAuth] = useState(true);
+
+useEffect(() => {
+  checkLoggedInStatus();
+}, []);
 
 const checkLoggedInStatus = async () => {
-  const status = await getItem("loggedIn");
+  try {
+    const status = await getItem("loggedIn");
 
-  if (status === "true") {
-    setIsLoggedIn(true);
-  } else {
+    console.log("STATUS:", status);
+
+    if (status === "true") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  } catch (err) {
+    console.log(err);
     setIsLoggedIn(false);
+  } finally {
+    setCheckingAuth(false);
   }
 };
-
-  const navigation = useNavigation();
-  const handleReset = async() => {
-    await removeItem("onboardingCompleted");
-    navigation.navigate("onboarding");
-  };
-   
-  if(isLoggedIn){
-    return <Redirect href={'/(tabs)'} />
-  }
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-       <ImageBackground source={require("../../assets/images/on-boarding-bg-1.png")} style={[styles.container,{  }]}>
-         <StatusBar barStyle="light-content" />
-          <View style={{marginBottom:40}}>
-            <Text style={styles.headTitle}>Hi, Welcome Here!</Text>
-            <Text style={styles.headSubtitle}>Please enter your email adress and password.</Text>
-          </View>
-          
-        
-            <View style={[styles.fContainer]}>
-      <BlurView intensity={15} style={styles.glass}>
-        <LinearGradient
-          colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0.02)"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={[styles.fGradient]}
-        >
-          <Text style={styles.loginText}>Login</Text>
-              <LoginForm/>
-        </LinearGradient>
-      </BlurView>
-    </View>
-          
-       </ImageBackground>
-    </SafeAreaView>
-  )
+if (checkingAuth) {
+  return null;
 }
+  if (isLoggedIn) {
+    return <Redirect href={"/(tabs)"} />;
+  }
 
-export default login
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#0C1013" }}>
+      <ImageBackground
+        source={require("../../assets/images/on-boarding-bg-1.png")}
+        style={styles.background}
+        imageStyle={{ opacity: 0.4 }}
+        blurRadius={Platform.OS === "ios" ? 60 : 30}
+      >
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle="light-content" />
+
+          {/* Header */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome Back</Text>
+
+            <Text style={styles.subtitle}>
+              Login to continue your smart learning journey.
+            </Text>
+          </View>
+
+          {/* Login Card */}
+          <View style={styles.formWrapper}>
+            <BlurView intensity={20} style={styles.blurContainer}>
+              <LinearGradient
+                colors={[
+                  "rgba(255,255,255,0.10)",
+                  "rgba(255,255,255,0.03)",
+                ]}
+                start={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.gradientCard}
+              >
+                <Text style={styles.formTitle}>Login</Text>
+
+                <LoginForm />
+              </LinearGradient>
+            </BlurView>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </SafeAreaView>
+  );
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
-  container : {
-     paddingHorizontal:20,
-     flex: 1, alignItems: 'center',justifyContent:"center"
-  },
-  headTitle : {
-    fontSize:40,
-    fontWeight:"bold",
-    fontFamily:"Roboto",
-    color:"#fff",
-    textAlign:"center",
-    lineHeight : 50
-  },
-  headSubtitle : {
-    fontSize:16,
-    fontFamily:"Roboto",
-    color:"#C8CACD",
-    textAlign:"center",
-    lineHeight : 50
+  background: {
+    flex: 1,
   },
 
-  loginText:{
-    fontFamily:"Roboto",
-    fontSize:24,
-    fontWeight:"bold",
-    color:"#F7FEFF",
-    textAlign:"center",
-  }
-,
-fContainer: {
-    maxWidth: 408,
-    width: 100 + "%",
-    borderRadius: 32,
-    backgroundColor: "rgba(247, 254, 255, 0.1)",
-    // paddingHorizontal:32
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+  },
+
+  titleContainer: {
+    marginBottom: 35,
+  },
+
+  title: {
+    fontSize: 38,
+    fontWeight: "800",
+    color: "#fff",
+    lineHeight: 48,
+    textAlign:"center"
+  },
+
+  subtitle: {
+    fontSize: 16,
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 8,
+    lineHeight: 24,
+    textAlign:"center"
+  },
+
+  formWrapper: {
+    borderRadius: 30,
     overflow: "hidden",
-    height: "auto",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
-  fGradient: {
-    paddingHorizontal: 16,
-    paddingVertical: 26,
+
+  blurContainer: {
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+
+  gradientCard: {
+    paddingHorizontal: 20,
+    paddingVertical: 28,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 30,
   },
-})
+
+  formTitle: {
+    color: "#fff",
+    fontSize: 26,
+    fontWeight: "700",
+    marginBottom: 25,
+    textAlign: "center",
+  },
+});

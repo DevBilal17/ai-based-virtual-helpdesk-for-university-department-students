@@ -14,29 +14,29 @@ import { setCredentials } from "../store/slices/authSlice";
 
 function AppContent() {
   const [isShowOnboarding, setIsShowOnboarding] = useState(null);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        // onboarding
-        const status = await getItem("onboardingCompleted");
+        const onboardingStatus = await getItem("onboardingCompleted");
+        setIsShowOnboarding(onboardingStatus !== "true");
 
-        setIsShowOnboarding(status !== "true");
-
-        // restore auth
         const token = await getItem("token");
         const user = await getItem("user");
+        const loggedIn = await getItem("loggedIn");
 
         if (token && user) {
           dispatch(
             setCredentials({
               token,
               user: JSON.parse(user),
-            })
+            }),
           );
         }
+
+        setIsLoggedIn(loggedIn === "true");
       } catch (error) {
         console.log(error);
       }
@@ -63,25 +63,22 @@ function AppContent() {
   return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
-        {/* ONBOARDING */}
         {isShowOnboarding ? (
           <Stack.Screen name="onboarding" />
+        ) : isLoggedIn ? (
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              gestureEnabled: false,
+            }}
+          />
         ) : (
           <Stack.Screen name="(auth)/login" />
         )}
 
-        {/* AUTH */}
         <Stack.Screen name="(auth)/verificationcode" />
         <Stack.Screen name="(auth)/resetpassword" />
         <Stack.Screen name="(auth)/newpassword" />
-
-        {/* TABS */}
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            gestureEnabled: false,
-          }}
-        />
       </Stack>
 
       <Toast config={toastConfig} topOffset={50} />
@@ -99,16 +96,10 @@ export default function RootLayout() {
 
 const toastConfig = {
   success: (props) => (
-    <BaseToast
-      {...props}
-      style={{ borderLeftColor: "green", height: 80 }}
-    />
+    <BaseToast {...props} style={{ borderLeftColor: "green", height: 80 }} />
   ),
 
   error: (props) => (
-    <ErrorToast
-      {...props}
-      style={{ borderLeftColor: "red", height: 80 }}
-    />
+    <ErrorToast {...props} style={{ borderLeftColor: "red", height: 80 }} />
   ),
 };

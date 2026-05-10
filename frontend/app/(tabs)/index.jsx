@@ -9,64 +9,59 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { Ionicons } from "@expo/vector-icons";
 import ModuleBox from "../../components/Home/ModuleBox";
 import HistoryChatBox from "../../components/Home/HistoryChatBox";
 import { router } from "expo-router";
-import { Alert } from "react-native";
+
 import { removeItem } from "../../utils/asyncStorage";
 import { useSelector } from "react-redux";
 import { useGetRecentChatsQuery } from "../../store/services/chatApi";
 import { FlatList } from "react-native";
+import EmptyState from "../../components/EmptyState";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user);
-
-  const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to sign out?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Logout",
-        style: "destructive",
-        onPress: async () => {
-          await removeItem("loggedIn");
-          await removeItem("active_chat_id");
-          router.replace("/login");
-        },
-      },
-    ]);
-  };
-
-const formatDateTime = (date) => {
-  if (!date) return null;
-
-  const d = new Date(date);
-  if (isNaN(d.getTime())) return null;
-
-  let hours = d.getHours();
-  const minutes = d.getMinutes();
-
-  const ampm = hours >= 12 ? "PM" : "AM";
-
-  // convert 24h → 12h format
-  hours = hours % 12;
-  hours = hours ? hours : 12; // 0 becomes 12
-
-  return {
-    day: d.getDate(),
-    month: d.getMonth() + 1,
-    year: d.getFullYear(),
-    hours,
-    minutes,
-    ampm,
-  };
+const [showLogout, setShowLogout] = useState(false);
+ const handleLogout = async () => {
+  await removeItem("loggedIn");
+  await removeItem("token");
+  await removeItem("user");
+  await removeItem("active_chat_id");
+  router.replace("/login");
 };
+
+  const formatDateTime = (date) => {
+    if (!date) return null;
+
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return null;
+
+    let hours = d.getHours();
+    const minutes = d.getMinutes();
+
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    // convert 24h → 12h format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 becomes 12
+
+    return {
+      day: d.getDate(),
+      month: d.getMonth() + 1,
+      year: d.getFullYear(),
+      hours,
+      minutes,
+      ampm,
+    };
+  };
   const { data, isLoading, isFetching, isError } = useGetRecentChatsQuery();
-  // console.log(JSON.stringify(data.data.chats));
+
+  // console.log(JSON.stringify(data));
   const recentChats = data?.data?.chats || [];
   return (
     // Updated background logic to match your dark navy theme
@@ -94,7 +89,7 @@ const formatDateTime = (date) => {
               <Text style={styles.onlineText}>AI SYSTEM ONLINE</Text>
             </View>
 
-            <TouchableOpacity onPress={handleLogout}>
+            <TouchableOpacity onPress={() => setShowLogout(true)}>
               <GlassmorphismCard
                 style={styles.headerIconCard}
                 gradientStyle={styles.headerIconLogoutGradient}
@@ -111,9 +106,7 @@ const formatDateTime = (date) => {
             {/* Greeting */}
             <View style={styles.greetingContainer}>
               <View style={styles.greetingRow}>
-                <Text style={styles.greetingText}>
-                  Hi, {user?.name?.split(" ")[0]}
-                </Text>
+                <Text style={styles.greetingText}>Hi, {user?.name}</Text>
                 <Image
                   source={require("../../assets/icons/hand.png")}
                   style={styles.handIcon}
@@ -157,9 +150,9 @@ const formatDateTime = (date) => {
             <View style={styles.historyContainer}>
               <View style={styles.historyHeader}>
                 <Text style={styles.sectionTitle}>Recent Conversations</Text>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                   <Text style={styles.seeAllText}>See all</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
 
               <FlatList
@@ -168,19 +161,72 @@ const formatDateTime = (date) => {
                 keyExtractor={(item) => item._id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.historyListContainer}
-                renderItem={({ item }) => (
-                  <GlassmorphismCard style={styles.historyListCard}>
-                    <HistoryChatBox
-                      title={item.title || "Untitled Chat"}
-                      message={item?.messages[1]?.text || ""}
-                      date={formatDateTime(item.updatedAt)}
+                ListEmptyComponent={
+                  !isLoading && (
+                    <EmptyState
+                      icon="chatbubbles-outline"
+                      title="No Conversations Found"
+                      message="Start a new chat or voice interaction to see your history here."
                     />
-                  </GlassmorphismCard>
+                  )
+                }
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push({
+                        pathname: "/chat",
+                        params: { chatId: item._id },
+                      })
+                    }
+                  >
+                    <GlassmorphismCard style={styles.historyListCard}>
+                      <HistoryChatBox
+                        title={item.title || "Untitled Chat"}
+                        message={item?.messages[1]?.text || ""}
+                        date={formatDateTime(item.updatedAt)}
+                      />
+                    </GlassmorphismCard>
+                  </TouchableOpacity>
                 )}
                 ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
               />
             </View>
           </ScrollView>
+
+          {showLogout && (
+  <TouchableOpacity
+    style={styles.overlay}
+    activeOpacity={1}
+    onPress={() => setShowLogout(false)}
+  >
+    <TouchableOpacity activeOpacity={1} style={styles.alertBox}>
+      <Ionicons name="log-out-outline" size={40} color="#EF4444" />
+
+      <Text style={styles.alertTitle}>Logout</Text>
+      <Text style={styles.alertMsg}>
+        Are you sure you want to sign out?
+      </Text>
+
+      <View style={styles.alertBtns}>
+        <TouchableOpacity
+          style={[styles.alertBtn, { backgroundColor: "#1C2D47" }]}
+          onPress={() => setShowLogout(false)}
+        >
+          <Text style={{ color: "#fff" }}>Cancel</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.alertBtn, { backgroundColor: "#EF4444" }]}
+          onPress={handleLogout}
+        >
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
+  </TouchableOpacity>
+)}
         </SafeAreaView>
       </ImageBackground>
     </View>
@@ -277,6 +323,53 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     marginVertical: 5,
   },
+  overlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "rgba(0,0,0,0.7)",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 999,
+},
+
+alertBox: {
+  width: "85%",
+  backgroundColor: "#0F172A",
+  padding: 20,
+  borderRadius: 20,
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "rgba(255,255,255,0.1)",
+},
+
+alertTitle: {
+  color: "#fff",
+  fontSize: 20,
+  fontWeight: "700",
+  marginTop: 10,
+},
+
+alertMsg: {
+  color: "rgba(255,255,255,0.6)",
+  textAlign: "center",
+  marginVertical: 10,
+},
+
+alertBtns: {
+  flexDirection: "row",
+  gap: 10,
+  marginTop: 15,
+},
+
+alertBtn: {
+  flex: 1,
+  padding: 12,
+  borderRadius: 12,
+  alignItems: "center",
+},
 });
 
 export default Home;

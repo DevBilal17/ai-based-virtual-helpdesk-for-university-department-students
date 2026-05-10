@@ -16,6 +16,7 @@ const login = async (req, res) => {
     if (registrationNumber) {
       // Student login
       user = await User.findOne({ registrationNumber }).select("+password");
+      console.log(user)
       if (!user || user.role !== "student") {
         return response(res, 400, false, "Invalid credentials for student");
       }

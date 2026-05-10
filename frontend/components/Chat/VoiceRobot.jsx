@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber/native';
 import { OrbitControls } from '@react-three/drei/native';
@@ -8,11 +8,15 @@ const SwarmSphere = ({ status }) => {
   const meshRef = useRef();
   const isSpeaking = status === 'speaking';
   const isListening = status === 'listening';
-  
+  const isMounted = useRef(true);
   // Theme Colors
   const color = isListening ? "#00ffcc" : isSpeaking ? "#ff00ff" : "#ffffff";
-
-  const count = 400; 
+useEffect(() => {
+  return () => {
+    isMounted.current = false;
+  };
+}, []);
+  const count = 300; 
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const particles = useMemo(() => {
@@ -26,6 +30,7 @@ const SwarmSphere = ({ status }) => {
   }, [count]);
 
   useFrame((state) => {
+    if (!isMounted.current || !meshRef.current) return;
     const time = state.clock.getElapsedTime();
     
     // speed logic:
@@ -55,10 +60,14 @@ const SwarmSphere = ({ status }) => {
       dummy.lookAt(0, 0, 0);
 
       dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
+      if (meshRef.current) {
+  meshRef.current.setMatrixAt(i, dummy.matrix);
+}
     });
 
-    meshRef.current.instanceMatrix.needsUpdate = true;
+    if (meshRef.current) {
+  meshRef.current.instanceMatrix.needsUpdate = true;
+}
     
     // Overall assembly rotation stops when user is speaking
     if (!isListening) {
@@ -82,7 +91,7 @@ const SwarmSphere = ({ status }) => {
 
 export default function VoiceRobot({ status }) {
   return (
-    <View style={{ height: 380, width: '100%' }}>
+    <View style={{ height: 360, width: '100%' }}>
       <Canvas camera={{ position: [0, 0, 10], fov: 40 }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={4} color="#00ffcc" />
@@ -90,7 +99,7 @@ export default function VoiceRobot({ status }) {
         
         <SwarmSphere status={status} />
         
-        <OrbitControls enableZoom={false} enablePan={false} />
+        {/* <OrbitControls enableZoom={false} enablePan={false} /> */}
       </Canvas>
     </View>
   );

@@ -7,12 +7,13 @@ const LinearGradientFormSubmitButton = ({
   onSubmit,
   style,
   text,
+  colors = ["#3659F4", "#3C82F2"]
 }) => {
   return (
     <TouchableOpacity onPress={handleSubmit(onSubmit)}>
       <LinearGradient
         style={[styles.button, style]}
-        colors={["#3659F4", "#3C82F2"]}
+        colors={colors}
       >
         <Text style={styles.buttonText}>{text}</Text>
       </LinearGradient>

@@ -8,7 +8,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useNavigation } from "expo-router";
-import { setItem } from "../../utils/asyncStorage";
+import { removeItem, setItem } from "../../utils/asyncStorage";
 import { useLoginMutation } from "../../store/services/authApi";
 import Toast from "react-native-toast-message";
 import GlassmorphismInput from "./GlassmorphismInput";
@@ -24,6 +24,7 @@ export default function LoginForm() {
     defaultValues: {
       registrationNumber: "",
       password: "",
+      remember: false,
     },
   });
 
@@ -35,12 +36,14 @@ export default function LoginForm() {
 
       // Call backend
       const response = await login(data).unwrap();
-
+      console.log(response)
       // Save token in AsyncStorage
       await setItem("token", response.data.token);
       await setItem("user", JSON.stringify(response?.data?.user));
-      if (data.remember == "true") {
+      if (data.remember) {
         await setItem("loggedIn", "true");
+      } else {
+        await removeItem("loggedIn");
       }
       // redux state
       dispatch(
@@ -164,7 +167,7 @@ export default function LoginForm() {
         disabled={isLoading}
         style={{ opacity: isLoading ? 0.7 : 1 }}
       >
-        <LinearGradient style={styles.button} colors={["#3659F4", "#3C82F2"]}>
+        <LinearGradient style={styles.button} colors={["#635BFF", "#1C2D47"]}>
           <Text style={styles.buttonText}>
             {isLoading ? "Logging in..." : "Login"}
           </Text>
@@ -176,82 +179,81 @@ export default function LoginForm() {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    gap: 20,
-    marginTop: 25,
+    gap: 22,
+    marginTop: 10,
   },
+
   label: {
-    fontSize: 17,
-    fontFamily: "Inter",
-    marginBottom: 8,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#ffffff",
-    marginLeft: 15,
+    color: "#fff",
+    marginBottom: 8,
+    marginLeft: 5,
+    opacity: 0.7,
   },
-  input: {
-    borderRadius: 20,
-    paddingVertical: 13,
-    paddingHorizontal: 8,
-    backgroundColor: "rgba(247, 254, 255, 0.1)",
-    fontFamily: "Roboto",
-    fontSize: 15,
-    fontWeight: "medium",
-    color: "rgba(247, 254, 255, 0.8)",
-  },
-  inputError: {
-    borderColor: "red",
-  },
+
   error: {
-    color: "red",
-    marginBottom: 15,
-    fontSize: 12,
+    color: "#FF4C45",
+    fontSize: 13,
+    marginTop: 5,
+    marginLeft: 5,
   },
+
   rememberContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 12,
-    gap: 5,
+    gap: 8,
   },
+
   circle: {
-    width: 11,
-    height: 11,
-    borderRadius: 50 + "%",
-    backgroundColor: "#fff",
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.3)",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
+
   checkedCircle: {
-    width: 9,
-    height: 9,
-    borderRadius: 50 + "%",
-    backgroundColor: "#3659F4",
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#635BFF",
   },
-  rememberLabel: { fontSize: 12, color: "#fff", fontFamily: "Poppin" },
+
+  rememberLabel: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.7)",
+    fontWeight: "500",
+  },
 
   forgotContainer: {
-    display: "flex",
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    gap: 10,
-    paddingHorizontal: 6,
+    alignItems: "center",
+    marginTop: 15,
+    paddingHorizontal: 5,
   },
+
   forgotText: {
-    fontSize: 12,
-    color: "#fff",
-    fontFamily: "Poppins",
+    fontSize: 13,
+    color: "#635BFF",
+    fontWeight: "600",
   },
+
   button: {
-    borderRadius: 50,
-    padding: 13,
-    marginTop: 10,
+    borderRadius: 18,
+    paddingVertical: 16,
+    marginTop: 15,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   buttonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "700",
     color: "#fff",
-    textAlign: "center",
   },
 });

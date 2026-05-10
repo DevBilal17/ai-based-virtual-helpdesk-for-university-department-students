@@ -45,7 +45,8 @@
           "microphonePermission": "Allow AI Desk Helper to access the microphone for voice queries.",
           "speechRecognitionPermission": "Allow AI Desk Helper to convert your speech into text."
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

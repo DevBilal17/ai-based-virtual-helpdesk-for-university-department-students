@@ -27,7 +27,7 @@ const AnimatedSphere = ({ isTyping }) => {
           roughness={0.1}
           // The "Magic" part: Emissive makes it look like it's glowing from inside
           emissive={"#635BFF"} 
-          emissiveIntensity={isTyping ? 3 : 1.2}
+          emissiveIntensity={1.2}
         />
       </Sphere>
     </Float>
@@ -50,7 +50,7 @@ const AIVisualizer = ({ isTyping }) => {
         {/* Fill Light: Soft blue to blend with your navy dashboard */}
         <spotLight position={[0, -10, 0]} intensity={2} color="#1C2D47" />
         
-        <AnimatedSphere isTyping={isTyping} />
+        <AnimatedSphere isTyping={true} />
 
         <OrbitControls 
           enableZoom={false} 

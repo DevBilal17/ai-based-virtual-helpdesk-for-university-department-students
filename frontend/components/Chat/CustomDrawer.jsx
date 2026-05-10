@@ -6,29 +6,52 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-
+import { startNewChatSession } from "../../utils/chatHelpers";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { useGetUserChatsQuery } from "../../store/services/chatApi";
 import GlassmorphismCard from "../GlassmorphismCard/GlassmorphismCard";
-import { setItem } from "../../utils/asyncStorage";
+import { useDispatch } from "react-redux";
+
+import {
+  clearChat,
+  setActiveChatId,
+  setLoadingHistory,
+} from "../../store/slices/chatSlice";
+
+import { removeItem, setItem } from "../../utils/asyncStorage";
 import { useRouter } from "expo-router";
 
 const CustomDrawer = (props) => {
   const { data, isLoading } = useGetUserChatsQuery();
   const userChats = data?.data?.chats || [];
   const router = useRouter();
+  const dispatch = useDispatch();
   //    console.log(userChats)
-  const handleSelectChat = async (chat) => {
-    await setItem("active_chat_id", chat._id);
+ const handleSelectChat = async (chat) => {
+  dispatch(setLoadingHistory(true));
 
-    props.navigation.closeDrawer();
+  dispatch(setActiveChatId(chat._id));
 
-    router.push({
-  pathname: "/(tabs)/chat",
-  params: { chatId: chat._id }
-}); 
-  };
+  await setItem("active_chat_id", chat._id);
+
+  props.navigation.closeDrawer();
+
+  router.push({
+    pathname: "/(tabs)/chat",
+    params: { chatId: chat._id },
+  });
+};
+
+const handleNewChat = async () => {
+  await removeItem("active_chat_id");
+
+  dispatch(clearChat());
+
+  props.navigation.closeDrawer();
+
+  router.push("/(tabs)/chat");
+};
 
   return (
     <DrawerContentScrollView
@@ -44,7 +67,10 @@ const CustomDrawer = (props) => {
       </View>
 
       {/* New Chat */}
-      <TouchableOpacity style={styles.newChatBtn}>
+      <TouchableOpacity
+  style={styles.newChatBtn}
+  onPress={handleNewChat}
+>
         <GlassmorphismCard
           style={styles.newChatCard}
           gradientStyle={styles.newChatGradient}

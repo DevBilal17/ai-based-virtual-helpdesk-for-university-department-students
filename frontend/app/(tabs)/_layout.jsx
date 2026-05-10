@@ -2,14 +2,17 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from "@expo/vector-icons";
 import { Platform } from 'react-native';
-import * as Haptics from 'expo-haptics'; // Install: npx expo install expo-haptics
-
+import * as Haptics from 'expo-haptics'; 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const TabLayout = () => {
+   const insets = useSafeAreaInsets();
   return (
     <Tabs
       initialRouteName='index'
+
       screenOptions={({ route }) => ({
         headerShown: false,
+        detachInactiveScreens: true,
         tabBarHideOnKeyboard: true, // Pro tip: hide bar when typing in chat
         tabBarIcon: ({ color, focused }) => {
           let iconName;
@@ -41,7 +44,7 @@ const TabLayout = () => {
           // left: 20,
           // right: 20,
           backgroundColor: "rgba(28, 29, 30, 0.95)", // Slightly transparent
-          height: 65,
+          height: 65 + insets.bottom,   
           // borderRadius: 35,
           borderTopWidth: 0,
           elevation: 10,
@@ -49,10 +52,10 @@ const TabLayout = () => {
           shadowOffset: { width: 0, height: 5 },
           shadowOpacity: 0.3,
           shadowRadius: 10,
-          paddingBottom: 0, // Centers icons better in floating bar
+          paddingBottom: insets.bottom, // Centers icons better in floating bar
         },
         tabBarItemStyle: {
-          margin: 5,
+          margin: 10,
         },
         tabBarShowLabel: false,
       })}
