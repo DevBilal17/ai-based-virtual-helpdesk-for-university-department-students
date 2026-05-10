@@ -354,26 +354,13 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-
 // ================= REGISTER ADMIN =================
 const registerAdmin = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      department,
-      designation,
-    } = req.body;
+    const { name, email, password, department, designation } = req.body;
 
     // Check required fields
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !department ||
-      !designation
-    ) {
+    if (!name || !email || !password || !department || !designation) {
       return response(res, 400, false, "All fields are required");
     }
 
@@ -411,10 +398,6 @@ const registerAdmin = async (req, res) => {
   }
 };
 
-
-
-
-
 module.exports = {
   createUser,
   updateUserById,
@@ -422,5 +405,4 @@ module.exports = {
   getUserById,
   getAllUsers,
   registerAdmin,
-
 };

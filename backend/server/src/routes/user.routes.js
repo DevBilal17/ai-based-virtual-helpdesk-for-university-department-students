@@ -59,7 +59,7 @@ router.delete(
 router.get(
   "/get-user/:id",
   protect,
-  authorize("admin","student"),
+  authorize("admin", "student"),
   getUserByIdValidator,
   validateRequest,
   getUserById,
@@ -74,9 +74,5 @@ router.get(
   validateRequest,
   getAllUsers,
 );
-
-
-
-
 
 module.exports = router;

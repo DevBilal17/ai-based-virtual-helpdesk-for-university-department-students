@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   CalendarDays,
   Bell,
@@ -11,8 +11,104 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "../api/axios.js";
+import {
+  getDashboardDataStart,
+  getDashboardDataSuccess,
+  getDashboardDataFailure,
+} from "../redux/slices/dashboardSlice.js";
+import { toast } from "react-toastify";
+import FullScreenLoader from "../components/common/FullScreenLoader.jsx";
+import ConfirmModal from "../components/common/ConfirmModal.jsx";
+
+// ================= COUNT UP COMPONENT =================
+const CountUp = ({ end, duration = 1500 }) => {
+  const [count, setCount] = useState(0);
+
+  const frameRef = useRef();
+
+  useEffect(() => {
+    let startTime;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+
+      const currentValue = Math.floor(progress * end);
+
+      setCount(currentValue);
+
+      if (progress < 1) {
+        frameRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    frameRef.current = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(frameRef.current);
+  }, [end, duration]);
+
+  return count;
+};
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const { stats, dashboardDataLoading, dashboardDataError } = useSelector(
+    (state) => state.dashboardData,
+  );
+
+  // ================= STATE =================
+  const [routeLoading, setRouteLoading] = useState(false);
+
+  // ================= FETCH DASHBOARD DATA =================
+  const fetchDashboardData = async () => {
+    try {
+      dispatch(getDashboardDataStart());
+
+      const res = await axios.get("/dashboard/dashboard-data");
+
+      console.log("Fetched Dashboard Data:", res.data.data); // Debug log
+
+      dispatch(getDashboardDataSuccess(res.data.data));
+    } catch (error) {
+      dispatch(
+        getDashboardDataFailure(
+          error.response?.data?.message || "Something went wrong",
+        ),
+      );
+      toast.error(
+        error.response?.data?.message || "Failed to fetch dashboard data",
+      );
+    }
+  };
+
+  // ================= ROUTE LOAD =================
+  useEffect(() => {
+    const run = async () => {
+      if (location.pathname === "/dashboard") {
+        setRouteLoading(true);
+        await fetchDashboardData();
+        setRouteLoading(false);
+      }
+    };
+    run();
+  }, [location.pathname]);
+
+  // ================= SAFE STATS =================
+  const totalUsers = stats?.totalUsers || 0;
+
+  const totalFiles = stats?.totalFiles || 0;
+
+  const totalFaqs = stats?.totalFaqs || 0;
+
+  const totalActiveFaqs = stats?.totalActiveFaqs || 0;
+
   // ================= DUMMY STATS =================
   const analyticsCards = [
     {
@@ -26,7 +122,7 @@ const Dashboard = () => {
     {
       id: 2,
       title: "Total Users",
-      value: "8,230",
+      value: totalUsers,
       growth: "+12%",
       icon: <Users size={18} />,
       active: false,
@@ -34,7 +130,7 @@ const Dashboard = () => {
     {
       id: 3,
       title: "Total Files Uploaded",
-      value: "4,500",
+      value: totalFiles,
       growth: "+2%",
       icon: <Files size={18} />,
       active: false,
@@ -42,7 +138,8 @@ const Dashboard = () => {
     {
       id: 4,
       title: "Total Active FAQs",
-      value: "1,200",
+      value: totalActiveFaqs,
+      subValue: totalFaqs,
       growth: "ACTIVE",
       icon: <HelpCircle size={18} />,
       active: true,
@@ -89,17 +186,29 @@ const Dashboard = () => {
     },
   ];
 
+  // ================= LOADER =================
+  if (routeLoading) return <FullScreenLoader />;
+
+  // ================= ERROR =================
+  if (dashboardDataError) {
+    return (
+      <div className="text-center mt-10 text-red-500 font-semibold">
+        {dashboardDataError}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white px-4 pt-3 pb-40">
       {/* ================= TOP BAR ================= */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         {/* Left */}
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-wide">
+          <h1 className="text-3xl font-semibold tracking-wide">
             Analytics Dashboard
           </h1>
 
-          <p className="text-xs text-gray-500">
+          <p className="text-sm text-gray-500">
             Real-time system health and interaction metrics
           </p>
         </div>
@@ -107,18 +216,18 @@ const Dashboard = () => {
         {/* Right */}
         <div className="flex items-center gap-3">
           {/* Date */}
-          <div className="flex items-center gap-2 bg-[#111827] border border-[#1F2937] px-4 py-2 rounded-lg text-sm text-gray-300">
+          <div className="flex items-center gap-2 bg-[#0f172a] border border-[#1F2937] px-4 py-2 rounded-lg text-sm text-gray-300">
             <CalendarDays size={16} />
-            <span>Oct 01, 2023 - Oct 31, 2023</span>
+            <span>Apr 01, 2026 - Apr 30, 2026</span>
           </div>
 
           {/* Notification */}
-          <button className="w-10 h-10 rounded-lg bg-[#111827] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
+          <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
             <Bell size={17} />
           </button>
 
           {/* Search */}
-          <button className="w-10 h-10 rounded-lg bg-[#111827] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
+          <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
             <Search size={17} />
           </button>
         </div>
@@ -129,7 +238,7 @@ const Dashboard = () => {
         {analyticsCards.map((card) => (
           <div
             key={card.id}
-            className="relative overflow-hidden bg-[#0F172A] border border-[#1E293B] rounded-lg px-5 py-5 shadow-[0_0_30px_rgba(59,130,246,0.08)]"
+            className="relative overflow-hidden bg-[#0f172a] border border-[#1E293B] rounded-lg px-5 py-5 shadow-[0_0_30px_rgba(59,130,246,0.08)]"
           >
             {/* Top */}
             <div className="flex items-start justify-between mb-8">
@@ -154,12 +263,21 @@ const Dashboard = () => {
 
               <div className="flex items-end gap-1">
                 <h2 className="text-4xl font-bold tracking-wide">
-                  {card.value}
+                  {typeof card.value === "number" ? (
+                    <CountUp end={card.value} />
+                  ) : (
+                    card.value
+                  )}
                 </h2>
 
-                {card.subValue && (
-                  <span className="text-gray-500 text-sm mb-1">
-                    {card.subValue}
+                {card.subValue !== undefined && (
+                  <span className="text-gray-500 text-base mb-1">
+                    /{" "}
+                    {typeof card.subValue === "number" ? (
+                      <CountUp end={card.subValue} />
+                    ) : (
+                      card.subValue
+                    )}
                   </span>
                 )}
               </div>
@@ -174,7 +292,7 @@ const Dashboard = () => {
       {/* ================= MIDDLE SECTION ================= */}
       <div className="grid grid-cols-1 xl:grid-cols-[2.1fr_1fr] gap-6">
         {/* ================= USER ACTIVITY ================= */}
-        <div className="bg-[#0F172A] border border-[#1E293B] rounded-lg p-5 shadow-[0_0_30px_rgba(59,130,246,0.06)]">
+        <div className="bg-[#0f172a] border border-[#1E293B] rounded-lg p-5 shadow-[0_0_30px_rgba(59,130,246,0.06)]">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
@@ -243,7 +361,7 @@ const Dashboard = () => {
         </div>
 
         {/* ================= POPULAR QUERIES ================= */}
-        <div className="bg-[#0F172A] border border-[#1E293B] rounded-lg p-5 shadow-[0_0_30px_rgba(59,130,246,0.06)] flex flex-col">
+        <div className="bg-[#0f172a] border border-[#1E293B] rounded-lg p-5 shadow-[0_0_30px_rgba(59,130,246,0.06)] flex flex-col">
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold">Popular Queries</h2>
