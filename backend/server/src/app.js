@@ -6,8 +6,9 @@ const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const dataRoutes = require("./routes/data.routes.js");
 const faqRoutes = require("./routes/faq.routes.js");
-const chatRoutes = require("./routes/chat.routes.js")
-const voiceRoutes = require("./routes/voice.routes.js")
+const dashboardRoutes = require("./routes/dashboard.routes.js");
+const chatRoutes = require("./routes/chat.routes.js");
+const voiceRoutes = require("./routes/voice.routes.js");
 const response = require("./utils/response");
 
 const app = express();
@@ -43,15 +44,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/data", dataRoutes);
 app.use("/api/faq", faqRoutes);
-app.use("/api/chat",chatRoutes)
-app.use("/api/voice",voiceRoutes)
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/voice", voiceRoutes);
 
 // ================= DEFAULT 404 =================
 app.use((req, res, next) => {
   return response(res, 404, false, "Route not found");
 });
-
-
 
 // ================= GLOBAL ERROR HANDLER =================
 app.use((err, req, res, next) => {
