@@ -7,10 +7,14 @@ const FAQ = require("../models/FAQ");
 // @route   GET /api/dashboard/dashboard-data
 // @access  Private (admin only)
 // @returns  Dashboard data including user stats, recent activities, etc.
+
 const getDashboardData = async (req, res) => {
   try {
     // Total users in the database (without filters)
     const totalUsers = await User.countDocuments();
+
+    // Total students in the database (without filters)
+    const totalStudents = await User.countDocuments({ role: "student" });
 
     // Total files in the database (without filters)
     const totalFiles = await Data.countDocuments();
@@ -25,6 +29,7 @@ const getDashboardData = async (req, res) => {
     return response(res, 200, true, "Dashboard Data fetched successfully", {
       stats: {
         totalUsers,
+        totalStudents,
         totalFiles,
         totalFaqs,
         totalActiveFaqs,

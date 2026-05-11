@@ -66,11 +66,11 @@ const DashSidebar = () => {
 
   // Sidebar System Tabs
   const systemTabs = [
-    {
-      name: "User Activity",
-      icon: Logs,
-      path: "/dashboard/user-logs",
-    },
+    // {
+    //   name: "User Activity",
+    //   icon: Logs,
+    //   path: "/dashboard/user-logs",
+    // },
     {
       name: "Notifications",
       icon: Bell,

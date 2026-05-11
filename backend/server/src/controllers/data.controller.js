@@ -4,6 +4,7 @@ const streamifier = require("streamifier");
 const DATA = require("../models/DATA");
 const axios = require("axios");
 const FormData = require("form-data");
+
 // ================= ADD DATA =================
 const addData = async (req, res) => {
   try {
@@ -39,11 +40,13 @@ const addData = async (req, res) => {
       });
 
     let uploadedFile = await uploadToCloudinary();
+
     //Prepare data for Python RAG Microservice
     const formData = new FormData();
     formData.append("file", req.file.buffer, req.file.originalname);
     formData.append("file_name", file_name.trim());
     formData.append("mongo_id", "");
+
     let newData = await DATA.create({
       file_name: file_name.trim(),
       file_description,
@@ -52,6 +55,7 @@ const addData = async (req, res) => {
       uploaded_by_name: req.user.name,
       uploaded_by_id: req.user.id,
     });
+
     // Call Python to process Embeddings
     // We send the file again so Python can read content locally
     try {

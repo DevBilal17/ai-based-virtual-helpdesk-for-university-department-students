@@ -103,6 +103,8 @@ const Dashboard = () => {
   // ================= SAFE STATS =================
   const totalUsers = stats?.totalUsers || 0;
 
+  const totalStudents = stats?.totalStudents || 0;
+
   const totalFiles = stats?.totalFiles || 0;
 
   const totalFaqs = stats?.totalFaqs || 0;
@@ -122,7 +124,8 @@ const Dashboard = () => {
     {
       id: 2,
       title: "Total Users",
-      value: totalUsers,
+      value: totalStudents,
+      subValue: totalUsers,
       growth: "+12%",
       icon: <Users size={18} />,
       active: false,
