@@ -9,31 +9,47 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { Ionicons } from "@expo/vector-icons";
 import ModuleBox from "../../components/Home/ModuleBox";
 import HistoryChatBox from "../../components/Home/HistoryChatBox";
 import { router } from "expo-router";
-
+import axios from "axios"
 import { removeItem } from "../../utils/asyncStorage";
 import { useSelector } from "react-redux";
 import { useGetRecentChatsQuery } from "../../store/services/chatApi";
 import { FlatList } from "react-native";
 import EmptyState from "../../components/EmptyState";
+import { BASE_URL_8000 } from "../../utils/constants";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user);
-const [showLogout, setShowLogout] = useState(false);
- const handleLogout = async () => {
-  await removeItem("loggedIn");
-  await removeItem("token");
-  await removeItem("user");
-  await removeItem("active_chat_id");
-  router.replace("/login");
-};
+  const [showLogout, setShowLogout] = useState(false);
+  const [isAIOnline,setIsAIOnline] = useState(false)
+  const handleLogout = async () => {
+    await removeItem("loggedIn");
+    await removeItem("token");
+    await removeItem("user");
+    await removeItem("active_chat_id");
+    router.replace("/login");
+  };
+  const AISystemRes = async () => {
+    try {
+      const res = await axios.get(BASE_URL_8000);
+      const data = res?.data
+      if(res?.status == 200){
+          setIsAIOnline(true)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    AISystemRes();
+  }, []);
 
   const formatDateTime = (date) => {
     if (!date) return null;
@@ -85,8 +101,8 @@ const [showLogout, setShowLogout] = useState(false);
             </TouchableOpacity>
 
             <View style={styles.onlineStatusContainer}>
-              <View style={styles.pulseDot} />
-              <Text style={styles.onlineText}>AI SYSTEM ONLINE</Text>
+              {isAIOnline ? <View style={styles.pulseDot}/> : <View style={styles.pulseDotOffline} /> }
+              <Text style={styles.onlineText}>{isAIOnline ? "AI SYSTEM ONLINE" : "AI SYSTEM OFFLINE"}</Text>
             </View>
 
             <TouchableOpacity onPress={() => setShowLogout(true)}>
@@ -194,39 +210,39 @@ const [showLogout, setShowLogout] = useState(false);
           </ScrollView>
 
           {showLogout && (
-  <TouchableOpacity
-    style={styles.overlay}
-    activeOpacity={1}
-    onPress={() => setShowLogout(false)}
-  >
-    <TouchableOpacity activeOpacity={1} style={styles.alertBox}>
-      <Ionicons name="log-out-outline" size={40} color="#EF4444" />
+            <TouchableOpacity
+              style={styles.overlay}
+              activeOpacity={1}
+              onPress={() => setShowLogout(false)}
+            >
+              <TouchableOpacity activeOpacity={1} style={styles.alertBox}>
+                <Ionicons name="log-out-outline" size={40} color="#EF4444" />
 
-      <Text style={styles.alertTitle}>Logout</Text>
-      <Text style={styles.alertMsg}>
-        Are you sure you want to sign out?
-      </Text>
+                <Text style={styles.alertTitle}>Logout</Text>
+                <Text style={styles.alertMsg}>
+                  Are you sure you want to sign out?
+                </Text>
 
-      <View style={styles.alertBtns}>
-        <TouchableOpacity
-          style={[styles.alertBtn, { backgroundColor: "#1C2D47" }]}
-          onPress={() => setShowLogout(false)}
-        >
-          <Text style={{ color: "#fff" }}>Cancel</Text>
-        </TouchableOpacity>
+                <View style={styles.alertBtns}>
+                  <TouchableOpacity
+                    style={[styles.alertBtn, { backgroundColor: "#1C2D47" }]}
+                    onPress={() => setShowLogout(false)}
+                  >
+                    <Text style={{ color: "#fff" }}>Cancel</Text>
+                  </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.alertBtn, { backgroundColor: "#EF4444" }]}
-          onPress={handleLogout}
-        >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>
-            Logout
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  </TouchableOpacity>
-)}
+                  <TouchableOpacity
+                    style={[styles.alertBtn, { backgroundColor: "#EF4444" }]}
+                    onPress={handleLogout}
+                  >
+                    <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      Logout
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          )}
         </SafeAreaView>
       </ImageBackground>
     </View>
@@ -272,12 +288,22 @@ const styles = StyleSheet.create({
     height: 8,
     width: 8,
     borderRadius: 4,
-    backgroundColor: "#635BFF",
+    backgroundColor: `#635BFF`,
     shadowColor: "#635BFF",
     shadowRadius: 10,
     shadowOpacity: 1,
     elevation: 8,
   },
+    pulseDotOffline:{
+      height: 8,
+    width: 8,
+    borderRadius: 4,
+    backgroundColor: `red`,
+    shadowColor: "red",
+    shadowRadius: 10,
+    shadowOpacity: 1,
+    elevation: 8,
+    },
   onlineText: {
     fontSize: 10,
     color: "#fff",
@@ -324,52 +350,52 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   overlay: {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "rgba(0,0,0,0.7)",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 999,
-},
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
 
-alertBox: {
-  width: "85%",
-  backgroundColor: "#0F172A",
-  padding: 20,
-  borderRadius: 20,
-  alignItems: "center",
-  borderWidth: 1,
-  borderColor: "rgba(255,255,255,0.1)",
-},
+  alertBox: {
+    width: "85%",
+    backgroundColor: "#0F172A",
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+  },
 
-alertTitle: {
-  color: "#fff",
-  fontSize: 20,
-  fontWeight: "700",
-  marginTop: 10,
-},
+  alertTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 10,
+  },
 
-alertMsg: {
-  color: "rgba(255,255,255,0.6)",
-  textAlign: "center",
-  marginVertical: 10,
-},
+  alertMsg: {
+    color: "rgba(255,255,255,0.6)",
+    textAlign: "center",
+    marginVertical: 10,
+  },
 
-alertBtns: {
-  flexDirection: "row",
-  gap: 10,
-  marginTop: 15,
-},
+  alertBtns: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 15,
+  },
 
-alertBtn: {
-  flex: 1,
-  padding: 12,
-  borderRadius: 12,
-  alignItems: "center",
-},
+  alertBtn: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
 });
 
 export default Home;

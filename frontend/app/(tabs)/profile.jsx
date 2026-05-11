@@ -54,7 +54,7 @@ const Profile = () => {
 
   setShowImagePicker(false);
 };
-  const handleLogout = () => {
+  const handleLogout =async () => {
           await removeItem("loggedIn");
           await removeItem("active_chat_id");
           router.replace("/login");

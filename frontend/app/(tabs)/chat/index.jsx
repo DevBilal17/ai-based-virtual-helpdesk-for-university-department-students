@@ -33,6 +33,8 @@ import {
   addMessage,
   clearChat,
   setLoadingHistory,
+  setTypingChatId,
+  clearTypingChatId,
 } from "../../../store/slices/chatSlice";
 const chat = () => {
   const { control, handleSubmit, reset, watch } = useForm({
@@ -40,11 +42,8 @@ const chat = () => {
   });
   const dispatch = useDispatch();
 
-const {
-  activeChatId,
-  messages,
-  isLoadingHistory,
-} = useSelector((state) => state.chat);
+  const { activeChatId, messages, isLoadingHistory, typingChatId } =
+    useSelector((state) => state.chat);
   const { chatId } = useLocalSearchParams();
   const navigation = useNavigation();
   const [isListening, setIsListening] = useState(false);
@@ -61,33 +60,32 @@ const {
     skip: !activeChatId, // Dont call if no ID
   });
   // console.log("Selected Chat Data",selectedChatData)
-  // chat/index.js ke andar
 
-useEffect(() => {
-  const handleChatTransition = async () => {
-    if (chatId) {
-      dispatch(setLoadingHistory(true));
+  useEffect(() => {
+    const handleChatTransition = async () => {
+      if (chatId) {
+        dispatch(setLoadingHistory(true));
 
-      dispatch(setActiveChatId(chatId));
+        dispatch(setActiveChatId(chatId));
 
-      await setItem("active_chat_id", chatId);
-    } else {
-      const savedId = await getItem("active_chat_id");
+        await setItem("active_chat_id", chatId);
+      } else {
+        const savedId = await getItem("active_chat_id");
 
-      if (savedId) {
-        dispatch(setActiveChatId(savedId));
+        if (savedId) {
+          dispatch(setActiveChatId(savedId));
+        }
       }
-    }
-  };
+    };
 
-  handleChatTransition();
-}, [chatId]); // chatId change hone par trigger hoga
- 
+    handleChatTransition();
+  }, [chatId]); // chatId change hone par trigger hoga
+
   useFocusEffect(
     useCallback(() => {
       const loadChat = async () => {
         const savedId = await getItem("active_chat_id");
-        if (savedId) setActiveChatId(savedId);
+        if (savedId) dispatch(setActiveChatId(savedId));
       };
 
       loadChat();
@@ -107,12 +105,11 @@ useEffect(() => {
           }))
           .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) || [];
 
-    
-          dispatch(setMessages(formattedMessages));
+      dispatch(setMessages(formattedMessages));
       setIsHydrated(true);
       // STOP LOADER
 
-    dispatch(setLoadingHistory(false));
+      dispatch(setLoadingHistory(false));
     }
   }, [selectedChatData]);
   useEffect(() => {
@@ -121,33 +118,33 @@ useEffect(() => {
     }
   }, [activeChatId]);
   // --- Voice Logic Setup ---
-  useEffect(() => {
-    Voice.onSpeechStart = () => setIsListening(true);
-    Voice.onSpeechEnd = () => setIsListening(false);
-    Voice.onSpeechError = (e) => {
-      console.error("Speech Error:", e);
-      setIsListening(false);
-    };
+  // useEffect(() => {
+  //   Voice.onSpeechStart = () => setIsListening(true);
+  //   Voice.onSpeechEnd = () => setIsListening(false);
+  //   Voice.onSpeechError = (e) => {
+  //     console.error("Speech Error:", e);
+  //     setIsListening(false);
+  //   };
 
-    Voice.onSpeechResults = (e) => {
-      if (e.value && e.value.length > 0) {
-        const spokenText = e.value[0];
-        // 1. Fill the input field visually
-        setValue("message", spokenText);
-        // 2. Automatically trigger the submission
-        handleSubmit(onSubmit)();
-      }
-    };
+  //   Voice.onSpeechResults = (e) => {
+  //     if (e.value && e.value.length > 0) {
+  //       const spokenText = e.value[0];
+  //       // 1. Fill the input field visually
+  //       setValue("message", spokenText);
+  //       // 2. Automatically trigger the submission
+  //       handleSubmit(onSubmit)();
+  //     }
+  //   };
 
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
+  //   return () => {
+  //     Voice.destroy().then(Voice.removeAllListeners);
+  //   };
+  // }, []);
   useEffect(() => {
     const syncSession = async () => {
       const savedId = await getItem("active_chat_id");
       if (savedId) {
-        setActiveChatId(savedId);
+        dispatch(setActiveChatId(savedId));
         console.log("Existing Session Found:", savedId);
       }
     };
@@ -155,23 +152,25 @@ useEffect(() => {
   }, []);
 
   const [askQuestion, { isLoading: isBotTyping }] = useAskQuestionMutation();
-  const toggleListening = async () => {
-    try {
-      if (isListening) {
-        await Voice.stop();
-      } else {
-        reset({ message: "" }); // Clear input before listening
-        await Voice.start("en-US");
-      }
-    } catch (e) {
-      console.error("Voice Toggle Error:", e);
-    }
-  };
+  // const toggleListening = async () => {
+  //   try {
+  //     if (isListening) {
+  //       await Voice.stop();
+  //     } else {
+  //       reset({ message: "" }); // Clear input before listening
+  //       await Voice.start("en-US");
+  //     }
+  //   } catch (e) {
+  //     console.error("Voice Toggle Error:", e);
+  //   }
+  // };
 
   const onSubmit = async (data) => {
     const userInput = data?.message.trim();
     if (userInput === "" || isBotTyping) return;
+    const currentChatId = activeChatId || "new_chat";
 
+    dispatch(setTypingChatId(currentChatId));
     const userMessage = {
       id: Date.now().toString(),
       sender: "user",
@@ -200,8 +199,10 @@ useEffect(() => {
       };
 
       dispatch(addMessage(botReply));
+      dispatch(clearTypingChatId());
     } catch (error) {
       console.error("Chat Error:", error);
+      dispatch(clearTypingChatId());
       const errorMessage = {
         id: (Date.now() + 1).toString(),
         sender: "bot",
@@ -211,11 +212,11 @@ useEffect(() => {
     }
   };
 
-const startNewChat = async () => {
-  await removeItem("active_chat_id");
+  const startNewChat = async () => {
+    await removeItem("active_chat_id");
 
-  dispatch(clearChat());
-};
+    dispatch(clearChat());
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -280,11 +281,13 @@ const startNewChat = async () => {
             inverted
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={isBotTyping ? <TypingBubble /> : null}
+            ListHeaderComponent={
+              typingChatId === activeChatId ? <TypingBubble /> : null
+            }
           />
         )}
 
-        <View style={styles.inputWrapper}>
+        {/* <View style={styles.inputWrapper}>
           <Controller
             control={control}
             name="message"
@@ -313,6 +316,24 @@ const startNewChat = async () => {
               />
             )}
           />
+        </View> */}
+        <View style={styles.inputWrapper}>
+          <Controller
+            control={control}
+            name="message"
+            render={({ field: { onBlur, onChange, value } }) => (
+              <GlassmorphismInput
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                placeholder={"Ask me anything..."}
+                iconName={"send"}
+                iconColor={"#635BFF"}
+                isTouchable={true}
+                onTouchableIconPress={handleSubmit(onSubmit)}
+              />
+            )}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -331,7 +352,6 @@ const renderChatBoxItem = ({ item }) => {
       }
       question={item.sender === "user" ? item.text : undefined}
       answer={item.sender === "bot" ? item.text : undefined}
-      // Agar MessageBox metadata support karta hai to:
       metadata={item.metadata}
       shouldAnimate={shouldAnimate}
     />
@@ -463,7 +483,11 @@ const styles = StyleSheet.create({
   },
 
   listContent: { gap: 15, paddingBottom: 20, paddingTop: 10 },
-  inputWrapper: { paddingTop: 15,paddingBottom:15, backgroundColor: "#0C1013" },
+  inputWrapper: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    backgroundColor: "#0C1013",
+  },
 });
 
 export default chat;
