@@ -1,8 +1,15 @@
 
+<<<<<<< HEAD
 export const BASE_URL = "http://172.19.48.129:5000"
 
 
 export const BASE_URL_8000 = "http://172.19.48.129:8000"
+=======
+export const BASE_URL = "http://10.133.187.123:5000"
+
+
+export const BASE_URL_8000 = "http://10.133.187.123:8000"
+>>>>>>> 1a7f37397712dc4acb98b894a51a1e7f2e3ecc1d
 
 export const COLORS = {
   primary: "#635BFF",      // The vibrant purple from your "Add User" button

@@ -34,4 +34,4 @@ def delete_collection(collection_name: str):
     
 @app.get("/")
 async def root():
-    return APIResponse(statusCode=200,success=True,message="Hello World")
+    return APIResponse(statusCode=200,success=True,message="Hello World",data={"success":True,"message":"AI is running"})

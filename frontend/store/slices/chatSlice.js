@@ -4,6 +4,7 @@ const initialState = {
   activeChatId: null,
   messages: [],
   isLoadingHistory: false,
+  typingChatId: null,
 };
 
 const chatSlice = createSlice({
@@ -32,6 +33,13 @@ const chatSlice = createSlice({
     setLoadingHistory: (state, action) => {
       state.isLoadingHistory = action.payload;
     },
+
+    setTypingChatId: (state, action) => {
+  state.typingChatId = action.payload;
+},
+clearTypingChatId: (state) => {
+  state.typingChatId = null;
+},
   },
 });
 
@@ -41,6 +49,8 @@ export const {
   addMessage,
   clearChat,
   setLoadingHistory,
+    setTypingChatId,
+  clearTypingChatId,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
