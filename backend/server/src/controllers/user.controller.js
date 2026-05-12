@@ -462,15 +462,24 @@ const updateStudentProfile = async (req, res) => {
     });
 
     // ================= UPDATE USER =================
-    user.profileImage = {
+const updatedUser = await User.findByIdAndUpdate(
+  userId,
+  {
+    profileImage: {
       url: result.secure_url,
       public_id: result.public_id,
-    };
+    },
+  },
+  {
+    new: true,
+    runValidators: false,
+  },
+);
 
-    await user.save();
+    // await user.save();
 
     return response(res, 200, true, "Profile image updated successfully", {
-      profileImage: user.profileImage,
+      profileImage: updatedUser.profileImage,
     });
   } catch (error) {
     console.error("Profile Image Update Error:", error.message);

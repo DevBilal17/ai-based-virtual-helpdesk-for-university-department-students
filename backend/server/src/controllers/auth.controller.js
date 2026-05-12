@@ -53,8 +53,8 @@ const login = async (req, res) => {
         role: user.role,
         registrationNumber: user.registrationNumber || null,
         email: user.email,
-        department : user.department
-        // profileImage: user.profileImage,
+        department : user.department,
+        profileImage: user.profileImage,
       },
     });
   } catch (error) {

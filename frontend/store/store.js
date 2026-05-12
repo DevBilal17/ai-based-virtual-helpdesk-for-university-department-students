@@ -4,14 +4,16 @@ import { chatApi } from "./services/chatApi";
 import authReducer from "./slices/authSlice";
 import chatReducer from "./slices/chatSlice"
 import { voiceApi } from "./services/voiceApi";
+import { userApi } from "./services/userApi";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     chat : chatReducer,
     [authApi.reducerPath]: authApi.reducer,
     [chatApi.reducerPath] : chatApi.reducer,
-    [voiceApi.reducerPath] : voiceApi.reducer
+    [voiceApi.reducerPath] : voiceApi.reducer,
+    [userApi.reducerPath] : userApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware,chatApi.middleware,voiceApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware,chatApi.middleware,voiceApi.middleware,userApi.middleware),
 });

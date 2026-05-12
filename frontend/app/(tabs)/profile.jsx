@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,12 +18,21 @@ import { removeItem } from "../../utils/asyncStorage";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import GlassAlertModal from "../../components/Modals/GlassAlertModal";
+import { useUpdateStudentProfileMutation } from "../../store/services/userApi";
+import GlobalLoader from "../../components/GlobalLoader";
 const Profile = () => {
-  const [profileImg, setProfileImg] = useState(null);
   const user = useSelector((state) => state.auth.user);
+  const [profileImg, setProfileImg] = useState(user?.profileImage?.url || null);
+  console.log(user)
   const dispatch = useDispatch();
   const [showLogout, setShowLogout] = useState(false);
   const [showImagePicker, setShowImagePicker] = useState(false);
+ const [updateProfile, { isLoading: isUpdating }] = useUpdateStudentProfileMutation();
+ useEffect(() => {
+    if (user?.profileImage?.url) {
+      setProfileImg(user.profileImage.url);
+    }
+  }, [user]); 
  const pickImage = async (type) => {
   const { status } =
     await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -49,11 +58,34 @@ const Profile = () => {
   }
 
   if (!result.canceled) {
-    setProfileImg(result.assets[0].uri);
+    const selectedUri = result.assets[0].uri;
+    setProfileImg(selectedUri);
+    handleUpdateProfile(selectedUri);
   }
 
   setShowImagePicker(false);
 };
+const handleUpdateProfile = async (imageUri) => {
+    try {
+      const formData = new FormData();
+      
+      // Image data append karein
+      formData.append("profileImage", {
+        uri: Platform.OS === "ios" ? imageUri.replace("file://", "") : imageUri,
+        name: `profile_${user.id}.jpg`,
+        type: "image/jpeg",
+      });
+
+      const response = await updateProfile({ id: user.id, formData }).unwrap();
+      if (response?.profileImage?.url) {
+        setProfileImg(response.profileImage.url);
+      }
+      Alert.alert("Success", "Profile photo updated successfully!");
+    } catch (err) {
+      console.error("Update Error:", err);
+      Alert.alert("Error", err?.data?.message || "Failed to update profile");
+    }
+  };
   const handleLogout =async () => {
           await removeItem("loggedIn");
           await removeItem("active_chat_id");
@@ -83,6 +115,7 @@ const Profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <GlobalLoader visible={isUpdating} message="Uploading Photo..." />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header / ID Card Section */}
         <View style={styles.header}>
@@ -111,19 +144,19 @@ const Profile = () => {
               <View style={styles.statusBadge} />
             </View>
 
-            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userName}>{user?.name}</Text>
             <View style={styles.roleBadge}>
-              <Text style={styles.roleText}>{user.role}</Text>
+              <Text style={styles.roleText}>{user?.role}</Text>
             </View>
 
             <View style={styles.infoGrid}>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Reg. Number</Text>
-                <Text style={styles.infoValue}>{user.registrationNumber}</Text>
+                <Text style={styles.infoValue}>{user?.registrationNumber}</Text>
               </View>
               <View style={styles.infoItem}>
                 <Text style={styles.infoLabel}>Department</Text>
-                <Text style={styles.infoValue}>{user.department}</Text>
+                <Text style={styles.infoValue}>{user?.department}</Text>
               </View>
             </View>
           </View>
@@ -139,7 +172,7 @@ const Profile = () => {
             <MenuOption
               icon="mail-outline"
               title="Email"
-              subtitle={user.email}
+              subtitle={user?.email}
             />
             <MenuOption
               icon="lock-closed-outline"
@@ -149,7 +182,7 @@ const Profile = () => {
               onPress={() =>
                 router.push({
                   pathname: "/(auth)/newpassword",
-                  params: { email: user.email, source: "profile" },
+                  params: { email: user?.email, source: "profile" },
                 })
               }
             />
