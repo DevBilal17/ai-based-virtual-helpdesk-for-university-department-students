@@ -6,6 +6,7 @@ const {
   deleteUserEmailNotificationTemplate,
 } = require("../utils/emailTemplates");
 const sendEmail = require("../utils/sendEmail");
+const cloudinary = require("../config/cloudinary");
 
 // ================= CREATE USER =================
 const createUser = async (req, res) => {
@@ -210,7 +211,12 @@ const deleteUserById = async (req, res) => {
       );
     }
 
-    // Delete user
+    // ================= DELETE PROFILE IMAGE FROM CLOUDINARY =================
+    if (user.profileImage?.public_id) {
+      await cloudinary.uploader.destroy(user.profileImage.public_id);
+    }
+
+    // Delete user from database
     await user.deleteOne();
 
     return response(
@@ -398,6 +404,80 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+// only students can update their profile image
+const updateStudentProfile = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // ================= FIND USER =================
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return response(res, 404, false, "User not found");
+    }
+
+    // ================= STRICT ROLE CHECK =================
+    if (user.role !== "student") {
+      return response(
+        res,
+        403,
+        false,
+        "Only students can update profile image",
+      );
+    }
+
+    // ================= STRICT SELF UPDATE ONLY =================
+    if (req.user.id !== userId) {
+      return response(
+        res,
+        403,
+        false,
+        "You can only update your own profile image",
+      );
+    }
+
+    // ================= CHECK FILE =================
+    if (!req.file) {
+      return response(res, 400, false, "Profile image is required");
+    }
+
+    // ================= DELETE OLD IMAGE (IF EXISTS) =================
+    if (user.profileImage?.public_id) {
+      await cloudinary.uploader.destroy(user.profileImage.public_id);
+    }
+
+    // ================= UPLOAD NEW IMAGE =================
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "virtual_helpdesk_files/users/profile_images",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+
+      stream.end(req.file.buffer);
+    });
+
+    // ================= UPDATE USER =================
+    user.profileImage = {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
+
+    await user.save();
+
+    return response(res, 200, true, "Profile image updated successfully", {
+      profileImage: user.profileImage,
+    });
+  } catch (error) {
+    console.error("Profile Image Update Error:", error.message);
+    return response(res, 500, false, "Internal Server Error");
+  }
+};
+
 module.exports = {
   createUser,
   updateUserById,
@@ -405,4 +485,5 @@ module.exports = {
   getUserById,
   getAllUsers,
   registerAdmin,
+  updateStudentProfile,
 };

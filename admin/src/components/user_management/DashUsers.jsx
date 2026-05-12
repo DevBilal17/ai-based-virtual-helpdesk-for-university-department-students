@@ -376,8 +376,9 @@ const DashUsers = () => {
                 >
                   <img
                     src={
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
-                      profile_pic
+                      user?.profileImage?.url
+                        ? user.profileImage.url
+                        : profile_pic
                     }
                     alt="avatar"
                     className="w-10 h-10 rounded-lg object-cover border border-gray-600 cursor-pointer"

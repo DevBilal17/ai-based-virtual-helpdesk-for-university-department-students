@@ -123,7 +123,7 @@ const Dashboard = () => {
     },
     {
       id: 2,
-      title: "Total Users",
+      title: "Total Students",
       value: totalStudents,
       subValue: totalUsers,
       growth: "+12%",

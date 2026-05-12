@@ -1,5 +1,5 @@
 const express = require("express");
-// const upload = require("../middlewares/upload");
+const imageUpload = require("../middlewares/multer/imageUpload");
 const protect = require("../middlewares/protect.middleware");
 const authorize = require("../middlewares/authorization.middleware");
 const {
@@ -8,6 +8,7 @@ const {
   deleteUserByIdValidator,
   getUserByIdValidator,
   getAllUsersValidator,
+  updateStudentProfileValidator,
 } = require("../middlewares/validators/user.validator");
 const validateRequest = require("../middlewares/validateRequest");
 const {
@@ -17,6 +18,7 @@ const {
   getUserById,
   getAllUsers,
   registerAdmin,
+  updateStudentProfile,
 } = require("../controllers/user.controller");
 
 const router = express.Router();
@@ -28,7 +30,6 @@ router.post(
   "/create-user",
   protect,
   authorize("admin"),
-  // upload.single("profileImage"), // handle file upload
   createUserValidator,
   validateRequest,
   createUser,
@@ -39,7 +40,6 @@ router.put(
   "/update-user/:id",
   protect,
   authorize("admin"),
-  // upload.single("profileImage"), // handle file upload
   updateUserByIdValidator,
   validateRequest,
   updateUserById,
@@ -73,6 +73,17 @@ router.get(
   getAllUsersValidator,
   validateRequest,
   getAllUsers,
+);
+
+// Update student profile image route (only students can update their profile image)
+router.put(
+  "/update-student-profile/:id",
+  protect,
+  authorize("student"),
+  imageUpload.single("profileImage"),
+  updateStudentProfileValidator,
+  validateRequest,
+  updateStudentProfile,
 );
 
 module.exports = router;

@@ -217,10 +217,20 @@ const getAllUsersValidator = [
     .withMessage("Role must be student, admin or all"),
 ];
 
+// only students can update their profile image
+const updateStudentProfileValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("User ID is required")
+    .isMongoId()
+    .withMessage("Invalid user ID"),
+];
+
 module.exports = {
   createUserValidator,
   updateUserByIdValidator,
   deleteUserByIdValidator,
   getUserByIdValidator,
   getAllUsersValidator,
+  updateStudentProfileValidator,
 };

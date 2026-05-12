@@ -188,8 +188,9 @@ const DashUpdateUser = () => {
             <div className="p-1 rounded-full bg-[#0B0F19]">
               <img
                 src={
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpsKUeoi6uNxRGEZHWNdr02NKSGPypCXi7uw&s" ||
-                  profile_pic
+                  fetchedUser?.profileImage?.url
+                    ? fetchedUser.profileImage.url
+                    : profile_pic
                 }
                 alt="profile"
                 className="w-32 h-32 rounded-full object-cover border border-gray-700"
