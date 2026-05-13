@@ -86,6 +86,7 @@ const addData = async (req, res) => {
 
       return response(res, 500, false, "Python processing failed");
     }
+
     return response(
       res,
       201,

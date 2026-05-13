@@ -27,11 +27,24 @@ const DashAddData = () => {
   const FILE_DESCRIPTION_MAX_LENGTH = 500;
 
   const allowedTypes = [
+    // PDF
     "application/pdf",
+
+    // Word
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+
+    // Excel
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+    // TXT
+    "text/plain",
+
+    // CSV
+    "text/csv",
+    "application/csv",
+    "application/vnd.ms-excel", // sometimes csv comes with this mimetype
   ];
 
   // ================= HANDLE FILE PICK =================
@@ -41,7 +54,7 @@ const DashAddData = () => {
     if (!file) return;
 
     if (!allowedTypes.includes(file.type)) {
-      toast.error("Only PDF, DOC, DOCX, XLS, XLSX files are allowed");
+      toast.error("Only pdf, doc, docx, xls, xlsx, txt, csv files are allowed");
       return;
     }
 
@@ -144,8 +157,8 @@ const DashAddData = () => {
           Upload and Add a new File
         </h1>
         <p className="text-xs text-gray-400">
-          You can upload and add PDF, DOC, DOCX, XLS, XLSX files and the file
-          size should not exceed 10MB.
+          You can upload and add PDF, DOC, DOCX, XLS, XLSX, TXT, CSV files and
+          the file size should not exceed 10MB.
         </p>
       </div>
 
@@ -197,7 +210,8 @@ const DashAddData = () => {
         {/* ================= FILE UPLOAD SECTION ================= */}
         <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 flex flex-col gap-5">
           <p className="text-sm text-gray-400">
-            Upload PDF, DOC, DOCX, XLS, XLSX files only. Maximum size: 10MB
+            Upload PDF, DOC, DOCX, XLS, XLSX, TXT, CSV files only. Maximum size:
+            10MB
           </p>
 
           <div className="flex items-center gap-5">

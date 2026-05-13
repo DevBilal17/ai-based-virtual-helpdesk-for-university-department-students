@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const dataRoutes = require("./routes/data.routes.js");
 const faqRoutes = require("./routes/faq.routes.js");
+const locationRoutes = require("./routes/location.routes.js");
 const dashboardRoutes = require("./routes/dashboard.routes.js");
 const chatRoutes = require("./routes/chat.routes.js");
 const voiceRoutes = require("./routes/voice.routes.js");
@@ -39,11 +40,12 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-// ================= ROUTES =================
+// ================= API ROUTES =================
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/data", dataRoutes);
 app.use("/api/faq", faqRoutes);
+app.use("/api/location", locationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/voice", voiceRoutes);
