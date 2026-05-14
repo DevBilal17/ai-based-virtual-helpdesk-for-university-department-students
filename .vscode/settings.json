@@ -10,6 +10,7 @@
     "officedocument",
     "openxmlformats",
     "persistor",
+    "qrcode",
     "spreadsheetml",
     "streamifier",
     "Toastify",

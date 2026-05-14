@@ -3,6 +3,7 @@ const express = require("express");
 const {
   addLocation,
   updateLocationById,
+  changeLocationStatusById,
   deleteLocationById,
   adminGetLocationById,
   getAllLocations,
@@ -12,6 +13,7 @@ const {
 const {
   addLocationValidator,
   updateLocationByIdValidator,
+  changeLocationStatusByIdValidator,
   deleteLocationByIdValidator,
   adminGetLocationByIdValidator,
   getAllLocationsValidator,
@@ -21,7 +23,7 @@ const {
 const protect = require("../middlewares/protect.middleware");
 const authorize = require("../middlewares/authorization.middleware");
 const validateRequest = require("../middlewares/validateRequest");
-// const upload = require("../middlewares/multer/dataUpload");
+const imageUpload = require("../middlewares/multer/imageUpload");
 
 const router = express.Router();
 
@@ -32,7 +34,7 @@ router.post(
   "/add-location",
   protect,
   authorize("admin"),
-  // upload.single("file"),
+  imageUpload.single("location_image"),
   addLocationValidator,
   validateRequest,
   addLocation,
@@ -43,10 +45,20 @@ router.put(
   "/update-location/:id",
   protect,
   authorize("admin"),
-  // upload.single("file"),
+  imageUpload.single("location_image"),
   updateLocationByIdValidator,
   validateRequest,
   updateLocationById,
+);
+
+// ================= CHANGE LOCATION STATUS BY ID ROUTE =================
+router.put(
+  "/change-location-status/:id",
+  protect,
+  authorize("admin"),
+  changeLocationStatusByIdValidator,
+  validateRequest,
+  changeLocationStatusById,
 );
 
 // ================= DELETE LOCATION BY ID ROUTE =================

@@ -87,15 +87,15 @@ const locationSchema = new mongoose.Schema(
       maxlength: [50, "Floor must not exceed 50 characters"],
     },
 
-    coordinates: {
-      latitude: {
+    position: {
+      x: {
         type: Number,
-        required: [true, "Latitude is required"],
+        required: true,
       },
 
-      longitude: {
+      y: {
         type: Number,
-        required: [true, "Longitude is required"],
+        required: true,
       },
     },
 
@@ -106,6 +106,17 @@ const locationSchema = new mongoose.Schema(
     },
 
     creator_name: {
+      type: String,
+      required: true,
+    },
+
+    updater_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "USER",
+      required: true,
+    },
+
+    updater_name: {
       type: String,
       required: true,
     },
