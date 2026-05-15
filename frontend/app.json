@@ -46,6 +46,17 @@
           "speechRecognitionPermission": "Allow AI Desk Helper to convert your speech into text."
         }
       ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "flipper": false
+          },
+          "android": {
+            "enableProguardInReleaseBuilds": false
+          }
+        }
+      ],
       "expo-audio"
     ],
     "experiments": {

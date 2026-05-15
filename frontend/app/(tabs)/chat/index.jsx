@@ -47,7 +47,8 @@ const chat = () => {
   const { chatId } = useLocalSearchParams();
   const navigation = useNavigation();
   const [isListening, setIsListening] = useState(false);
-
+  const [needsInternet, setNeedsInternet] = useState(false);
+  const [lastQuery, setLastQuery] = useState("");
   const [isHydrated, setIsHydrated] = useState(false);
 
   const messageValue = watch("message") || "";
@@ -67,7 +68,9 @@ const chat = () => {
         dispatch(setLoadingHistory(true));
 
         dispatch(setActiveChatId(chatId));
-
+dispatch(setMessages([]));
+setIsHydrated(false);
+dispatch(clearTypingChatId());
         await setItem("active_chat_id", chatId);
       } else {
         const savedId = await getItem("active_chat_id");
@@ -103,9 +106,9 @@ const chat = () => {
             timestamp: msg.timestamp,
             isHistory: true,
           }))
-          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)) || [];
+          // .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 
-      dispatch(setMessages(formattedMessages));
+      dispatch(setMessages(formattedMessages.reverse()));
       setIsHydrated(true);
       // STOP LOADER
 
@@ -166,6 +169,7 @@ const chat = () => {
   // };
 
   const onSubmit = async (data) => {
+     if (!isHydrated) return;
     const userInput = data?.message.trim();
     if (userInput === "" || isBotTyping) return;
     const currentChatId = activeChatId || "new_chat";
@@ -180,25 +184,34 @@ const chat = () => {
     reset();
 
     try {
+      const currentChatId = activeChatId;
       const response = await askQuestion({
         query: userInput,
-        chatId: activeChatId,
+        chatId: currentChatId,
+        use_internet: false,
       }).unwrap();
-
+if (currentChatId !== activeChatId) return; 
       const newId = response.data.chatId;
       if (newId && newId !== activeChatId) {
-        setActiveChatId(newId);
+        dispatch(setActiveChatId(savedId));
         await setItem("active_chat_id", newId);
       }
 
+      const aiResponse = response?.data?.botResponse;
+      console.log(response?.data);
       const botReply = {
         id: (Date.now() + 1).toString(),
         sender: "bot",
-        text: response.data.botResponse.text,
-        metadata: response.data.botResponse.metadata,
+        text: aiResponse?.text || "No response",
+        metadata: {
+          found_in_context: aiResponse?.metadata?.found_in_context,
+          needs_internet: aiResponse?.metadata?.needs_internet,
+        },
       };
 
       dispatch(addMessage(botReply));
+      setNeedsInternet(aiResponse?.metadata?.needs_internet || false);
+      setLastQuery(userInput);
       dispatch(clearTypingChatId());
     } catch (error) {
       console.error("Chat Error:", error);
@@ -211,7 +224,30 @@ const chat = () => {
       dispatch(addMessage(errorMessage));
     }
   };
+  const handleInternetSearch = async () => {
+    try {
+      const response = await askQuestion({
+        query: lastQuery,
+        chatId: activeChatId,
+        use_internet: true,
+      }).unwrap();
 
+      const aiResponse = response?.data?.answer;
+
+      const botReply = {
+        id: (Date.now() + 2).toString(),
+        sender: "bot",
+        text: aiResponse?.answer || "No response",
+      };
+
+      dispatch(addMessage(botReply));
+
+      // hide button after response
+      setNeedsInternet(false);
+    } catch (error) {
+      console.log("Internet Search Error", error);
+    }
+  };
   const startNewChat = async () => {
     await removeItem("active_chat_id");
 
@@ -287,36 +323,18 @@ const chat = () => {
           />
         )}
 
-        {/* <View style={styles.inputWrapper}>
-          <Controller
-            control={control}
-            name="message"
-            render={({ field: { onBlur, onChange, value } }) => (
-              <GlassmorphismInput
-                onBlur={onBlur}
-                onChange={onChange}
-                value={value}
-                placeholder={
-                  isListening ? "Listening..." : "Ask me anything..."
-                }
-                iconName={
-                  isListening
-                    ? "stop-circle"
-                    : messageValue.length > 0
-                      ? "send"
-                      : "mic"
-                }
-                iconColor={isListening ? "#EF4444" : "#635BFF"}
-                isTouchable={true}
-                onTouchableIconPress={
-                  messageValue.length > 0
-                    ? handleSubmit(onSubmit)
-                    : toggleListening
-                }
-              />
-            )}
-          />
-        </View> */}
+
+
+        {needsInternet && (
+          <TouchableOpacity
+            style={styles.internetButton}
+            onPress={handleInternetSearch}
+          >
+            <Ionicons name="globe-outline" size={20} color="#fff" />
+
+            <Text style={styles.internetButtonText}>Use Internet</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.inputWrapper}>
           <Controller
             control={control}
@@ -357,6 +375,8 @@ const renderChatBoxItem = ({ item }) => {
     />
   );
 };
+
+
 
 const styles = StyleSheet.create({
   header: {
@@ -488,6 +508,64 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     backgroundColor: "#0C1013",
   },
+  internetButton: {
+    position: "absolute",
+    bottom: 90,
+    right: 20,
+
+    flexDirection: "row",
+    alignItems: "center",
+
+    backgroundColor: "#2563eb",
+
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+
+    borderRadius: 50,
+
+    elevation: 10,
+    zIndex: 999,
+  },
+
+  internetButtonText: {
+    color: "#fff",
+    marginLeft: 8,
+    fontWeight: "700",
+  },
 });
 
 export default chat;
+
+
+
+
+        {/* <View style={styles.inputWrapper}>
+          <Controller
+            control={control}
+            name="message"
+            render={({ field: { onBlur, onChange, value } }) => (
+              <GlassmorphismInput
+                onBlur={onBlur}
+                onChange={onChange}
+                value={value}
+                placeholder={
+                  isListening ? "Listening..." : "Ask me anything..."
+                }
+                iconName={
+                  isListening
+                    ? "stop-circle"
+                    : messageValue.length > 0
+                      ? "send"
+                      : "mic"
+                }
+                iconColor={isListening ? "#EF4444" : "#635BFF"}
+                isTouchable={true}
+                onTouchableIconPress={
+                  messageValue.length > 0
+                    ? handleSubmit(onSubmit)
+                    : toggleListening
+                }
+              />
+            )}
+          />
+        </View> */}

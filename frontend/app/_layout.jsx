@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import "../global.css";
-
+// import "react-native-gesture-handler";
 import { getItem } from "../utils/asyncStorage";
 
 import { Provider, useDispatch } from "react-redux";
@@ -11,7 +11,8 @@ import { store } from "../store/store";
 import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
 import { setCredentials } from "../store/slices/authSlice";
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 function AppContent() {
   const [isShowOnboarding, setIsShowOnboarding] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,7 +90,11 @@ function AppContent() {
 export default function RootLayout() {
   return (
     <Provider store={store}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
       <AppContent />
+      </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </Provider>
   );
 }

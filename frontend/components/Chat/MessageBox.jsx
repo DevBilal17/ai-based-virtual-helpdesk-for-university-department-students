@@ -1,7 +1,7 @@
 import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import TypeWriter from "react-native-typewriter";
-
+import Markdown from "react-native-markdown-display";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const MessageBox = ({
@@ -41,15 +41,13 @@ useEffect(() => {
        {isUser ? (
   <Text style={styles.messageText}>{question}</Text>
 ) : shouldAnimate ? (
-  <TypeWriter
-    typing={1}
-    maxDelay={15}
-    style={styles.messageText}
-  >
+  <TypeWriter typing={1} maxDelay={15}>
     {answer}
   </TypeWriter>
 ) : (
-  <Text style={styles.messageText}>{answer}</Text>
+  <Markdown style={markdownStyles}>
+  {answer}
+</Markdown>
 )}
       </View>
 
@@ -103,5 +101,38 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+const markdownStyles = {
+  body: {
+    color: "#fff",
+    fontSize: 15,
+    lineHeight: 22,
+  },
+
+  heading1: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#00ffcc",
+  },
+
+  heading2: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#00ffcc",
+  },
+
+  code_inline: {
+    backgroundColor: "#333",
+    padding: 4,
+    borderRadius: 4,
+    fontFamily: "monospace",
+  },
+
+  fence: {
+    backgroundColor: "#1e1e1e",
+    borderRadius: 10,
+    padding: 10,
+  },
+};
+
 
 export default MessageBox;
