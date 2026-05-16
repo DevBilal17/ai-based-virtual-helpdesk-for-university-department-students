@@ -99,6 +99,20 @@ const locationSchema = new mongoose.Schema(
       },
     },
 
+    route_points: [
+      {
+        x: {
+          type: Number,
+          required: true,
+        },
+
+        y: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+
     creator_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "USER",

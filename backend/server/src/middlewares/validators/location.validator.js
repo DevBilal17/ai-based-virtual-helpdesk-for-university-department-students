@@ -79,17 +79,60 @@ const addLocationValidator = [
     .isLength({ min: 1, max: 50 })
     .withMessage("Floor must be between 1 and 50 characters"),
 
+  // body("position.x")
+  //   .notEmpty()
+  //   .withMessage("Position X coordinate is required")
+  //   .isNumeric()
+  //   .withMessage("Position X must be numeric"),
+
+  // body("position.y")
+  //   .notEmpty()
+  //   .withMessage("Position Y coordinate is required")
+  //   .isNumeric()
+  //   .withMessage("Position Y must be numeric"),
+
+  body("position").customSanitizer((value) => {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  }),
+
   body("position.x")
     .notEmpty()
     .withMessage("Position X coordinate is required")
-    .isNumeric()
-    .withMessage("Position X must be numeric"),
+    .isFloat({ min: 0, max: 1 })
+    .withMessage("Position X must be between 0 and 1"),
 
   body("position.y")
     .notEmpty()
     .withMessage("Position Y coordinate is required")
+    .isFloat({ min: 0, max: 1 })
+    .withMessage("Position Y must be between 0 and 1"),
+
+  // body("route_points")
+  //   .isArray({ min: 1 })
+  //   .withMessage("Route points must contain at least 1 point"),
+
+  body("route_points")
+    .customSanitizer((value) => {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    })
+    .isArray({ min: 1 })
+    .withMessage("Route points must contain at least 1 point"),
+
+  body("route_points.*.x")
     .isNumeric()
-    .withMessage("Position Y must be numeric"),
+    .withMessage("Route point x must be numeric"),
+
+  body("route_points.*.y")
+    .isNumeric()
+    .withMessage("Route point y must be numeric"),
 ];
 
 // ============= UPDATE LOCATION BY ID VALIDATOR =============
@@ -170,6 +213,18 @@ const updateLocationByIdValidator = [
     .withMessage("Position Y coordinate is required")
     .isNumeric()
     .withMessage("Position Y must be numeric"),
+
+  body("route_points")
+    .isArray({ min: 2 })
+    .withMessage("Route points must contain at least 2 points"),
+
+  body("route_points.*.x")
+    .isNumeric()
+    .withMessage("Route point x must be numeric"),
+
+  body("route_points.*.y")
+    .isNumeric()
+    .withMessage("Route point y must be numeric"),
 ];
 
 // ================= CHANGE LOCATION STATUS BY ID VALIDATOR =================

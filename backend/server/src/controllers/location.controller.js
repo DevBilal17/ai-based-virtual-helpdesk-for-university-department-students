@@ -8,6 +8,12 @@ const QRCode = require("qrcode");
 
 // ================= ADD LOCATION =================
 const addLocation = async (req, res) => {
+  let uploadedLocationImage = null;
+
+  let uploadedQRCode = null;
+
+  let newLocation = null;
+
   try {
     const {
       location_name,
@@ -17,7 +23,11 @@ const addLocation = async (req, res) => {
       building,
       floor,
       position,
+      route_points,
     } = req.body;
+
+    // const position = JSON.parse(req.body.position);
+    // const route_points = JSON.parse(req.body.route_points);
 
     // ================= CHECK IMAGE =================
     if (!req.file) {
@@ -26,7 +36,7 @@ const addLocation = async (req, res) => {
 
     // ================= CHECK EXISTING LOCATION =================
     const existingLocation = await LOCATION.findOne({
-      location_name: location_name.trim(),
+      location_name: { $regex: `^${location_name.trim()}$`, $options: "i" },
     });
 
     if (existingLocation) {
@@ -54,24 +64,29 @@ const addLocation = async (req, res) => {
         streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
 
-    const uploadedLocationImage = await uploadLocationImage();
+    uploadedLocationImage = await uploadLocationImage();
 
     // ================= CREATE LOCATION FIRST =================
-    let newLocation = await LOCATION.create({
-      location_name: location_name.trim(),
-      location_description: location_description.trim(),
+    newLocation = await LOCATION.create({
+      location_name: (location_name || "").trim(),
+      location_description: (location_description || "").trim(),
       location_category,
       location_status,
       location_image: uploadedLocationImage.secure_url,
       cloudinary_public_id: uploadedLocationImage.public_id,
 
-      building: building.trim(),
-      floor: floor.trim(),
+      building: (building || "").trim(),
+      floor: (floor || "").trim(),
 
       position: {
-        x: Number(position.x),
-        y: Number(position.y),
+        x: isNaN(Number(position.x)) ? 0 : Number(position.x),
+        y: isNaN(Number(position.y)) ? 0 : Number(position.y),
       },
+
+      route_points: route_points.map((point) => ({
+        x: Number(point.x),
+        y: Number(point.y),
+      })),
 
       creator_id: req.user.id,
       creator_name: req.user.name,
@@ -118,7 +133,7 @@ const addLocation = async (req, res) => {
         streamifier.createReadStream(qrBuffer).pipe(stream);
       });
 
-    const uploadedQRCode = await uploadQRCode();
+    uploadedQRCode = await uploadQRCode();
 
     // ================= UPDATE LOCATION WITH QR =================
     newLocation.location_qr = uploadedQRCode.secure_url;
@@ -133,12 +148,40 @@ const addLocation = async (req, res) => {
       201,
       true,
       "Location added successfully and Location QR code generated successfully.",
-      {
-        newLocation,
-      },
+      newLocation,
     );
   } catch (error) {
     console.error("Add Location Error:", error);
+
+    // ================= CLEANUP LOCATION IMAGE =================
+    if (uploadedLocationImage?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(uploadedLocationImage.public_id);
+      } catch (cleanupError) {
+        console.error(
+          "Failed to cleanup uploaded location image:",
+          cleanupError,
+        );
+      }
+    }
+
+    // ================= CLEANUP QR CODE =================
+    if (uploadedQRCode?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(uploadedQRCode.public_id);
+      } catch (cleanupError) {
+        console.error("Failed to cleanup uploaded QR code:", cleanupError);
+      }
+    }
+
+    // ================= CLEANUP DATABASE DOCUMENT =================
+    if (newLocation?._id) {
+      try {
+        await LOCATION.findByIdAndDelete(newLocation._id);
+      } catch (cleanupError) {
+        console.error("Failed to cleanup location document:", cleanupError);
+      }
+    }
 
     return response(res, 500, false, "Internal Server Error");
   }
@@ -157,6 +200,7 @@ const updateLocationById = async (req, res) => {
       building,
       floor,
       position,
+      route_points,
     } = req.body;
 
     // ================= FIND LOCATION =================
@@ -230,6 +274,11 @@ const updateLocationById = async (req, res) => {
       x: Number(position.x),
       y: Number(position.y),
     };
+
+    existingLocation.route_points = route_points.map((point) => ({
+      x: Number(point.x),
+      y: Number(point.y),
+    }));
 
     existingLocation.updater_id = req.user.id;
 
