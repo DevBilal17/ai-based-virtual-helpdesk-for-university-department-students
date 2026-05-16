@@ -1,0 +1,228 @@
+// import React, { useState } from "react";
+// import { View, StyleSheet, Text, Pressable } from "react-native";
+// import Animated, {
+//   useSharedValue,
+//   useAnimatedStyle,
+// } from "react-native-reanimated";
+
+// import { Gesture, GestureDetector } from "react-native-gesture-handler";
+// import { withTiming } from "react-native-reanimated";
+// import FloorMap from "../../assets/maps/floor_1.svg";
+// import { CONNECTIONS, NODES, ROOMS } from "../../utils/constants";
+// import { findPath } from "../../utils/mapFunctions";
+// import Svg, { Line } from "react-native-svg";
+// export default function IndoorDeptMap() {
+//   const [selectedRoom, setSelectedRoom] = useState(null);
+//   const [route, setRoute] = useState([]);
+//   const [endRoom, setEndRoom] = useState(null);
+//   // ======================
+//   // CAMERA STATE
+//   // ======================
+//   const scale = useSharedValue(1);
+//   const startScale = useSharedValue(1);
+
+//   const translateX = useSharedValue(0);
+//   const translateY = useSharedValue(0);
+
+//   const startX = useSharedValue(0);
+//   const startY = useSharedValue(0);
+
+//   // ======================
+//   // PAN
+//   // ======================
+//   const panGesture = Gesture.Pan()
+//     .onBegin(() => {
+//       startX.value = translateX.value;
+//       startY.value = translateY.value;
+//     })
+//     .onUpdate((e) => {
+//       translateX.value = startX.value + e.translationX;
+//       translateY.value = startY.value + e.translationY;
+//     });
+
+//   // ======================
+//   // PINCH
+//   // ======================
+//   const pinchGesture = Gesture.Pinch()
+//     .onBegin(() => {
+//       startScale.value = scale.value;
+//     })
+//     .onUpdate((e) => {
+//       const newScale = startScale.value * e.scale;
+
+//       scale.value = Math.max(0.6, Math.min(newScale, 3));
+//     });
+
+//   // ======================
+//   // DOUBLE TAP RESET
+//   // ======================
+//   const doubleTap = Gesture.Tap()
+//     .numberOfTaps(2)
+//     .onEnd(() => {
+//       scale.value = 1;
+//       translateX.value = 0;
+//       translateY.value = 0;
+//     });
+
+//   const gesture = Gesture.Simultaneous(panGesture, pinchGesture, doubleTap);
+
+//   const focusRoom = (room) => {
+//     scale.value = withTiming(2, { duration: 400 });
+
+//     translateX.value = withTiming(-room.x + 200, {
+//       duration: 400,
+//     });
+
+//     translateY.value = withTiming(-room.y + 300, {
+//       duration: 400,
+//     });
+//   };
+
+//   // ======================
+//   // CAMERA TRANSFORM
+//   // ======================
+//   const animatedStyle = useAnimatedStyle(() => {
+//     return {
+//       transform: [
+//         { translateX: translateX.value },
+//         { translateY: translateY.value },
+//         { scale: scale.value },
+//       ],
+//     };
+//   });
+
+//   return (
+//     <GestureDetector gesture={gesture}>
+//       <View style={styles.container}>
+//         {/* CAMERA LAYER */}
+//         <Animated.View style={animatedStyle}>
+//           {/* MAP */}
+//           <FloorMap width={1200} height={1200} />
+         
+//             <Svg
+//   width={1200}
+//   height={1200}
+//   style={{ position: "absolute", top: 0, left: 0 }}
+// >
+//   {route.map((id, index) => {
+//     if (index === route.length - 1) return null;
+
+//     const from = NODES.find(r => r.id === route[index]);
+//     const to = NODES.find(r => r.id === route[index + 1]);
+
+//     return (
+//       <Line
+//         key={index}
+//         x1={from.x + 12}
+//         y1={from.y}
+//         x2={to.x + 12}
+//         y2={to.y}
+//         stroke="#00F5D4"
+//         strokeWidth="4"
+//       />
+//     );
+//   })}
+// </Svg>
+//           {/* ROOM OVERLAY (FIXED) */}
+//           {ROOMS.map((room) => {
+//             const isSelected = selectedRoom === room.id;
+
+//             return (
+//               <View
+//                 key={room.id}
+//                 onStartShouldSetResponder={() => true}
+//                 style={[
+//                   styles.roomPin,
+//                   {
+//                     position: "absolute",
+//                     left: room.x,
+//                     top: room.y,
+//                     backgroundColor: isSelected ? "#00F5D4" : "#635BFF",
+//                     transform: [{ scale: isSelected ? 1.2 : 1 }],
+//                   },
+//                 ]}
+//               >
+//                 <Text
+//                   onPress={() => {
+//                     setSelectedRoom(room.id);
+//                     console.log("FROM:", endRoom);
+// console.log("TO:", room.id);
+//                     // first click = start
+//                     if (!endRoom) {
+//                       setEndRoom(room.id);
+//                     } else {
+//                       const path = findPath(endRoom, room.id, CONNECTIONS);
+//                       setRoute(path);
+//                       setEndRoom(null);
+//                     }
+
+//                     focusRoom(room);
+//                   }}
+//                   style={styles.roomText}
+//                 >
+//                   {room.name}
+//                 </Text>
+//               </View>
+//             );
+//           })}
+//         </Animated.View>
+//       </View>
+//     </GestureDetector>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     overflow: "hidden",
+//     backgroundColor: "#0B1020",
+//   },
+
+//   roomPin: {
+//     position: "absolute",
+//     paddingHorizontal: 6,
+//     paddingVertical: 4,
+//     borderRadius: 6,
+//     zIndex: 10,
+//     elevation: 10, // Android fix
+//   },
+
+//   roomText: {
+//     color: "white",
+//     fontSize: 6,
+//     fontWeight: "600",
+//   },
+// });
+
+
+
+
+
+//  {/* {route.length > 1 &&
+//             route.map((id, index) => {
+//               if (index === route.length - 1) return null;
+
+//               const from = ROOMS.find((r) => r.id === route[index]);
+//               const to = ROOMS.find((r) => r.id === route[index + 1]);
+
+//               return (
+//                 <View
+//                   key={index}
+//                   style={{
+//                     position: "absolute",
+//                     left: from.x,
+//                     top: from.y,
+//                     width: Math.hypot(to.x - from.x, to.y - from.y),
+//                     height: 3,
+//                     backgroundColor: "#00F5D4",
+//                     transform: [
+//                       {
+//                         rotate: `${Math.atan2(to.y - from.y, to.x - from.x)}rad`,
+//                       },
+//                       { translateX: 0 },
+//                       { translateY: 0 },
+//                     ],
+//                   }}
+//                 />
+//               );
+//             })} */}

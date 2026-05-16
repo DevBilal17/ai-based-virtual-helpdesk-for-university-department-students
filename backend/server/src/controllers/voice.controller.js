@@ -36,12 +36,12 @@ const processVoice = async (req, res) => {
     const userMessage = {sender : "user",text:aiData.transcription }
    const botMessage = {
       sender: "bot",
-      text: aiData.answer.answer,
+      text: aiData.reply,
       metadata: {
-        sourceDocuments: aiData.sources,
+        sourceDocuments: aiData.sources || [],
         // Optional: you can also store the 'code' and 'explanation' in metadata
-        code: aiData.answer.code,
-        explanation: aiData.answer.explanation
+        // code: aiData.answer.code || "",
+        // explanation: aiData.answer.explanation || []
       }
     };
 

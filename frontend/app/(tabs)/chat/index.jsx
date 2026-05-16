@@ -170,7 +170,7 @@ dispatch(clearTypingChatId());
 
   const onSubmit = async (data) => {
      if (!isHydrated) return;
-    const userInput = data?.message.trim();
+    const userInput = data?.message?.trim();
     if (userInput === "" || isBotTyping) return;
     const currentChatId = activeChatId || "new_chat";
 

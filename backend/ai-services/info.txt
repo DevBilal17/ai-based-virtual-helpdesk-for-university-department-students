@@ -1,1 +1,10 @@
+ .venv/Scripts/activate
+ 
  uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload 
+
+ py -3.11 -m venv .venv
+
+
+ pip install -r requirements.txt
+
+ pip install -r requirements.txt --default-timeout=100

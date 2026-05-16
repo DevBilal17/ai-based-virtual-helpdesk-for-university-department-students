@@ -4,7 +4,7 @@ const response = require("../utils/response");
 
 const handleUserQuery = async (req, res) => {
   try {
-    const { query, chatId } = req.body; // If chatId exists, we append to it
+    const { query, chatId ,use_internet} = req.body; // If chatId exists, we append to it
     const userId = req.user.id;
 
     if (!query) return response(res, 400, false, "Query is required");
@@ -12,6 +12,7 @@ const handleUserQuery = async (req, res) => {
     // 1. Call Python RAG Service
     const pythonResponse = await axios.post(`${process.env.PYTHON_URL}/query/ask`, {
       query: query,
+      use_internet : use_internet,
     });
 
     if (!pythonResponse.data.success) {
@@ -28,9 +29,8 @@ const handleUserQuery = async (req, res) => {
       text: aiData.answer.answer,
       metadata: {
         sourceDocuments: aiData.sources,
-        // Optional: you can also store the 'code' and 'explanation' in metadata
-        code: aiData.answer.code,
-        explanation: aiData.answer.explanation
+            found_in_context: aiData.answer.found_in_context,
+    needs_internet: aiData.answer.needs_internet || false
       }
     };
 

@@ -8,18 +8,25 @@ router = APIRouter()
 # Request Body Schema
 class QueryRequest(BaseModel):
     query: str
+    use_internet: bool = False
 
 
 # Route
 @router.post("/ask")
 async def ask_question(request: QueryRequest):
-    return await query_controller(request.query)
+    return await query_controller(
+        request.query,
+        request.use_internet
+    )
 
 
 
-async def query_controller(query: str):
+async def query_controller(
+    query: str,
+    use_internet: bool = False
+):
     try:
-        result = await process_query_core(query)
+        result = await process_query_core(query,use_internet)
 
         return APIResponse(
             statusCode=200,

@@ -3,3 +3,12 @@ node_modules/
 uploads/
 __pycache__/
 venv/
+
+# Python virtual env
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc

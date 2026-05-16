@@ -1,6 +1,7 @@
+from functools import lru_cache
 from langchain_huggingface import HuggingFaceEmbeddings
 
-# Professional approach: Singleton-like model getter
+@lru_cache()
 def get_embedding_model():
     # This model is local, fast, and free.
     return HuggingFaceEmbeddings(

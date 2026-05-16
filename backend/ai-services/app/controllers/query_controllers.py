@@ -1,23 +1,57 @@
-from app.utils.response import APIResponse
-from app.services.store_to_vector_db import get_chroma_client, get_or_create_collection
-from app.services.embeddings import get_embedding_model
-
-
-from langchain_chroma import Chroma
-
-from langchain_core.prompts import ChatPromptTemplate
-
-from langchain_core.runnables import RunnablePassthrough,RunnableParallel
-
-from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
-
-
-from langchain_mistralai import ChatMistralAI
-from langchain_groq import ChatGroq
+from app.utils.intent_router import detect_intent
+from app.services.rag_service import rag_answer
+from app.services.internet_service import internet_answer
+# from app.services.internet_service import internet_answer
+from tavily import TavilyClient
 import os
 
-async def process_query_core(query: str):
+tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+
+async def process_query_core(query: str, use_internet: bool = False):
+
+    intent = detect_intent(query)
+
+    # 1. Greeting
+    if intent == "greeting":
+        return {
+            "answer": {
+                "answer": "Hello! I am your AI Help Desk for IT Department. How can I help you?",
+                "found_in_context": True,
+                "needs_internet": False
+            },
+            "sources": []
+        }
+
+    # 2. Developer info
+    if intent == "developer":
+        
+        return {
+            "answer": {
+                "answer": "This system is developed by:\n- Muhammad Bilal Aqeel (Team Lead)\n- Abdul Waleed\nBoth are BSCS 8th semester students.",
+                "found_in_context": True,
+                "needs_internet": False
+            },
+            "sources": []
+        }
+
+    # 3. Internet mode
+    if use_internet:
+
+        results = tavily.search(
+            query=query,
+            search_depth="advanced",
+            max_results=5
+        )
+
+        return {
+            "answer": internet_answer(query, results["results"]),
+            "sources": ["Tavily Search"]
+        }
+    # 4. RAG mode
+    return await rag_answer(query)
+# async def process_query_core(query: str):
     try:
+        query = normalize_text(query)
         # 1. Load DB
         client = get_chroma_client()
         collection = get_or_create_collection(client)
@@ -30,35 +64,42 @@ async def process_query_core(query: str):
         )
 
         # 2. Retriever
-        retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+        retriever = vectorstore.as_retriever(
+            search_type="similarity",
+            search_kwargs={
+                "k": 5
+            }
+        )
+        docs = retriever.get_relevant_documents(query)
 
+        if not docs or len(docs) == 0:
+            return {
+                "answer": {
+                    "answer": "No relevant context found in documents.",
+                    "found_in_context": False
+                },
+                "sources": []
+            }
         # 3. Prompt
         prompt = ChatPromptTemplate.from_messages([
-    ("system", """
-You are a highly intelligent AI assistant working inside a RAG system.
+("system", """
+You are a helpful AI assistant working with document context.
 
 RULES:
-- Use ONLY context
-- No hallucination
-- Return ONLY JSON
+- Use context as primary source
+- If context is partially relevant, infer logically
+- If context is weak, still try to help
+- Do NOT say "not available" too aggressively
+- Keep response JSON valid
 
 OUTPUT FORMAT:
-{{
+{
   "answer": "...",
-  "code": null,
-  "explanation": null,
-  "found_in_context": true
-}}
-
-If not found:
-{{
-  "answer": "This specific information is not available in the provided data.",
-  "suggestion": "Do you want general info?"
-}}
+  "found_in_context": true/false
+}
 """),
-    ("human", "Context:\n{context}\n\nQuestion:\n{question}")
+("human", "Context:\n{context}\n\nQuestion:\n{question}")
 ])
-
         # 4. LLM
         llm = ChatGroq(
             model="llama-3.1-8b-instant",
@@ -67,14 +108,17 @@ If not found:
         )
 
         # 5. Chain
-        map_chain = RunnableParallel(
-            {
-                "context": retriever,
-                "question": RunnablePassthrough()
-            }
-        )
+        docs = retriever.get_relevant_documents(query)
 
-        generation_chain = prompt | llm | JsonOutputParser()
+        context = build_context(docs)
+
+        generation_chain = prompt | llm
+        raw = generation_chain.invoke({
+            "context": context,
+            "question": query
+        })
+
+        result = raw.content
 
         # 6. Execute
         input_data = map_chain.invoke(query)

@@ -8,7 +8,7 @@ const TabLayout = () => {
    const insets = useSafeAreaInsets();
   return (
     <Tabs
-      initialRouteName='index'
+      initialRouteName='location'
 
       screenOptions={({ route }) => ({
         headerShown: false,
