@@ -50,9 +50,33 @@ const chat = () => {
   const [needsInternet, setNeedsInternet] = useState(false);
   const [lastQuery, setLastQuery] = useState("");
   const [isHydrated, setIsHydrated] = useState(false);
-
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [locationPrompt, setLocationPrompt] = useState(null);
   const messageValue = watch("message") || "";
   // console.log(messages)
+  const handleBotResponse = (botResponse) => {
+    const metadata = botResponse?.metadata || {};
+
+    const nodeId =
+      metadata.intent === "visit"
+        ? metadata.officeNodeId || metadata.doorNodeId
+        : metadata.doorNodeId;
+
+    if (nodeId) {
+      setLocationPrompt({
+        nodeId,
+        intent: metadata.intent,
+      });
+    }
+  };
+  useEffect(() => {
+    if (selectedNode?.nodeId) {
+      console.log("Navigate to node:", selectedNode);
+
+      // Example:
+      // navigation logic / map focus
+    }
+  }, [selectedNode]);
   const {
     data: selectedChatData,
     isLoading: isChatLoading,
@@ -68,9 +92,9 @@ const chat = () => {
         dispatch(setLoadingHistory(true));
 
         dispatch(setActiveChatId(chatId));
-dispatch(setMessages([]));
-setIsHydrated(false);
-dispatch(clearTypingChatId());
+        dispatch(setMessages([]));
+        setIsHydrated(false);
+        dispatch(clearTypingChatId());
         await setItem("active_chat_id", chatId);
       } else {
         const savedId = await getItem("active_chat_id");
@@ -96,17 +120,17 @@ dispatch(clearTypingChatId());
   );
   useEffect(() => {
     if (selectedChatData?.data?.chat?.messages) {
-      const formattedMessages =
-        selectedChatData?.data?.chat?.messages
-          ?.map((msg) => ({
-            id: msg._id,
-            sender: msg.sender,
-            text: msg.text,
-            metadata: msg.metadata,
-            timestamp: msg.timestamp,
-            isHistory: true,
-          }))
-          // .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+      const formattedMessages = selectedChatData?.data?.chat?.messages?.map(
+        (msg) => ({
+          id: msg._id,
+          sender: msg.sender,
+          text: msg.text,
+          metadata: msg.metadata,
+          timestamp: msg.timestamp,
+          isHistory: true,
+        }),
+      );
+      // .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 
       dispatch(setMessages(formattedMessages.reverse()));
       setIsHydrated(true);
@@ -120,29 +144,7 @@ dispatch(clearTypingChatId());
       refetch();
     }
   }, [activeChatId]);
-  // --- Voice Logic Setup ---
-  // useEffect(() => {
-  //   Voice.onSpeechStart = () => setIsListening(true);
-  //   Voice.onSpeechEnd = () => setIsListening(false);
-  //   Voice.onSpeechError = (e) => {
-  //     console.error("Speech Error:", e);
-  //     setIsListening(false);
-  //   };
 
-  //   Voice.onSpeechResults = (e) => {
-  //     if (e.value && e.value.length > 0) {
-  //       const spokenText = e.value[0];
-  //       // 1. Fill the input field visually
-  //       setValue("message", spokenText);
-  //       // 2. Automatically trigger the submission
-  //       handleSubmit(onSubmit)();
-  //     }
-  //   };
-
-  //   return () => {
-  //     Voice.destroy().then(Voice.removeAllListeners);
-  //   };
-  // }, []);
   useEffect(() => {
     const syncSession = async () => {
       const savedId = await getItem("active_chat_id");
@@ -155,21 +157,9 @@ dispatch(clearTypingChatId());
   }, []);
 
   const [askQuestion, { isLoading: isBotTyping }] = useAskQuestionMutation();
-  // const toggleListening = async () => {
-  //   try {
-  //     if (isListening) {
-  //       await Voice.stop();
-  //     } else {
-  //       reset({ message: "" }); // Clear input before listening
-  //       await Voice.start("en-US");
-  //     }
-  //   } catch (e) {
-  //     console.error("Voice Toggle Error:", e);
-  //   }
-  // };
 
   const onSubmit = async (data) => {
-     if (!isHydrated) return;
+    if (!isHydrated) return;
     const userInput = data?.message?.trim();
     if (userInput === "" || isBotTyping) return;
     const currentChatId = activeChatId || "new_chat";
@@ -184,21 +174,24 @@ dispatch(clearTypingChatId());
     reset();
 
     try {
-      const currentChatId = activeChatId;
+      const currChatId = activeChatId;
       const response = await askQuestion({
         query: userInput,
-        chatId: currentChatId,
+        chatId: currChatId,
         use_internet: false,
       }).unwrap();
-if (currentChatId !== activeChatId) return; 
-      const newId = response.data.chatId;
+      console.log("API Response:", response);
+
+      if (currentChatId !== activeChatId) return;
+      const newId = response?.data?.chatId;
       if (newId && newId !== activeChatId) {
-        dispatch(setActiveChatId(savedId));
+        dispatch(setActiveChatId(newId));
         await setItem("active_chat_id", newId);
       }
 
       const aiResponse = response?.data?.botResponse;
-      console.log(response?.data);
+      console.log("AI Response in Component:", aiResponse)
+      handleBotResponse(aiResponse);
       const botReply = {
         id: (Date.now() + 1).toString(),
         sender: "bot",
@@ -253,6 +246,20 @@ if (currentChatId !== activeChatId) return;
 
     dispatch(clearChat());
   };
+const handleLocationNavigate = () => {
+  if (!locationPrompt) return;
+
+  const { nodeId, intent } = locationPrompt;
+
+  setLocationPrompt(null);
+
+  if (!nodeId) return;
+
+  router.push({
+    pathname: "(tabs)/location",
+    params: { nodeId, intent },
+  });
+};
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -322,9 +329,16 @@ if (currentChatId !== activeChatId) return;
             }
           />
         )}
+        {locationPrompt && (
+          <TouchableOpacity
+            style={styles.locationButton}
+            onPress={handleLocationNavigate}
+          >
+            <Ionicons name="location-outline" size={20} color="#fff" />
 
-
-
+            <Text style={styles.locationButtonText}>Go to Location</Text>
+          </TouchableOpacity>
+        )}
         {needsInternet && (
           <TouchableOpacity
             style={styles.internetButton}
@@ -375,8 +389,6 @@ const renderChatBoxItem = ({ item }) => {
     />
   );
 };
-
-
 
 const styles = StyleSheet.create({
   header: {
@@ -532,14 +544,31 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontWeight: "700",
   },
+  locationButton: {
+    position: "absolute",
+    bottom: 140,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#10b981",
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 50,
+    elevation: 10,
+    zIndex: 999,
+  },
+
+  locationButtonText: {
+    color: "#fff",
+    marginLeft: 8,
+    fontWeight: "700",
+  },
 });
 
 export default chat;
 
-
-
-
-        {/* <View style={styles.inputWrapper}>
+{
+  /* <View style={styles.inputWrapper}>
           <Controller
             control={control}
             name="message"
@@ -568,4 +597,5 @@ export default chat;
               />
             )}
           />
-        </View> */}
+        </View> */
+}

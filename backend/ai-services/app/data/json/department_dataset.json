@@ -1,0 +1,2855 @@
+{
+  "meta": {
+    "university": "GCUF",
+    "department_name": "Information Technology",
+    "department_slug": "information-technology",
+    "website_url": "https://gcuf.edu.pk/faculties/physical-science/information-technology/",
+    "language": "en"
+  },
+
+  "contact_info": {
+    "email": ["it@gcuf.edu.pk"],
+    "phone": [],
+    "fax": [],
+    "address": "Second Floor, Yousaf Block, Old Campus",
+    "location_map": {
+      "lat": null,
+      "lng": null,
+      "building": "Yousaf Block",
+      "campus": "Old Campus"
+    }
+  },
+
+  "department_overview": {
+    "introduction": "The College of Computer Science & Information Studies was one of the most prominent and oldest centers of computer education in Faisalabad. It was established as a separate department by offering ICS program in 1999. The department expanded by offering BS (CS) in 2001, MCS in 2004, MS (CS) in 2009, and BS (IT) as per HEC guidelines. Later, the Department of Information Technology became a separate entity focusing on IT specialization and started MS (IT) in 2014. The department provides advanced computing facilities and aims to enhance practical knowledge of students through well-equipped laboratories and academic support.",
+    "history": "Started in 1999 with ICS program, later expanded into BS, MS programs in CS and IT fields. Eventually IT became a separate department focusing on specialized IT education.",
+    "about": "A well-established computing department offering undergraduate and postgraduate programs in Computer Science and Information Technology with strong focus on labs, research, and practical skills development.",
+    "short_description": "A leading and historic computer science and IT department in Faisalabad providing quality education, research environment, and modern computing facilities."
+  },
+
+  "vision_mission": {
+    "vision": "To establish an effective operational environment containing advanced technological infrastructure, industry collaboration and research culture to deliver quality services to the students in terms of teaching, market exposure and research respectively.",
+
+    "mission": "To technically equip students by providing support for academic excellence through teaching and promoting research culture to meet the emerging needs of the students.",
+
+    "objectives": [
+      "Provide quality teaching environment",
+      "Promote research culture",
+      "Enhance student practical skills",
+      "Strengthen industry collaboration",
+      "Prepare students for market needs"
+    ]
+  },
+
+  "academics": [
+    {
+      "program": "BS Information Technology",
+      "scheme_year": "2022-2026",
+      "level": "BS",
+      "credit_hours": {
+        "total": 133
+      },
+
+      "semesters": [
+        {
+          "semester": 1,
+          "courses": [
+            {
+              "code": "ENG-322",
+              "title": "English Composition & Comprehension",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "communication",
+              "tags": ["english", "writing", "grammar"]
+            },
+            {
+              "code": "CIT-301",
+              "title": "Introduction to Information & Communication Technologies",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "fundamentals",
+              "tags": ["ict", "computer basics", "intro"]
+            },
+            {
+              "code": "ISL-321",
+              "title": "Islamic Studies / Ethics",
+              "credit_hours": 2,
+              "type": "theory",
+              "domain": "ethics",
+              "tags": ["islamic studies", "ethics", "values"]
+            },
+            {
+              "code": "PHY-323",
+              "title": "Basic Electronics",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "electronics",
+              "tags": ["circuits", "hardware", "electronics basics"]
+            },
+            {
+              "code": "CSI-301",
+              "title": "Programming Fundamentals",
+              "credit_hours": 4,
+              "type": "practical",
+              "domain": "programming",
+              "tags": ["coding", "c++", "logic", "basics"]
+            },
+            {
+              "code": "MTH-111",
+              "title": "Basic Mathematics I",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "mathematics",
+              "tags": ["math basics", "algebra"]
+            },
+            {
+              "code": "MTH-323",
+              "title": "Calculus & Analytical Geometry",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "mathematics",
+              "tags": ["calculus", "geometry", "analysis"]
+            }
+          ]
+        },
+
+        {
+          "semester": 2,
+          "courses": [
+            {
+              "code": "CSI-302",
+              "title": "Object Oriented Programming",
+              "credit_hours": 4,
+              "type": "practical",
+              "domain": "programming",
+              "tags": ["oop", "coding", "java", "c++", "classes", "objects"]
+            },
+            {
+              "code": "ENG-421",
+              "title": "Communication Skills",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "communication",
+              "tags": ["english", "speaking", "writing", "presentation"]
+            },
+            {
+              "code": "PST-321",
+              "title": "Pakistan Studies",
+              "credit_hours": 2,
+              "type": "theory",
+              "domain": "social_studies",
+              "tags": ["pakistan", "history", "ideology"]
+            },
+            {
+              "code": "MTH-424",
+              "title": "Linear Algebra",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "mathematics",
+              "tags": ["matrices", "vectors", "linear systems", "math"]
+            },
+            {
+              "code": "MTH-112",
+              "title": "Basic Mathematics II",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "mathematics",
+              "tags": ["algebra", "calculus basics", "math fundamentals"]
+            },
+            {
+              "code": "CSI-304",
+              "title": "Discrete Structures",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "theoretical_computer_science",
+              "tags": [
+                "logic",
+                "sets",
+                "graphs",
+                "combinatorics",
+                "discrete math"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 3,
+          "courses": [
+            {
+              "code": "CSI-401",
+              "title": "Data Structures & Algorithms",
+              "credit_hours": 4,
+              "type": "theory_practical",
+              "domain": "computer_science_core",
+              "tags": [
+                "data structures",
+                "algorithms",
+                "arrays",
+                "trees",
+                "graphs",
+                "complexity"
+              ]
+            },
+            {
+              "code": "ELE-401",
+              "title": "Digital Logic Design",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "computer_architecture",
+              "tags": [
+                "logic gates",
+                "boolean algebra",
+                "circuits",
+                "flip flops"
+              ]
+            },
+            {
+              "code": "CSI-407",
+              "title": "Computer Networks",
+              "credit_hours": 4,
+              "type": "theory_practical",
+              "domain": "networking",
+              "tags": [
+                "tcp/ip",
+                "routing",
+                "switching",
+                "protocols",
+                "networking"
+              ]
+            },
+            {
+              "code": "ENG-422",
+              "title": "Technical Writing",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "communication",
+              "tags": [
+                "report writing",
+                "documentation",
+                "technical communication"
+              ]
+            },
+            {
+              "code": "CSI-408",
+              "title": "Database Systems",
+              "credit_hours": 4,
+              "type": "theory_practical",
+              "domain": "databases",
+              "tags": [
+                "sql",
+                "dbms",
+                "normalization",
+                "transactions",
+                "queries"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 4,
+          "courses": [
+            {
+              "code": "STA-321",
+              "title": "Probability & Statistics",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "mathematics",
+              "tags": [
+                "probability",
+                "statistics",
+                "data analysis",
+                "distributions"
+              ]
+            },
+            {
+              "code": "CSI-509",
+              "title": "Operating Systems",
+              "credit_hours": 4,
+              "type": "theory_practical",
+              "domain": "systems",
+              "tags": [
+                "processes",
+                "threads",
+                "memory management",
+                "scheduling",
+                "linux"
+              ]
+            },
+            {
+              "code": "CIT-408",
+              "title": "Visual Programming",
+              "credit_hours": 3,
+              "type": "practical",
+              "domain": "programming",
+              "tags": ["ui development", "event driven", "gui", "desktop apps"]
+            },
+            {
+              "code": "SWE-401",
+              "title": "Software Engineering",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "software_engineering",
+              "tags": ["sdlc", "requirements", "design", "testing", "agile"]
+            },
+            {
+              "code": "CIT-406",
+              "title": "Web Technologies",
+              "credit_hours": 3,
+              "type": "practical",
+              "domain": "web_development",
+              "tags": [
+                "html",
+                "css",
+                "javascript",
+                "frontend",
+                "backend basics"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 5,
+          "courses": [
+            {
+              "code": "CIT-503",
+              "title": "Database Administration and Management",
+              "credit_hours": 4,
+              "type": "theory_practical",
+              "domain": "databases",
+              "tags": ["dbms", "administration", "sql", "optimization"]
+            },
+            {
+              "code": "CIT-502",
+              "title": "IT Infrastructure",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "systems",
+              "tags": ["servers", "hardware", "cloud basics", "networks"]
+            },
+            {
+              "code": "CIT-505",
+              "title": "System & Network Administration",
+              "credit_hours": 4,
+              "type": "practical",
+              "domain": "networking",
+              "tags": ["linux", "windows server", "sysadmin", "network setup"]
+            },
+            {
+              "code": "BAM-302",
+              "title": "Principles of Marketing",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "business",
+              "tags": ["marketing", "strategy", "business"]
+            },
+            {
+              "code": "CSI-604",
+              "title": "Information Security",
+              "credit_hours": 3,
+              "type": "theory_practical",
+              "domain": "cybersecurity",
+              "tags": ["security", "encryption", "threats", "network security"]
+            },
+
+            {
+              "code": "IT-ELECTIVE-1",
+              "title": "IT Elective (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective_placeholder",
+              "domain": "electives",
+              "tags": ["choice", "optional"],
+
+              "options": [
+                "CIT-651",
+                "CIT-652",
+                "CIT-653",
+                "CIT-654",
+                "CIT-655",
+                "CIT-656",
+                "CIT-657",
+                "CIT-658",
+                "CIT-659",
+                "CIT-660",
+                "CIT-661",
+                "CIT-662",
+                "CIT-663",
+                "CIT-667",
+                "CIT-666",
+                "CIT-672",
+                "CIT-684",
+                "CIT-687"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 6,
+          "courses": [
+            {
+              "code": "CIT-601",
+              "title": "Virtual Systems & Services",
+              "credit_hours": 4,
+              "type": "systems",
+              "domain": "systems",
+              "tags": ["virtualization", "vm", "cloud", "services"]
+            },
+            {
+              "code": "SWE-501",
+              "title": "Software Requirements Engineering",
+              "credit_hours": 3,
+              "type": "software_engineering",
+              "domain": "software_engineering",
+              "tags": ["srs", "requirements", "analysis"]
+            },
+            {
+              "code": "BAM-601",
+              "title": "Entrepreneurship",
+              "credit_hours": 3,
+              "type": "business",
+              "domain": "business",
+              "tags": ["startup", "innovation", "planning"]
+            },
+            {
+              "code": "CIT-507",
+              "title": "Operations Research",
+              "credit_hours": 3,
+              "type": "mathematics",
+              "domain": "optimization",
+              "tags": ["models", "decision making", "optimization"]
+            },
+
+            {
+              "code": "IT-ELECTIVE-2",
+              "title": "IT Elective (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+
+              "options": [
+                "CIT-651",
+                "CIT-652",
+                "CIT-653",
+                "CIT-654",
+                "CIT-655",
+                "CIT-656",
+                "CIT-657",
+                "CIT-658",
+                "CIT-659",
+                "CIT-660",
+                "CIT-661",
+                "CIT-662",
+                "CIT-663",
+                "CIT-666",
+                "CIT-667",
+                "CIT-672",
+                "CIT-684",
+                "CIT-687"
+              ]
+            },
+
+            {
+              "code": "IT-ELECTIVE-3",
+              "title": "IT Elective (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+
+              "options": [
+                "CIT-651",
+                "CIT-652",
+                "CIT-653",
+                "CIT-654",
+                "CIT-655",
+                "CIT-656",
+                "CIT-657",
+                "CIT-658",
+                "CIT-659",
+                "CIT-660",
+                "CIT-661",
+                "CIT-662",
+                "CIT-663",
+                "CIT-666",
+                "CIT-667",
+                "CIT-672",
+                "CIT-684",
+                "CIT-687"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 7,
+          "courses": [
+            {
+              "code": "CIT-603",
+              "title": "Modeling & Simulation",
+              "credit_hours": 3,
+              "type": "theory_practical",
+              "domain": "systems_modeling",
+              "tags": ["simulation", "modeling", "systems", "analysis"]
+            },
+            {
+              "code": "CIT-602",
+              "title": "IT Project Management",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "project_management",
+              "tags": ["agile", "planning", "scheduling", "risk management"]
+            },
+            {
+              "code": "SWE-632",
+              "title": "Software Quality Engineering",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "software_engineering",
+              "tags": ["testing", "qa", "quality", "verification", "validation"]
+            },
+            {
+              "code": "CIT-631",
+              "title": "Final Year Project Proposal",
+              "credit_hours": 1,
+              "type": "project",
+              "domain": "final_year_project",
+              "tags": ["fyp", "proposal", "research", "documentation"]
+            },
+
+            {
+              "code": "IT-ELECTIVE-4",
+              "title": "IT Elective (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-651",
+                "CIT-652",
+                "CIT-653",
+                "CIT-654",
+                "CIT-655",
+                "CIT-656",
+                "CIT-657",
+                "CIT-658",
+                "CIT-659",
+                "CIT-660",
+                "CIT-661",
+                "CIT-662",
+                "CIT-663",
+                "CIT-666",
+                "CIT-667",
+                "CIT-672",
+                "CIT-684",
+                "CIT-687"
+              ]
+            },
+            {
+              "code": "IT-ELECTIVE-5",
+              "title": "IT Elective (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-651",
+                "CIT-652",
+                "CIT-653",
+                "CIT-654",
+                "CIT-655",
+                "CIT-656",
+                "CIT-657",
+                "CIT-658",
+                "CIT-659",
+                "CIT-660",
+                "CIT-661",
+                "CIT-662",
+                "CIT-663",
+                "CIT-666",
+                "CIT-667",
+                "CIT-672",
+                "CIT-684",
+                "CIT-687"
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 8,
+          "courses": [
+            {
+              "code": "CSI-505",
+              "title": "Professional Practices",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "professional_ethics",
+              "tags": ["ethics", "legal", "professionalism", "computing"]
+            },
+            {
+              "code": "CIT-631",
+              "title": "Final Year Project",
+              "credit_hours": 5,
+              "type": "project",
+              "domain": "final_year_project",
+              "tags": ["fyp", "implementation", "research", "development"]
+            },
+            {
+              "code": "CIT-604",
+              "title": "Cyber Security",
+              "credit_hours": 3,
+              "type": "theory_practical",
+              "domain": "cybersecurity",
+              "tags": [
+                "security",
+                "hacking",
+                "encryption",
+                "network security",
+                "threats"
+              ]
+            }
+          ]
+        }
+      ],
+
+      "electives": [
+        {
+          "code": "CIT-651",
+          "title": "Telecommunication Systems",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-652",
+          "title": "Routing & Switching",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-653",
+          "title": "Network Design and Management",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-654",
+          "title": "Network Programming",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-655",
+          "title": "Wireless and Mobile Communications",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-656",
+          "title": "Cryptography and Information Security",
+          "credit_hours": 3
+        },
+        { "code": "CIT-657", "title": "Cloud Computing", "credit_hours": 3 },
+        {
+          "code": "CIT-658",
+          "title": "System Integration and Architecture",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-659",
+          "title": "Internet Architecture & Protocols",
+          "credit_hours": 3
+        },
+        { "code": "CIT-660", "title": "Data Warehousing", "credit_hours": 3 },
+        { "code": "CIT-661", "title": "Data Mining", "credit_hours": 3 },
+        {
+          "code": "CIT-662",
+          "title": "Distributed Database Systems",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-663",
+          "title": "Distributed Computing",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-667",
+          "title": "Artificial Intelligence & Fuzzy Logic Systems",
+          "credit_hours": 3
+        },
+        { "code": "CIT-666", "title": "Robotics", "credit_hours": 3 },
+        {
+          "code": "CIT-672",
+          "title": "Digital Image Processing",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-684",
+          "title": "Computer Game Development",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-687",
+          "title": "Mobile Application Development",
+          "credit_hours": 3
+        }
+      ]
+    },
+    {
+      "program": "MS Information Technology",
+      "scheme_year": "2022-2024",
+      "level": "MS",
+      "credit_hours": {
+        "coursework": 24,
+        "thesis": 6,
+        "total": 30
+      },
+
+      "semesters": [
+        {
+          "semester": 1,
+          "courses": [
+            {
+              "code": "CIT-701",
+              "title": "Advanced Database Management Systems",
+              "credit_hours": 3,
+              "type": "theory_practical",
+              "domain": "databases",
+              "tags": [
+                "advanced sql",
+                "optimization",
+                "transactions",
+                "dbms",
+                "performance"
+              ]
+            },
+            {
+              "code": "CIT-702",
+              "title": "Information Security and Assurance",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "cybersecurity",
+              "tags": [
+                "security",
+                "encryption",
+                "risk management",
+                "threats",
+                "assurance"
+              ]
+            },
+            {
+              "code": "CIT-703",
+              "title": "Research Methods (University Elective-1)",
+              "credit_hours": 3,
+              "type": "research",
+              "domain": "research",
+              "tags": [
+                "research",
+                "methodology",
+                "thesis",
+                "paper writing",
+                "analysis"
+              ]
+            },
+            {
+              "code": "STA-795",
+              "title": "Statistics for Research",
+              "credit_hours": 3,
+              "type": "theory",
+              "domain": "statistics",
+              "tags": [
+                "data analysis",
+                "probability",
+                "hypothesis testing",
+                "research stats"
+              ]
+            }
+          ]
+        },
+
+        {
+          "semester": 2,
+          "courses": [
+            {
+              "code": "ELECTIVE-1",
+              "title": "MS Elective I (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-710",
+                "CIT-711",
+                "CIT-712",
+                "CIT-713",
+                "CIT-714",
+                "CIT-715",
+                "CIT-716",
+                "CIT-717",
+                "CIT-718",
+                "CIT-719",
+                "CIT-720",
+                "CIT-721",
+                "CIT-722",
+                "CIT-723",
+                "CIT-724",
+                "CIT-725",
+                "CIT-726",
+                "CIT-727",
+                "CIT-742",
+                "CIT-743",
+                "CIT-741",
+                "CIT-731",
+                "CIT-732",
+                "CIT-733",
+                "CIT-734",
+                "CIT-735",
+                "CIT-736",
+                "CIT-737",
+                "CIT-738",
+                "CIT-739",
+                "CIT-740"
+              ]
+            },
+            {
+              "code": "ELECTIVE-2",
+              "title": "MS Elective II (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-710",
+                "CIT-711",
+                "CIT-712",
+                "CIT-713",
+                "CIT-714",
+                "CIT-715",
+                "CIT-716",
+                "CIT-717",
+                "CIT-718",
+                "CIT-719",
+                "CIT-720",
+                "CIT-721",
+                "CIT-722",
+                "CIT-723",
+                "CIT-724",
+                "CIT-725",
+                "CIT-726",
+                "CIT-727",
+                "CIT-742",
+                "CIT-743",
+                "CIT-741",
+                "CIT-731",
+                "CIT-732",
+                "CIT-733",
+                "CIT-734",
+                "CIT-735",
+                "CIT-736",
+                "CIT-737",
+                "CIT-738",
+                "CIT-739",
+                "CIT-740"
+              ]
+            },
+            {
+              "code": "ELECTIVE-3",
+              "title": "MS Elective III (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-710",
+                "CIT-711",
+                "CIT-712",
+                "CIT-713",
+                "CIT-714",
+                "CIT-715",
+                "CIT-716",
+                "CIT-717",
+                "CIT-718",
+                "CIT-719",
+                "CIT-720",
+                "CIT-721",
+                "CIT-722",
+                "CIT-723",
+                "CIT-724",
+                "CIT-725",
+                "CIT-726",
+                "CIT-727",
+                "CIT-742",
+                "CIT-743",
+                "CIT-741",
+                "CIT-731",
+                "CIT-732",
+                "CIT-733",
+                "CIT-734",
+                "CIT-735",
+                "CIT-736",
+                "CIT-737",
+                "CIT-738",
+                "CIT-739",
+                "CIT-740"
+              ]
+            },
+            {
+              "code": "ELECTIVE-4",
+              "title": "MS Elective IV (Choose 1)",
+              "credit_hours": 3,
+              "type": "elective",
+              "domain": "electives",
+              "tags": ["choice"],
+              "options": [
+                "CIT-710",
+                "CIT-711",
+                "CIT-712",
+                "CIT-713",
+                "CIT-714",
+                "CIT-715",
+                "CIT-716",
+                "CIT-717",
+                "CIT-718",
+                "CIT-719",
+                "CIT-720",
+                "CIT-721",
+                "CIT-722",
+                "CIT-723",
+                "CIT-724",
+                "CIT-725",
+                "CIT-726",
+                "CIT-727",
+                "CIT-742",
+                "CIT-743",
+                "CIT-741",
+                "CIT-731",
+                "CIT-732",
+                "CIT-733",
+                "CIT-734",
+                "CIT-735",
+                "CIT-736",
+                "CIT-737",
+                "CIT-738",
+                "CIT-739",
+                "CIT-740"
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 3,
+          "courses": [
+            {
+              "code": "CIT-728",
+              "title": "Seminar (General)",
+              "credit_hours": 1,
+              "type": "core",
+              "tags": ["seminar", "research-prep"]
+            }
+          ]
+        },
+
+        {
+          "semester": 4,
+          "courses": [
+            {
+              "code": "CIT-729",
+              "title": "Seminar (Research)",
+              "credit_hours": 1,
+              "type": "research_seminar",
+              "tags": ["research", "proposal", "presentation", "pre-thesis"]
+            },
+            {
+              "code": "CIT-730",
+              "title": "Thesis",
+              "credit_hours": 6,
+              "type": "thesis",
+              "tags": [
+                "research",
+                "final-project",
+                "publication",
+                "dissertation"
+              ]
+            }
+          ]
+        }
+      ],
+
+      "electives": [
+        {
+          "code": "CIT-710",
+          "title": "Advanced Wireless Networks",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-711",
+          "title": "Advanced Telecommunication Systems",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-712",
+          "title": "Network Performance Evaluation",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-713",
+          "title": "Advanced Telecommunication Networks",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-714",
+          "title": "Advanced Network Security",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-715",
+          "title": "Network Simulation and Modeling",
+          "credit_hours": 3
+        },
+        { "code": "CIT-716", "title": "Cloud Computing", "credit_hours": 3 },
+        {
+          "code": "CIT-717",
+          "title": "Mobile and Pervasive Computing",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-718",
+          "title": "Data Warehousing Concepts and Techniques",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-719",
+          "title": "Data Mining Concepts and Techniques",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-720",
+          "title": "Advanced Business Intelligence and Analytics",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-721",
+          "title": "Multimedia Databases",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-722",
+          "title": "Distributed Systems",
+          "credit_hours": 3
+        },
+        { "code": "CIT-723", "title": "Computer Vision", "credit_hours": 3 },
+        { "code": "CIT-724", "title": "Big Data Analytics", "credit_hours": 3 },
+        {
+          "code": "CIT-725",
+          "title": "Stochastic Processes",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-726",
+          "title": "Information Visualization",
+          "credit_hours": 3
+        },
+        { "code": "CIT-727", "title": "Data Science", "credit_hours": 3 },
+        { "code": "CIT-742", "title": "Machine Learning", "credit_hours": 3 },
+        {
+          "code": "CIT-743",
+          "title": "Information Retrieval Techniques",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-741",
+          "title": "Natural Language Processing",
+          "credit_hours": 3
+        },
+        { "code": "CIT-731", "title": "Design Patterns", "credit_hours": 3 },
+        { "code": "CIT-732", "title": "Web Services", "credit_hours": 3 },
+        {
+          "code": "CIT-733",
+          "title": "Decision Support Systems",
+          "credit_hours": 3
+        },
+        { "code": "CIT-734", "title": "Semantic Web", "credit_hours": 3 },
+        {
+          "code": "CIT-735",
+          "title": "Software Quality Assurance",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-736",
+          "title": "Requirements Engineering",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-737",
+          "title": "Component Based Development",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-738",
+          "title": "Software Design Patterns",
+          "credit_hours": 3
+        },
+        {
+          "code": "CIT-739",
+          "title": "Advanced Image Processing",
+          "credit_hours": 3
+        },
+        { "code": "CIT-740", "title": "Text Mining", "credit_hours": 3 }
+      ]
+    }
+  ],
+
+  "faculty": [
+    {
+      "basicInfo": {
+        "fullName": "Prof. Dr. Mariam Rehman",
+        "designation": "Professor / Chairperson",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_hod_office"
+      },
+      "contact": {
+        "email": "mariamrehman@gcuf.edu.pk",
+        "phone": "041-9201373",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "HOD Office",
+          "floor": "2nd Floor"
+        },
+        "officeNodeId": "door_hod_office"
+      },
+      "qualification": [
+        {
+          "degree": "Ph.D",
+          "institute": "Lahore College for Women University, Lahore",
+          "from": 2007,
+          "to": 2012
+        },
+        {
+          "degree": "M.Phil / MS",
+          "institute": "Lahore College for Women University, Lahore",
+          "from": 2002,
+          "to": 2004
+        },
+        {
+          "degree": "Graduation / Equivalent",
+          "institute": "Lahore College for Women University, Lahore",
+          "from": 1999,
+          "to": 2002
+        },
+        {
+          "degree": "Intermediate / Equivalent",
+          "institute": "BISE Lahore",
+          "from": 1997,
+          "to": 1999
+        },
+        {
+          "degree": "Matriculation / Equivalent",
+          "institute": "BISE Lahore",
+          "from": 1995,
+          "to": 1997
+        }
+      ],
+      "publications": [
+        {
+          "authors": "Faiza Rehman and Mariam Rehman",
+          "title": "Underwater Debris Detection using YOLO10",
+          "journal": "Journal of Ocean Engineering and Science",
+          "pages": "1-39",
+          "year": 2026,
+          "volume": 1,
+          "impactFactor": 14.8,
+          "link": "https://doi.org/10.1016/j.joes.2026.02.011"
+        },
+        {
+          "authors": "Hadia Arshad, Tahir Abdullah, Mariam Rehman, Afzaal Hussain, Faria Kanwal and Mehwish Parveen",
+          "title": "Optimizer-Aware Fine-Tuning of Whisper Small with Low-Rank Adaption: An Empirical Study of Adam and AdamW",
+          "journal": "Information",
+          "pages": "1-17",
+          "year": 2025,
+          "volume": 16,
+          "impactFactor": 2.9,
+          "link": "https://%20doi.org/10.3390/info16110928"
+        },
+        {
+          "authors": "Faiza Rehman, Mariam Rehman, Maria Anjum, Afzaal Hussain",
+          "title": "Optimized YOLOV8: An efficient underwater litter detection using deep learning",
+          "journal": "Ain Shams Engineering Journal",
+          "pages": "1-17",
+          "year": 2025,
+          "volume": 16,
+          "impactFactor": 4.9,
+          "link": "https://doi.org/10.1016/j.asej.2024.103227"
+        },
+        {
+          "authors": "Kinza Noor, Mariam Rehman, Maria Anjum, Afzaal Hussain, Rabia Saleem",
+          "title": "Sentiment analysis for depression detection: A stacking ensemble-based deep learning approach",
+          "journal": "International Journal of Information Management Data Insights",
+          "pages": "1-13",
+          "year": 2025,
+          "volume": 5,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1016/j.jjimei.2025.100358"
+        }
+      ],
+      "employment": [
+        {
+          "position": "Associate Professor",
+          "organization": "Government College University Faisalabad",
+          "duration": {
+            "from": 2018,
+            "to": "Present"
+          },
+          "experience": {
+            "years": 1,
+            "months": 4,
+            "days": 0
+          },
+          "officeNodeId": "door_hod_office"
+        },
+        {
+          "position": "Assistant Professor",
+          "organization": "Lahore College for Women University",
+          "duration": {
+            "from": 2014,
+            "to": 2018
+          },
+          "experience": {
+            "years": 4,
+            "months": 3,
+            "days": 0
+          }
+        },
+        {
+          "position": "Database Administrator / Lecturer",
+          "organization": "Lahore College for Women University",
+          "duration": {
+            "from": 2004,
+            "to": 2014
+          },
+          "experience": {
+            "years": 10,
+            "months": 0,
+            "days": 0
+          }
+        },
+        {
+          "position": "Application Developer",
+          "organization": "Punjab Board of Technical Education",
+          "duration": {
+            "from": 2002,
+            "to": 2004
+          },
+          "experience": {
+            "years": 2,
+            "months": 0,
+            "days": 0
+          }
+        }
+      ],
+      "foreignVisits": [
+        {
+          "country": "Thailand",
+          "fundingAgency": "HEC",
+          "duration": "2007-08-14",
+          "purpose": "MS Leading to PhD"
+        },
+        {
+          "country": "China",
+          "fundingAgency": "HEC",
+          "duration": "2011-05-05",
+          "purpose": "Presented paper at a conference in Shanghai, China"
+        }
+      ],
+      "projects": [],
+      "rag": {
+        "searchText": "Prof Dr Mariam Rehman Chairperson Professor Information Technology IT department Physical Science HOD Office GC University Faisalabad Yousaf Block GCUF",
+        "tags": [
+          "Mariam Rehman",
+          "Dr Mariam Rehman",
+          "Prof Mariam",
+          "Chairperson",
+          "Head of Department",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "HOD Office"
+        ]
+      }
+    },
+    {
+      "basicInfo": {
+        "fullName": "Dr. Rabia Saleem",
+        "designation": "Assistant Professor",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_mam_rabia"
+      },
+
+      "contact": {
+        "email": "rabiasaleem@gcuf.edu.pk",
+        "phone": null,
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Faculty Office",
+          "floor": "2nd Floor"
+        }
+      },
+
+      "qualification": [],
+
+      "publications": [
+        {
+          "authors": "Hassan Ishfaq, Jamal Hussain Shah, Rabia Saleem, Maira Afzal",
+          "title": "A distributed framework for zero-day malware detection using federated ensemble models",
+          "journal": "PLOS ONE",
+          "pages": "1",
+          "year": 2026,
+          "volume": 21,
+          "impactFactor": 2.6,
+          "link": "https://%20doi.org/10.1371/journal.pone.0339907"
+        },
+        {
+          "authors": "Kinza Noor, Mariam Rehman, Maria Anjum, Afzaal Hussain, Rabia Saleem",
+          "title": "Sentiment analysis for depression detection: A stacking ensemble-based deep learning approach",
+          "journal": "International Journal of Information Management Data Insights",
+          "pages": "100358",
+          "year": 2025,
+          "volume": 5,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1016/j.jjimei.2025.100358"
+        },
+        {
+          "authors": "A Iqbal, M Younas, S Iftikhar, F Fatima, R Saleem",
+          "title": "Spam detection using hybrid model on fusion of spammer behavior and linguistics features",
+          "journal": "Egyptian Informatics Journal",
+          "pages": "100605",
+          "year": 2025,
+          "volume": 29,
+          "impactFactor": 4.3,
+          "link": "https://doi.org/10.1016/j.eij.2024.100605"
+        },
+        {
+          "authors": "Fadl Dahan, Jamal Hussain Shah, Rabia Saleem, Muhammad Hasnain, Maira Afzal",
+          "title": "A hybrid XAI-driven deep learning framework for robust GI tract disease diagnosis",
+          "journal": "Scientific Reports",
+          "pages": "21139",
+          "year": 2025,
+          "volume": 15,
+          "impactFactor": 4.3,
+          "link": "https://doi.org/10.1038/s41598-025-07690-3"
+        },
+        {
+          "authors": "Amna Iqbal, Muhammad Younas, Muhammad Kashif Hanif, Muhammad Murad, Rabia Saleem, Muhammad Aater Javed",
+          "title": "An intelligent spam detection framework using fusion of spammer behavior and linguistic",
+          "journal": "PLOS ONE",
+          "pages": "e0313628",
+          "year": 2025,
+          "volume": 20,
+          "impactFactor": 2.6,
+          "link": "https://doi.org/10.1371/journal.pone.0313628"
+        },
+        {
+          "authors": "Isra Naz, Jamal Hussain Shah, Ali Tahir, Mahatma Reddy Marri, Rabia Saleem, Mutaz Elradi S. Saeed",
+          "title": "Attention to detail: A conditional multi-head transformer for traffic sign recognition",
+          "journal": "PLOS ONE",
+          "pages": "e0335341",
+          "year": 2025,
+          "volume": 20,
+          "impactFactor": 2.6,
+          "link": "https://doi.org/10.1371/journal.%20pone.0335341"
+        },
+        {
+          "authors": "Sara Khalid, Jamal H. Shah, Muhammad Sharif, Fadl Dahan, Rabia Saleem, Anum Masood",
+          "title": "A Robust Intelligent System for Text-Based Traffic Signs Detection and Recognition in Challenging Weather Conditions",
+          "journal": "IEEE ACCESS",
+          "pages": "3401044",
+          "year": 2024,
+          "volume": 0,
+          "impactFactor": 3.6,
+          "link": "https://creativecommons.org/licenses/by-nc-nd"
+        },
+        {
+          "authors": "Izzah Fatima, Jamal Hussain Shah, Rabia Saleem, Samia Riaz, Muhammad Rafiq, Fahad Ahmed Khokhar",
+          "title": "Transforming Medical Imaging: A VQA Model for Microscopic Blood Cell Classification",
+          "journal": "IEEE ACCESS",
+          "pages": "168547",
+          "year": 2024,
+          "volume": 12,
+          "impactFactor": 3.6,
+          "link": "https://creativecommons.org/licenses/by/4.0/"
+        },
+        {
+          "authors": "Shamshair Ali, Rubina Ghazal, Anum Masood, Nauman Qadeer, Rabia Saleem, Oumaima Saidani, Muhammad Attique Khan, Fatimah Alhayan, Deepak Gupta",
+          "title": "A novel approach of botnet detection using hybrid deep learning for enhancing security in IoT networks",
+          "journal": "Alexandria Engineering Journal",
+          "pages": "88",
+          "year": 2024,
+          "volume": 103,
+          "impactFactor": 6.8,
+          "link": "https://doi.org/10.1016/j.aej.2024.05.113"
+        },
+        {
+          "authors": "Fahad Ahmed Khokhar, Jamal Hussain Shah, Rabia Saleem, Anum Masood",
+          "title": "Harnessing deep learning for faster water quality assessment: identifying bacterial contaminants in real time",
+          "journal": "The Visual Computer",
+          "pages": "1037-1048",
+          "year": 2024,
+          "volume": 41,
+          "impactFactor": 2.9,
+          "link": "https://doi.org/10.1007/s00371-024-03382-7"
+        },
+        {
+          "authors": "Rabia Rehman, Jamal Hussain Shah, Fahad Ahmed Khokhar, Ayaz Ahmed, Rabia Saleem, Syeda Sania Najam",
+          "title": "Smart monitoring: employing person re-identification to uncover suspicious behavior",
+          "journal": "Signal, Image and Video Processing",
+          "pages": "1",
+          "year": 2024,
+          "volume": 19,
+          "impactFactor": 2.1,
+          "link": "https://doi.org/10.1007/s11760-024-03579-2"
+        }
+      ],
+
+      "employment": [],
+
+      "foreignVisits": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Dr Rabia Saleem Assistant Professor Information Technology IT department Physical Science GC University Faisalabad Yousaf Block Faculty Office GCUF",
+        "tags": [
+          "Rabia Saleem",
+          "Dr Rabia Saleem",
+          "Assistant Professor",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "Faculty Office"
+        ]
+      }
+    },
+
+    {
+      "basicInfo": {
+        "fullName": "Dr. Muhammad Younas",
+        "designation": "Assistant Professor",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_sir_younas"
+      },
+
+      "contact": {
+        "email": "younas_76@hotmail.com",
+        "phone": "041-9200066",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Faculty Office",
+          "floor": "2nd Floor"
+        }
+      },
+
+      "qualification": [],
+
+      "publications": [
+        {
+          "authors": "A Iqbal, M Younas, S Iftikhar, F Fatima, R Saleem",
+          "title": "Spam detection using hybrid model on fusion of spammer behavior and linguistics features",
+          "journal": "Egyptian Informatics Journal",
+          "pages": "100605",
+          "year": 2025,
+          "volume": 29,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1016/j.eij.2024.100605"
+        },
+        {
+          "authors": "Amna Iqbal, Muhammad Younas, Muhammad Kashif Hanif, Muhammad Murad, Rabia Saleem, Muhammad Aater Javed",
+          "title": "An intelligent spam detection framework using fusion of spammer behavior and linguistic",
+          "journal": "PLOS ONE",
+          "pages": "e0313628",
+          "year": 2025,
+          "volume": 20,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1371/journal.pone.0313628"
+        },
+        {
+          "authors": "Sahar S., Younas M., Khan M. M., & Sarwar M. U.",
+          "title": "DP-CCL: A Supervised Contrastive Learning Approach Using CodeBERT Model in Software Defect Prediction",
+          "journal": "IEEE Access",
+          "pages": "22582-22594",
+          "year": 2024,
+          "volume": 22,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.3035201"
+        },
+        {
+          "authors": "S. Ali, U. Jamil, M. Younas, B. Zafar and M. Kashif Hanif",
+          "title": "Email spam detection by deep learning models using novel feature ion technique and BERT",
+          "journal": "Egyptian Informatics Journal",
+          "pages": "100473",
+          "year": 2024,
+          "volume": 26,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1016/j.eij.2024.100473"
+        },
+        {
+          "authors": "S. H. H. Madni, M. Faheem, M. Younas, M. H. Masum, S. H. H. Shah",
+          "title": "Critical review on resource scheduling in IaaS clouds: Taxonomy, issues, challenges, and future directions",
+          "journal": "Journal of Engineering",
+          "pages": "1-26",
+          "year": 2024,
+          "volume": 24,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1049/tje2.12420"
+        },
+        {
+          "authors": "S. Tasneem, M. Younas, Q. Shafiq",
+          "title": "Identifying Key Learning Algorithm Parameter of Forward Feature Selection to Integrate with Ensemble Learning for Customer Churn Prediction",
+          "journal": "VFAST Transactions on Software Engineering",
+          "pages": "56-75",
+          "year": 2024,
+          "volume": 12,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.21015/vtse.v12i2.1811"
+        },
+        {
+          "authors": "MKH Samreen Safdar, Uzma Jamil, Muhammad Younas, Bushra Zafar",
+          "title": "Paradigm to classify ischemic, neuropathic and neuro-ischemic foot ulcers using convolutional neural networks",
+          "journal": "Journal of Tianjin University Science and Technology",
+          "pages": "361-386",
+          "year": 2024,
+          "volume": 57,
+          "impactFactor": 0,
+          "link": "doi:10.17605/OSF.IO/CVM6N"
+        },
+        {
+          "authors": "Amna Iqbal, Muhammad Younas, Ramzan Talib, Muhammad Murad Khan, Bushra Zafar",
+          "title": "Spam detection based on fusion of spammer behavior features and linguistic features",
+          "journal": "Journal of Tianjin University Science and Technology",
+          "pages": "68-86",
+          "year": 2023,
+          "volume": 56,
+          "impactFactor": 0,
+          "link": "doi:10.17605/OSF.IO/CVM6N"
+        },
+        {
+          "authors": "Almashhadani Mohammed, Alok Mishra, Ali Yazici, Muhammad Younas",
+          "title": "Challenges in Agile Software Maintenance for Local and Global Development: An Empirical Assessment",
+          "journal": "Information",
+          "pages": "261",
+          "year": 2023,
+          "volume": 14,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.3390/info14050261"
+        },
+        {
+          "authors": "Saman Amjad, Muhammad Younas, Muhammad Anwar, Qaisar Shaheen, Muhammad Shiraz, Abdullah Gani",
+          "title": "Data Mining Techniques to Analyze the Impact of Social Media on Academic Performance of High School Students",
+          "journal": "Wireless Communications and Mobile Computing",
+          "pages": "9299115",
+          "year": 2022,
+          "volume": 2022,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1155/2022/9299115"
+        },
+        {
+          "authors": "Muhammad Younas, Muhammad Arif Shah, Dayang N. A. Jawawi, Muhammad Kamran Ishfaq, Muhammad Awais, Karzan Wakil, Ahmad Mustafa",
+          "title": "Elicitation of Nonfunctional Requirements in Agile Development Using Cloud Computing Environment",
+          "journal": "IEEE Access",
+          "pages": "209153-209162",
+          "year": 2022,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.3014381"
+        },
+        {
+          "authors": "M. B. Sarwar, M. K. Hanif, R. Talib, M. Younas, M. U. Sarwar",
+          "title": "DarkDetect: Darknet Traffic Detection and Categorization Using Modified Convolution-Long Short-Term Memory",
+          "journal": "IEEE Access",
+          "pages": "113705-113713",
+          "year": 2021,
+          "volume": 9,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.3035201"
+        },
+        {
+          "authors": "M. Y. Saeed, M. Awais, M. S. A. Malik, M. Younas, S. Rao Iqbal Asif",
+          "title": "An Abstractive Summarization Technique with Variable Length Keywords as per Document Diversity",
+          "journal": "Computers, Materials and Continua",
+          "pages": "2409-2423",
+          "year": 2021,
+          "volume": 66,
+          "impactFactor": 0,
+          "link": "doi:10.32604/cmc.2021.014330"
+        },
+        {
+          "authors": "Muhammad Sohaib Aslam, Muhammad Younas, Muhammad Umar Sarwar, Muhammad Arif Shah, Atif Khan, M. Irfan Uddin, Shafiq Ahmad, Muhammad Firdausi, Mazen Zaindin",
+          "title": "Liver-Tumor Detection Using CNN ResUNet",
+          "journal": "Computers, Materials and Continua",
+          "pages": "1899-1914",
+          "year": 2021,
+          "volume": 67,
+          "impactFactor": 0,
+          "link": "doi:10.32604/cmc.2021.014330"
+        },
+        {
+          "authors": "A. Sadiq, M. Anwar, R. A. Butt, F. Masud, M. K. Shahzad, S. Naseem, M. Younas",
+          "title": "A review of phishing attacks and countermeasures for internet of things-based smart business applications in industry 4.0",
+          "journal": "Human Behavior and Emerging Technologies",
+          "pages": "854-864",
+          "year": 2021,
+          "volume": 3,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1002/hbe2.301"
+        },
+        {
+          "authors": "M. K. Ishfaq, S. A. Babale, H. T. Chattha, M. Himdi, A. Raza, M. Younas",
+          "title": "Compact Wide-Angle Scanning Multibeam Antenna Array for V2X Communications",
+          "journal": "IEEE Antennas and Wireless Propagation Letters",
+          "pages": "2141-2145",
+          "year": 2021,
+          "volume": 20,
+          "impactFactor": 0,
+          "link": "doi: 10.1109/LAWP.2021.3100349"
+        },
+        {
+          "authors": "Ahmad Mustafa, Wan M. N. Wan-Kadir, Noraini Ibrahim, Muhammad Arif Shah, Muhammad Younas",
+          "title": "Automated Test Case Generation from Requirements: A Systematic Literature Review",
+          "journal": "Computers, Materials and Continua",
+          "pages": "1819-1833",
+          "year": 2021,
+          "volume": 67,
+          "impactFactor": 0,
+          "link": "doi:10.32604/cmc.2021.014391"
+        },
+        {
+          "authors": "M. Awais, M. Y. Saeed, M. S. A. Malik, M. Younas, S. R. Iqbal Asif",
+          "title": "Intention based Comparative Analysis of Human-Robot Interaction",
+          "journal": "IEEE Access",
+          "pages": "205821-205835",
+          "year": 2020,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.3035201"
+        },
+        {
+          "authors": "Muhammad Arif Shah, Dayang N. A. Jawawi, Mohd Adham Isa, Muhammad Younas, Abdelzahir Abdelmaboud, Fauzi Sholichin",
+          "title": "Ensembling Artificial Bee Colony With Analogy-Based Estimation to Improve Software Development Effort Prediction",
+          "journal": "IEEE Access",
+          "pages": "58402-58415",
+          "year": 2020,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.2980236"
+        },
+        {
+          "authors": "M. Y. Saeed, M. Awais, R. Talib, M. Younas",
+          "title": "Unstructured Text Documents Summarization With Multi-Stage Clustering",
+          "journal": "IEEE Access",
+          "pages": "212838-212854",
+          "year": 2020,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2020.3040506"
+        },
+        {
+          "authors": "Muhammad Younas, Karzan Wakil, Dayang N. A. Jawawi, Muhammad Arif Shah, Ahmad Mustafa",
+          "title": "An Automated Approach for Identification of Non-Functional Requirements using Word2Vec Model",
+          "journal": "International Journal of Advanced Computer Science and Applications",
+          "pages": "539-546",
+          "year": 2019,
+          "volume": 10,
+          "impactFactor": 0,
+          "link": "doi: 10.14569/IJACSA.2019.0100871"
+        },
+        {
+          "authors": "Muhammad Younas, Dayang N. A. Jawawi, Ahmad Kamil Mahmood, Mohammad Nazir Ahmad, Muhammad Umer Sarwar, Mohd Yazid Idris",
+          "title": "Agile Software Development Using Cloud Computing: A Case Study",
+          "journal": "IEEE Access",
+          "pages": "4475-4484",
+          "year": 2019,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://profiles.gcuf.edu.pk/10.1109/ACCESS.2019.2962257"
+        },
+        {
+          "authors": "Younas M., Jawawi D. N. A., Ghani I., Shah M. A., Khurshid M. M., Madni S. H. H.",
+          "title": "Framework for agile development using cloud computing: A survey",
+          "journal": "Arabian Journal for Science and Engineering",
+          "pages": "8989-9005",
+          "year": 2019,
+          "volume": 44,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1007/s13369-019-03923-6"
+        },
+        {
+          "authors": "Muhammad Younas, D. N. A. Jawawi, Imran Ghani, Muhammad Arif Shah",
+          "title": "Extraction of non-functional requirement using semantic similarity distance",
+          "journal": "Neural Computing and Applications",
+          "pages": "7383-7397",
+          "year": 2019,
+          "volume": 32,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.1007/s00521-019-04226-5"
+        },
+        {
+          "authors": "Muhammad Arif Shah, Dayang N. A. Jawawi, Mohd Adham Isa, Karzan Wakil, Muhammad Younas, Ahmed Mustafa",
+          "title": "MINN: A Missing Data Imputation Technique for Analogy-based Effort Estimation",
+          "journal": "International Journal of Advanced Computer Science and Applications",
+          "pages": "222-234",
+          "year": 2019,
+          "volume": 10,
+          "impactFactor": 0,
+          "link": "doi: 10.14569/IJACSA.2019.0100230"
+        },
+        {
+          "authors": "M. M. Khan, R. Ibrahim, M. Younas, I. Ghani, S. R. Jeong",
+          "title": "Facebook interactions utilization for addressing recommender systems cold start problem across system domain",
+          "journal": "Journal of Internet Technology",
+          "pages": "861-870",
+          "year": 2018,
+          "volume": 19,
+          "impactFactor": 0,
+          "link": "https://jit.ndhu.edu.tw/article/view/1703"
+        },
+        {
+          "authors": "Ahmad Mustafa, Wan M. N. Wan-Kadir, Noraini Ibrahim, Muhammad Arif Shah, Muhammad Younas",
+          "title": "Integration of heterogeneous requirements using ontologies",
+          "journal": "International Journal of Advanced Computer Science and Applications",
+          "pages": "213-218",
+          "year": 2018,
+          "volume": 9,
+          "impactFactor": 0,
+          "link": "doi:10.14569/IJACSA.2018.090528"
+        },
+        {
+          "authors": "M. Younas, D. N. A. Jawawi, I. Ghani, R. Kazmi",
+          "title": "Agile development in the cloud computing environment: A systematic review",
+          "journal": "Information and Software Technology",
+          "pages": "142-158",
+          "year": 2018,
+          "volume": 103,
+          "impactFactor": 2.65,
+          "link": "https://www.sciencedirect.com/science/article/pii/S0950584918301319"
+        },
+        {
+          "authors": "M. Younas, D. N. A. Jawawi, I. Ghani, R. Kazmi",
+          "title": "Non-Functional Requirements Elicitation Guideline for Agile Methods",
+          "journal": "Journal of Telecommunication, Electronic and Computer Engineering (JTEC)",
+          "pages": "137-142",
+          "year": 2017,
+          "volume": 9,
+          "impactFactor": 0,
+          "link": "https://jtec.utem.edu.my/jtec/article/view/2933"
+        },
+        {
+          "authors": "R. Kazmi, D. N. A. Jawawi, R. Mohamad, I. Ghani, M. Younas",
+          "title": "A Test Case Selection Framework and Technique: Weighted Average Scoring Method",
+          "journal": "Journal of Telecommunication, Electronic and Computer Engineering (JTEC)",
+          "pages": "15-22",
+          "year": 2017,
+          "volume": 9,
+          "impactFactor": 0,
+          "link": "https://jtec.utem.edu.my/jtec/article/view/2912"
+        },
+        {
+          "authors": "Muhammad Younas, D. N. A. Jawawi, I. Ghani, M. I. Khan, I. Ghani",
+          "title": "A Survey of Agile Development Methods and Tools in Cloud Environment",
+          "journal": "Journal of Software Engineering & Intelligent Systems",
+          "pages": "236-242",
+          "year": 2017,
+          "volume": 2,
+          "impactFactor": 0,
+          "link": "https://www.academia.edu/37811454/A_survey_of_agile_development_methods_and_tools_in_cloud_environment"
+        },
+        {
+          "authors": "I. L. Bagiwa, I. Ghani, M. Younas, M. Bello",
+          "title": "Systematic Literature Review on Cloud Adoption",
+          "journal": "International Journal of Internet, Broadcasting and Communication",
+          "pages": "1-22",
+          "year": 2016,
+          "volume": 8,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.7236/IJIBC.2016.8.2.1"
+        },
+        {
+          "authors": "Muhammad Younas, D. Jawawi, I. Ghani, M. M. Khan",
+          "title": "A Framework for Agile Development in Cloud Computing Environment",
+          "journal": "Journal of Internet Computing and Services (JICS)",
+          "pages": "67-74",
+          "year": 2016,
+          "volume": 17,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.7472/jksii.2016.17.5.67"
+        }
+      ],
+
+      "employment": [],
+
+      "foreignVisits": [],
+
+      "trainings": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Dr Muhammad Younas Assistant Professor Information Technology IT department Physical Science GC University Faisalabad Yousaf Block Faculty Office GCUF",
+        "tags": [
+          "Muhammad Younas",
+          "Dr Younas",
+          "Assistant Professor",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "Faculty Office"
+        ]
+      }
+    },
+    {
+      "basicInfo": {
+        "fullName": "Tahir Abdullah",
+        "designation": "Lecturer",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_sir_tahir"
+      },
+      "contact": {
+        "email": "tahirabdullah@gcuf.edu.pk",
+        "phone": "041-9200066",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Faculty Office",
+          "floor": "2nd Floor"
+        }
+      },
+      "qualification": [],
+
+      "publications": [],
+      "employment": [],
+
+      "foreignVisits": [],
+
+      "trainings": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Tahir Abdullah Lecturer Information Technology IT department Physical Science GC University Faisalabad Yousaf Block Faculty Office GCUF",
+        "tags": [
+          "Tahir Abdullah",
+          "Lecturer",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "Faculty Office"
+        ]
+      }
+    },
+    {
+      "basicInfo": {
+        "fullName": "Dr. Afzaal Hussain",
+        "designation": "Assistant Professor OPS",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_sir_afzaal"
+      },
+      "contact": {
+        "email": "afzaalhussain@gcuf.edu.pk",
+        "phone": "041-9201373",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Faculty Office",
+          "floor": "2nd Floor"
+        }
+      },
+      "qualification": [
+        {
+          "degree": "Ph.D",
+          "institute": "National University of Computer and Emerging Sciences, Islamabad",
+          "from": 2016,
+          "to": 2023
+        },
+        {
+          "degree": "M.Phil / MS",
+          "institute": "University of Agriculture, Faisalabad",
+          "from": 2006,
+          "to": 2008
+        },
+        {
+          "degree": "Master or Equivalent",
+          "institute": "University of Central Punjab, Lahore",
+          "from": 2000,
+          "to": 2005
+        }
+      ],
+      "publications": [
+        {
+          "authors": "Faiza Rehman, Mariam Rehman, Maria Anjum, Afzaal Hussain",
+          "title": "Optimized YOLOV8: An efficient underwater litter detection using deep learning",
+          "journal": "Ain Shams Engineering Journal",
+          "pages": "103227",
+          "year": 2025,
+          "volume": 16,
+          "impactFactor": 5.9,
+          "link": "https://www.sciencedirect.com/science/article/pii/S2090447924006087"
+        },
+        {
+          "authors": "Dr. Sidra Shafiq, Dr. Hassan Moatasam Awan, Dr. Abdullah Aman Khan, Afzaal Hussain, Dr. Iram Javed",
+          "title": "MAFSID: Multi-Agent Few-Shot Intrusion Detection for VANETs through Rapid Collaborative Learning",
+          "journal": "Transactions on Emerging Telecommunications Technologies",
+          "pages": "1",
+          "year": 2025,
+          "volume": 10,
+          "impactFactor": 2.5,
+          "link": "https://doi.org/10.1002/ett.70285"
+        },
+        {
+          "authors": "Muzammal Majeed, Muhammad Ashfaq, Preeti Rani, Afzaal Hussain, Muhammad Azam Zia",
+          "title": "AI-Driven Anomaly Detection and Traffic Management in Software-Defined IoT Networks for Smart Agriculture",
+          "journal": "Transactions on Emerging Telecommunications Technologies",
+          "pages": "1",
+          "year": 2025,
+          "volume": 36,
+          "impactFactor": 2.5,
+          "link": "https://doi.org/10.1002/ett.70301"
+        },
+        {
+          "authors": "Hadia Arshad, Tahir Abdullah, Mariam Rehman, Afzaal Hussain, Faria Kanwal, Mehwish Parveen",
+          "title": "Optimizer-Aware Fine-Tuning of Whisper Small with Low-Rank Adaption: An Empirical Study of Adam and AdamW",
+          "journal": "Information",
+          "pages": "298",
+          "year": 2025,
+          "volume": 16,
+          "impactFactor": 2.9,
+          "link": "https://doi.org/10.3390/info16110928"
+        },
+        {
+          "authors": "Amina Bibi, Afzaal Hussain, Tariq Munir, Muhammad Zeshan Yaqoob, Arslan Mahmood, Shoaib Nazir, Yasin Khan",
+          "title": "Machine learning-based fabrication of phytogenic NiO nanoparticles for anticancer activity in HepG2 Cell Culture",
+          "journal": "Journal of Materials Science: Materials in Medicine",
+          "pages": "108",
+          "year": 2025,
+          "volume": 36,
+          "impactFactor": 4.5,
+          "link": "https://doi.org/10.1007/s10856-025-06964-6"
+        },
+        {
+          "authors": "Usama Ahmed, Afzaal Hussain, Muhammad Nasir Siddiqui, Abid Ali, Muhammad Adeel Zahid, Shehbaz Nazeer",
+          "title": "Reliable Edge Federation Formation for Smart Agriculture using Machine Learning",
+          "journal": "Journal of Agriculture and Biology",
+          "pages": "34",
+          "year": 2025,
+          "volume": 3,
+          "impactFactor": 0,
+          "link": "https://doi.org/10.55627/agribiol.003.02.1529"
+        },
+        {
+          "authors": "Usama Ahmed, Afzaal Hussain, Muhammad Ziad Nayyer, Adil Rasheed, Sharaiz Shahid, Muhammad Adeel Zahid",
+          "title": "Privacy-Aware E-Health Data Sharing via Decentralized Blockchain System",
+          "journal": "Journal of Computing & Biomedical Informatics",
+          "pages": "1",
+          "year": 2025,
+          "volume": 9,
+          "impactFactor": 0,
+          "link": "https://jcbi.org/index.php/Main/article/view/1068"
+        },
+        {
+          "authors": "Rabbia Zia, Mariam Rehman, Afzaal Hussain, Shahbaz Nazeer, Maria Anjum",
+          "title": "Improving synthetic media generation and detection using generative adversarial networks",
+          "journal": "PeerJ Computer Science",
+          "pages": "e2181",
+          "year": 2024,
+          "volume": 10,
+          "impactFactor": 3.8,
+          "link": ""
+        },
+        {
+          "authors": "Afzaal Hussain, Adeel Zahid, Usama Ahmed, Shahbaz Nazeer, Kashif Zafar, Abdul Rauf Baig",
+          "title": "Time-Series Data to Refined Insights: A Feature Engineering-driven Approach to Gym Exercise Recognition",
+          "journal": "IEEE Access",
+          "pages": "100343",
+          "year": 2024,
+          "volume": 12,
+          "impactFactor": 3.4,
+          "link": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=%22%22&amp;amp;amp;arnumber=%22%2210597558"
+        },
+        {
+          "authors": "Afzaal Hussain, Kashif Zafar, Abdul Rauf Baig",
+          "title": "Sensor-Based Gym Physical Exercise Recognition: Data Acquisition and Experiments",
+          "journal": "MDPI Sensors",
+          "pages": "2489",
+          "year": 2022,
+          "volume": 22,
+          "impactFactor": 3.847,
+          "link": "https://www.mdpi.com/1424-8220/22/7/2489"
+        },
+        {
+          "authors": "Afzaal Hussain, Kashif Zafar, Abdul Rauf Baig",
+          "title": "Fog-Centric IoT Based Framework for Healthcare Monitoring, Management and Early Warning System",
+          "journal": "IEEE Access",
+          "pages": "74168",
+          "year": 2021,
+          "volume": 9,
+          "impactFactor": 3.476,
+          "link": "https://ieeexplore.ieee.org/document/9430526"
+        },
+        {
+          "authors": "Muhammad Ahtsam Naeem, Xiaolin Jia, Muhammad Asim Saleem, Wasif Akbar, Afzaal Hussain, Shahbaz Nazir, Khwaja Mutahir Ahmad",
+          "title": "Vehicle to Everything (V2X) Communication Protocol by Using Vehicular Ad-Hoc Network",
+          "journal": "ICCWAMTIP Conference",
+          "pages": "384",
+          "year": 2018,
+          "volume": 1,
+          "impactFactor": 0.1,
+          "link": "https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=%22%229317386"
+        },
+        {
+          "authors": "Shahbaz Nazeer, Tahir Abdullah, Nadim Asif, Beenish Yaseen, M. Mehran Arshad Khan, Afzaal Hussain",
+          "title": "QSMSR Principal Model",
+          "journal": "Journal of Asian Scientific Research",
+          "pages": "145-149",
+          "year": 2012,
+          "volume": 0,
+          "impactFactor": 0,
+          "link": "https://archive.aessweb.com/index.php/5003/article/view/3337/5347"
+        }
+      ],
+      "employment": [
+        {
+          "position": "Assistant Professor",
+          "organization": "Government College University Faisalabad, Pakistan",
+          "duration": {
+            "from": 2024,
+            "to": "Present"
+          },
+          "experience": {
+            "years": 0,
+            "months": 0,
+            "days": 0
+          },
+          "officeNodeId": ""
+        },
+        {
+          "position": "Lecturer",
+          "organization": "Government College University Faisalabad, Pakistan",
+          "duration": {
+            "from": 2012,
+            "to": 2024
+          },
+          "experience": {
+            "years": 12,
+            "months": 0,
+            "days": 0
+          }
+        }
+      ],
+
+      "foreignVisits": [],
+
+      "trainings": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Dr Afzaal Hussain Assistant Professor OPS Information Technology IT department Physical Science GC University Faisalabad Yousaf Block Faculty Office GCUF",
+        "tags": [
+          "Afzaal Hussain",
+          "Dr Afzaal Hussain",
+          "Assistant Professor OPS",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "Faculty Office"
+        ]
+      }
+    },
+    {
+      "basicInfo": {
+        "fullName": "Shahbaz Nazeer",
+        "designation": "Lecturer",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_sir_shahbaz"
+      },
+      "contact": {
+        "email": "shahbaznazeer@gcuf.edu.pk",
+        "phone": "041-9200066",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Faculty Office",
+          "floor": "2nd Floor"
+        }
+      },
+
+      "qualification": [],
+      "publications": [
+        {
+          "authors": "Shahbaz Nazeer, Tahir Abdullah, Nadim Asif, Beenish Yaseen, M. Mehran Arshad Khan, Afzaal Hussain",
+          "title": "QSMSR Principal Model",
+          "journal": "Journal of Asian Scientific Research",
+          "pages": "145-149",
+          "year": 2012,
+          "volume": 0,
+          "impactFactor": 0,
+          "link": "https://archive.aessweb.com/index.php/5003/article/view/3337/5347"
+        }
+      ],
+      "employment": [],
+
+      "foreignVisits": [],
+
+      "trainings": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Shahbaz Nazeer Lecturer Information Technology IT department Physical Science GC University Faisalabad Yousaf Block Faculty Office GCUF",
+        "tags": [
+          "Shahbaz Nazeer",
+          "Lecturer",
+          "Information Technology",
+          "IT",
+          "Physical Science",
+          "GCUF",
+          "Yousaf Block",
+          "Faculty Office"
+        ]
+      }
+    },
+    {
+      "basicInfo": {
+        "fullName": "Farhan Shafqat",
+        "designation": "Teaching Assistant",
+        "department": "Information Technology",
+        "faculty": "Physical Science",
+        "officeNodeId": "door_examination_center"
+      },
+      "contact": {
+        "email": "farhanshafqat@gcuf.edu.pk",
+        "phone": "041-9200207",
+        "officeAddress": "GC University Faisalabad",
+        "officeLocation": {
+          "building": "Yousaf Block",
+          "room": "Examination Hall",
+          "floor": "2nd Floor"
+        }
+      },
+
+      "qualification": [],
+      "publications": [],
+      "employment": [],
+
+      "foreignVisits": [],
+
+      "trainings": [],
+
+      "projects": [],
+      "rag": {
+        "searchText": "Farhan Shafqat Teaching Assistant Information Technology IT department Physical Science GC University Faisalabad Examination Hall Yousaf Block",
+        "tags": [
+          "Farhan Shafqat",
+          "TA",
+          "Teaching Assistant",
+          "Information Technology",
+          "IT",
+          "GCUF",
+          "Physical Science",
+          "Examination Hall",
+          "Yousaf Block"
+        ]
+      }
+    }
+  ],
+  "facilities": {
+    "labs": [
+      {
+        "name": "",
+        "type": "CS Lab | AI Lab | Networking Lab",
+        "room": "",
+        "description": "",
+        "equipment": []
+      }
+    ]
+  },
+
+  "navigation": {
+    "buildings": [
+      {
+        "name": "Yousaf Block",
+        "type": "department",
+        "floors": 2,
+        "description": "All IT department rooms are located on 2nd floor",
+        "entryNode": "j_entrance_split",
+        "mainCorridorNode": "j_main_to_offices_corridor"
+      }
+    ],
+
+    "rooms": [
+     {
+  "id": "it_lab_1",
+  "name": "IT Lab 1",
+  "type": "lab",
+  "building": "Yousaf Block",
+  "floor": 2,
+  "doorNodeId": "door_it_lab_1",
+  "tags": [
+    "lab",
+    "computer lab",
+    "it lab",
+    "programming lab",
+    "software lab",
+    "lab 1",
+    "it lab 1",
+    "bs lab",
+    "bs students lab",
+    "undergraduate lab",
+    "computer practical",
+    "coding lab",
+    "development lab",
+    "practical lab"
+  ]
+},
+
+     {
+  "id": "examination_center",
+  "name": "Examination Center",
+  "type": "hall",
+  "building": "Yousaf Block",
+  "floor": 2,
+  "doorNodeId": "door_examination_center",
+  "tags": [
+    "exam",
+    "exam hall",
+    "examination hall",
+    "examination center",
+    "test center",
+    "assessment hall",
+    "paper hall",
+    "hall",
+    "office",
+    "teaching assistant office",
+    "farhan shafqat office",
+    "faculty office",
+    "it department office"
+  ]
+},
+
+     {
+  "id": "it_lab_2",
+  "name": "IT Lab 2",
+  "type": "lab",
+  "building": "Yousaf Block",
+  "floor": 2,
+  "doorNodeId": "door_it_lab_2",
+  "tags": [
+    "lab",
+    "computer lab",
+    "it lab",
+    "programming lab",
+    "software lab",
+    "lab 2",
+    "it lab 2",
+    "ms lab",
+    "ms students lab",
+    "graduate lab",
+    "research lab",
+    "postgraduate lab",
+    "computer practical",
+    "coding lab"
+  ]
+},
+      {
+        "id": "it_hall",
+        "name": "IT Hall",
+        "type": "hall",
+        "building": "Yousaf Block",
+        "floor": 2,
+        "doorNodeId": "door_it_hall",
+        "tags": [
+          "it hall",
+          "hall",
+          "seminar hall",
+          "presentation hall",
+          "event hall",
+          "conference hall",
+          "exam hall",
+          "examination hall",
+          "test center",
+          "lab exam",
+          "orientation",
+          "workshop",
+          "department event"
+        ]
+      },
+
+
+  
+
+   
+
+      {
+        "room_id": "hod_office",
+        "door_node": "door_hod_office",
+        "name": "HOD Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 60, "y": 955 },
+        "connected_to": ["sir_tahir", "faculty_room_2"],
+        "rag": {
+          "searchText": "head of department IT office GCUF Mariam Rehman HOD office",
+          "tags": ["hod", "head of department", "office", "it department", "faculty"]
+        }
+      },
+
+      {
+        "room_id": "sir_tahir",
+        "door_node": "door_sir_tahir",
+        "name": "Sir Tahir Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 60, "y": 918 },
+        "connected_to": ["hod_office", "sir_shahbaz"],
+        "rag": {
+          "searchText": "Tahir Abdullah lecturer IT department office GCUF",
+          "tags": ["tahir", "sir tahir", "lecturer", "office", "it"]
+        }
+      },
+
+      {
+        "room_id": "sir_shahbaz",
+        "door_node": "door_sir_shahbaz",
+        "name": "Sir Shahbaz Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 60, "y": 884 },
+        "connected_to": ["sir_tahir", "kitchen"],
+        "rag": {
+          "searchText": "Shahbaz Nazeer lecturer IT department GCUF office",
+          "tags": ["shahbaz", "sir shahbaz", "lecturer", "it"]
+        }
+      },
+
+      {
+        "room_id": "kitchen",
+        "door_node": "door_kitchen",
+        "name": "Faculty Kitchen",
+        "type": "service",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 60, "y": 850 },
+        "connected_to": ["sir_shahbaz", "faculty_washroom"],
+        "rag": {
+          "searchText": "faculty tea room kitchen staff break area IT department",
+          "tags": ["kitchen", "tea", "staff room", "faculty"]
+        }
+      },
+
+      {
+        "room_id": "faculty_washroom",
+        "door_node": "door_f_washroom",
+        "name": "Faculty Washroom",
+        "type": "washroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 60, "y": 810 },
+        "connected_to": ["kitchen"],
+        "rag": {
+          "searchText": "faculty washroom restroom IT department",
+          "tags": ["washroom", "restroom", "faculty"]
+        }
+      },
+
+      {
+        "room_id": "faculty_room_2",
+        "door_node": "door_faculty_room_2",
+        "name": "Faculty Room 2",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 90, "y": 955 },
+        "connected_to": ["hod_office", "mam_rabia"],
+        "rag": {
+          "searchText": "faculty office room 2 IT department staff office",
+          "tags": ["faculty", "office", "room 2"]
+        }
+      },
+
+      {
+        "room_id": "mam_rabia",
+        "door_node": "door_mam_rabia",
+        "name": "Mam Rabia Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 90, "y": 918 },
+        "connected_to": ["faculty_room_2", "sir_afzaal"],
+        "rag": {
+          "searchText": "Rabia Saleem assistant professor IT department GCUF office",
+          "tags": ["rabia", "mam rabia", "faculty", "office"]
+        }
+      },
+
+      {
+        "room_id": "sir_afzaal",
+        "door_node": "door_sir_afzaal",
+        "name": "Sir Afzaal Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 90, "y": 884 },
+        "connected_to": ["mam_rabia", "sir_younas"],
+        "rag": {
+          "searchText": "Afzaal Hussain assistant professor IT department GCUF",
+          "tags": ["afzaal", "sir afzaal", "faculty", "office"]
+        }
+      },
+
+      {
+        "room_id": "sir_younas",
+        "door_node": "door_sir_younas",
+        "name": "Sir Younas Office",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 90, "y": 850 },
+        "connected_to": ["sir_afzaal", "faculty_room_1"],
+        "rag": {
+          "searchText": "Muhammad Younas assistant professor IT department GCUF",
+          "tags": ["younas", "sir younas", "faculty", "office"]
+        }
+      },
+
+      {
+        "room_id": "faculty_room_1",
+        "door_node": "door_faculty_room_1",
+        "name": "Faculty Room 1",
+        "type": "office",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 90, "y": 810 },
+        "connected_to": ["sir_younas"],
+        "rag": {
+          "searchText": "faculty room 1 IT department shared office",
+          "tags": ["faculty", "office", "room 1"]
+        }
+      },{
+        "room_id": "it01",
+        "door_node": "door_it01",
+        "name": "IT Room 01",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 205, "y": 825 },
+        "connected_to": ["it02"],
+        "rag": {
+          "searchText": "IT 01 classroom computer lab students room GCUF",
+          "tags": ["it01", "classroom", "students", "lecture room"]
+        }
+      },
+
+      {
+        "room_id": "it02",
+        "door_node": "door_it02",
+        "name": "IT Room 02",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 130, "y": 733 },
+        "connected_to": ["it01", "it03"],
+        "rag": {
+          "searchText": "IT 02 classroom lecture room students GCUF",
+          "tags": ["it02", "classroom", "lecture", "students"]
+        }
+      },
+
+      {
+        "room_id": "it03",
+        "door_node": "door_it03",
+        "name": "IT Room 03",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 130, "y": 514 },
+        "connected_to": ["it02", "it04_05"],
+        "rag": {
+          "searchText": "IT 03 classroom programming lecture room GCUF",
+          "tags": ["it03", "classroom", "programming", "students"]
+        }
+      },
+
+      {
+        "room_id": "it04_05",
+        "door_node": "door_it04_05",
+        "name": "IT Room 04 & 05",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 130, "y": 460 },
+        "connected_to": ["it03", "girls_washroom"],
+        "rag": {
+          "searchText": "IT 04 05 combined classrooms lecture programming labs",
+          "tags": ["it04", "it05", "classroom", "combined", "students"]
+        }
+      },
+
+      {
+        "room_id": "it06",
+        "door_node": "door_it06",
+        "name": "IT Room 06",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 220, "y": 435 },
+        "connected_to": ["it_lab_1", "it07"],
+        "rag": {
+          "searchText": "IT 06 lecture room classroom GCUF IT department",
+          "tags": ["it06", "classroom", "lecture"]
+        }
+      },
+
+      {
+        "room_id": "it07",
+        "door_node": "door_it07",
+        "name": "IT Room 07",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 477, "y": 435 },
+        "connected_to": ["it06", "it08"],
+        "rag": {
+          "searchText": "IT 07 classroom lecture room GCUF",
+          "tags": ["it07", "classroom"]
+        }
+      },
+
+      {
+        "room_id": "it08",
+        "door_node": "door_it08",
+        "name": "IT Room 08",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 660, "y": 435 },
+        "connected_to": ["it07", "examination_center"],
+        "rag": {
+          "searchText": "IT 08 classroom lecture room near exam hall GCUF",
+          "tags": ["it08", "classroom"]
+        }
+      },
+
+      {
+        "room_id": "it09",
+        "door_node": "door_it09",
+        "name": "IT Room 09",
+        "type": "classroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 640, "y": 490 },
+        "connected_to": ["it08", "meeting_room"],
+        "rag": {
+          "searchText": "IT 09 classroom lecture room discussion area",
+          "tags": ["it09", "classroom"]
+        }
+      },
+
+      {
+        "room_id": "examination_center",
+        "door_node": "door_examination_center",
+        "name": "Examination Center",
+        "type": "hall",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 700, "y": 435 },
+        "connected_to": ["it08", "it_lab_2"],
+        "rag": {
+          "searchText": "exam hall examination center test hall GCUF IT department",
+          "tags": ["exam", "hall", "test center", "examination"]
+        }
+      },
+
+      {
+        "room_id": "it_lab_1",
+        "door_node": "door_it_lab_1",
+        "name": "IT Lab 1",
+        "type": "lab",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 270, "y": 490 },
+        "connected_to": ["it06","meeting_room"],
+        "rag": {
+          "searchText": "computer lab 1 BS students programming lab IT department",
+          "tags": ["lab1", "bs lab", "it lab 1","it lab","computer lab", "undergraduate"]
+        }
+      },
+
+      {
+        "room_id": "it_lab_2",
+        "door_node": "door_it_lab_2",
+        "name": "IT Lab 2",
+        "type": "lab",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 940, "y": 435 },
+        "connected_to": ["examination_center"],
+        "rag": {
+          "searchText": "MS lab computer lab 2 postgraduate lab research lab IT department",
+          "tags": ["lab2", "ms lab","it lab 2", "postgraduate", "research lab"]
+        }
+      },
+
+      {
+        "room_id": "it_hall",
+        "door_node": "door_it_hall",
+        "name": "IT Hall",
+        "type": "hall",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 1020, "y": 165 },
+        "connected_to": ["it_lab_2"],
+        "rag": {
+          "searchText": "seminar hall IT hall events presentations workshops GCUF",
+          "tags": ["hall", "seminar", "events", "presentation"]
+        }
+      },
+
+      {
+        "room_id": "meeting_room",
+        "door_node": "door_meeting_room",
+        "name": "Meeting Room",
+        "type": "room",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 585, "y": 490 },
+        "connected_to": ["it09", "it_lab_1"],
+        "rag": {
+          "searchText": "meeting room discussion room faculty IT meetings",
+          "tags": ["meeting", "discussion", "faculty"]
+        }
+      },
+
+      {
+        "room_id": "common_room",
+        "door_node": "door_common_room",
+        "name": "Common Room",
+        "type": "room",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 205, "y": 648 },
+        "connected_to": ["it01", "it03"],
+        "rag": {
+          "searchText": "common room student rest area faculty break room",
+          "tags": ["common room", "break", "rest area"]
+        }
+      },
+
+      {
+        "room_id": "girls_washroom",
+        "door_node": "door_girls_washroom",
+        "name": "Girls Washroom",
+        "type": "washroom",
+        "floor": 2,
+        "building": "Yousaf Block",
+        "coordinates": { "x": 120, "y": 250 },
+        "connected_to": ["it04_05"],
+        "rag": {
+          "searchText": "washroom restroom female toilet IT department GCUF",
+          "tags": ["washroom", "restroom", "female"]
+        }
+      }
+  
+    ]
+  },
+
+"events": [
+  {
+      "id": "codecrud_season_iv_2025",
+      "title": "CODECRUD Season IV Held Successfully at GCUF",
+      "type": "competition",
+      "organizer": {
+        "department": "Department of Information Technology",
+        "university": "Government College University Faisalabad"
+      },
+      "description": "CODECRUD Season IV, the annual flagship competition of the Department of Information Technology, GCUF, was successfully held for the fourth consecutive year. The event included quiz competition, speed programming, Query Master, and web designing competitions aimed at enhancing students’ technical and analytical skills.",
+      "activities": [
+        "Quiz Competition",
+        "Speed Programming",
+        "Query Master",
+        "Web Designing"
+      ],
+      "supervision": {
+        "supervisor": "Mr. Farhan Shafqat",
+        "leadership": "Prof. Dr. Mariam Rehman"
+      },
+      "guests": [
+        "Prof. Dr. Rauf-i-Azam (Vice Chancellor, GCUF)",
+        "Prof. Dr. Nasir Amin (Pro Vice Chancellor, GCUF)",
+        "Prof. Dr. Kaleem Khan Khosa (Dean, Faculty of Physical Sciences)",
+        "Prof. Dr. Saqib Ali (UAF)",
+        "Dr. Shazia Riaz (GCWUF)",
+        "Prof. Dr. Muhammad Asif (NTU Faisalabad)"
+      ],
+      "society": "TechInnovate Society",
+      "sponsors": [
+        "Dawn",
+        "SolInnovation",
+        "Corvit Systems",
+        "Tek2D",
+        "Super Cuisine",
+        "e-Faisalabad"
+      ],
+      "inauguration": {
+        "item": "",
+        "purpose": ""
+      },
+      "institution": "Government College University Faisalabad",
+      "tags": [
+        "CODECRUD",
+        "IT competition",
+        "programming contest",
+        "web designing",
+        "GCUF event",
+        "TechInnovate Society",
+        "hackathon",
+        "student competition"
+      ],
+      "rag": {
+        "searchText": "CODECRUD Season IV GCUF IT Department quiz programming web designing TechInnovate Society Farhan Shafqat Mariam Rehman competition Faisalabad",
+        "keywords": [
+          "CODECRUD",
+          "IT competition",
+          "quiz competition",
+          "speed programming",
+          "web designing contest"
+        ]
+      }
+    }, {
+      "id": "three_minute_thesis_it_gcuf_2025",
+      "title": "Three-Minute Thesis Competition and Thesis Display Held at GCUF, IT Department",
+      "type": "academic_exhibition",
+      "organizer": {
+        "department": "Department of Information Technology",
+        "university": "Government College University Faisalabad"
+      },
+      "description": "The Department of Information Technology at GCUF organized a Three-Minute Thesis Competition and Thesis Display showcasing diverse student research contributions in AI, machine learning, and applied computing.",
+      "activities": [],
+      "supervision": {
+        "supervisor": "",
+        "leadership": "Prof. Dr. Maryam Rehman"
+      },
+      "guests": [
+        "Prof. Dr. Rauf-i-Azam (Vice Chancellor, GCUF)",
+        "Prof. Dr. Kaleem Khan Khosa (Dean, Faculty of Physical Sciences)",
+        "Prof. Dr. Maryam Rehman (Chairperson, IT Department)"
+      ],
+      "society": "",
+      "sponsors": [],
+      "inauguration": {
+        "item": "Computer Lab",
+        "purpose": "Enhancing digital learning and research facilities"
+      },
+      "institution": "Government College University Faisalabad",
+      "tags": [
+        "thesis competition",
+        "research exhibition",
+        "IT department event",
+        "GCUF research",
+        "AI projects",
+        "student research",
+        "computer lab inauguration"
+      ],
+      "rag": {
+        "searchText": "Three Minute Thesis IT Department GCUF research exhibition AI ML projects computer lab inauguration Rauf-i-Azam Maryam Rehman Kaleem Khosa",
+        "keywords": [
+          "thesis competition",
+          "research display",
+          "AI projects",
+          "student research",
+          "IT department GCUF"
+        ]
+      }
+    }
+  ],
+  "admissions": {
+  "program": "BS IT / BS CS",
+  "department": "Information Technology",
+  "university": "Government College University Faisalabad",
+
+  "closingMerits": [
+    {
+      "year": 2025,
+      "morningProgram": {
+        "min": 84.5,
+        "max": 88
+      },
+      "replicaProgram": {
+        "min": 79,
+        "max": 83.5
+      }
+    },
+    {
+      "year": 2024,
+      "morningProgram": {
+        "min": 83,
+        "max": 87.5
+      },
+      "replicaProgram": {
+        "min": 77.5,
+        "max": 82
+      }
+    },
+    {
+      "year": 2023,
+      "morningProgram": {
+        "min": 82.5,
+        "max": 86
+      },
+      "replicaProgram": {
+        "min": 76,
+        "max": 80.5
+      }
+    },
+    {
+      "year": 2022,
+      "morningProgram": {
+        "min": 84,
+        "max": 88.5
+      },
+      "replicaProgram": {
+        "min": 78,
+        "max": 82.5
+      }
+    },
+    {
+      "year": 2021,
+      "morningProgram": {
+        "min": 81,
+        "max": 85
+      },
+      "replicaProgram": {
+        "min": 74,
+        "max": 78.5
+      }
+    }
+  ]
+},
+
+
+
+  "important_links": {
+    "faculty_page": "https://profiles.gcuf.edu.pk/staff/information-technology?_gl=1*cksiw7*_ga*MTc5NjM0NDg5OS4xNzc1NzQ3NTE5*_ga_HEM9Q28T1S*czE3NzkwMDc1MTMkbzMkZzEkdDE3NzkwMDgzOTckajE0JGwwJGgw",
+    "admission_page": "https://gcuf.edu.pk/admissions/",
+    "student_portal": "https://student.gcuf.edu.pk/login.php"
+  }
+}

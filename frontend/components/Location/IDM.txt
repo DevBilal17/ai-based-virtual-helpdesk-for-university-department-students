@@ -226,3 +226,658 @@
 //                 />
 //               );
 //             })} */}
+
+
+
+
+
+
+
+
+Location Page
+
+// import React, { useMemo, useRef, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   Dimensions,
+//   ScrollView,
+// } from "react-native";
+
+// import { SafeAreaView } from "react-native-safe-area-context";
+// import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+// import BottomSheet, {
+//   BottomSheetView,
+//   BottomSheetScrollView,
+// } from "@gorhom/bottom-sheet";
+// import { router } from "expo-router";
+// import IndoorMap from "../../components/Location/IndoorMap";
+
+// const { height } = Dimensions.get("window");
+
+// const LOCATIONS = [
+//   { id: "entrance", name: "Main Entrance", icon: "exit-outline" },
+//   { id: "hod", name: "HOD Office", icon: "briefcase-outline" },
+//   { id: "lab", name: "Computer Lab", icon: "laptop-outline" },
+//   { id: "lecture1", name: "Lecture Hall 101", icon: "school-outline" },
+//   { id: "lecture2", name: "Lecture Hall 102", icon: "school-outline" },
+//   { id: "lecture3", name: "Lecture Hall 103", icon: "school-outline" },
+//   { id: "library", name: "Library", icon: "book-outline" },
+//   { id: "washroom", name: "male-female-outline" },
+// ];
+
+// export default function Location() {
+//   const bottomSheetRef = useRef(null);
+
+//   const snapPoints = useMemo(() => ["25%", "60%"], []);
+
+//   const [start, setStart] = useState("entrance");
+//   const [end, setEnd] = useState("lecture3");
+
+//   const [activeField, setActiveField] = useState("end");
+//   const [isNavigating, setIsNavigating] = useState(false);
+
+//   const getName = (id) =>
+//     LOCATIONS.find((l) => l.id === id)?.name || id;
+
+//   // ✅ FIXED: open sheet properly
+//   const openSheet = (field) => {
+//     setActiveField(field);
+//     bottomSheetRef.current?.snapToIndex(1);
+//   };
+
+//   // ✅ FIXED: correct selection logic
+//   const selectLocation = (id) => {
+//     if (activeField === "start") {
+//       setStart(id);
+//     } else {
+//       setEnd(id);
+//     }
+
+//     bottomSheetRef.current?.snapToIndex(0);
+//   };
+
+//   // ✅ FIXED: toggle navigation bug
+//   const toggleNavigation = () => {
+//     const next = !isNavigating;
+//     setIsNavigating(next);
+
+//     if (next) {
+//       bottomSheetRef.current?.collapse();
+//     } else {
+//       bottomSheetRef.current?.snapToIndex(1);
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+
+//       {/* MAP */}
+//       <IndoorMap
+//         start={start}
+//         end={end}
+//         locations={LOCATIONS}
+//         isNavigating={isNavigating}
+//       />
+
+//       {/* HEADER */}
+//       <SafeAreaView style={styles.overlay} pointerEvents="box-none">
+//         <View style={styles.header}>
+//           <TouchableOpacity
+//             style={styles.iconBtn}
+//             onPress={() => router.back()}
+//           >
+//             <Ionicons name="arrow-back" size={22} color="white" />
+//           </TouchableOpacity>
+
+//           <View>
+//             <Text style={styles.smallText}>INDOOR NAVIGATION</Text>
+//             <Text style={styles.title}>Department Map</Text>
+//           </View>
+
+//           <TouchableOpacity style={styles.iconBtn}>
+//             <Ionicons
+//               name="information-circle-outline"
+//               size={22}
+//               color="white"
+//             />
+//           </TouchableOpacity>
+//         </View>
+//       </SafeAreaView>
+
+//       {/* BOTTOM SHEET */}
+//       <BottomSheet
+//         ref={bottomSheetRef}
+//         index={1}
+//         snapPoints={snapPoints}
+//         backgroundStyle={styles.sheetBackground}
+//         handleIndicatorStyle={{ backgroundColor: "#666" }}
+//       >
+//         <BottomSheetView style={styles.sheetContent}>
+
+//           {/* ROUTE */}
+//           <View style={styles.routeCard}>
+//             <Text style={styles.routeLabel}>Current Route</Text>
+//             <Text style={styles.routeText}>
+//               {getName(start)} → {getName(end)}
+//             </Text>
+//           </View>
+
+//           {/* FROM / TO */}
+//           <View style={styles.selectRow}>
+
+//             <TouchableOpacity
+//               style={[
+//                 styles.selectBox,
+//                 activeField === "start" && styles.activeBox,
+//               ]}
+//               onPress={() => openSheet("start")}
+//             >
+//               <Text style={styles.selectLabel}>FROM</Text>
+//               <Text style={styles.selectValue}>{getName(start)}</Text>
+//             </TouchableOpacity>
+
+//             <TouchableOpacity
+//               style={[
+//                 styles.selectBox,
+//                 activeField === "end" && styles.activeBox,
+//               ]}
+//               onPress={() => openSheet("end")}
+//             >
+//               <Text style={styles.selectLabel}>TO</Text>
+//               <Text style={styles.selectValue}>{getName(end)}</Text>
+//             </TouchableOpacity>
+
+//           </View>
+
+//           {/* NAV BUTTON */}
+//           <TouchableOpacity
+//             style={[
+//               styles.navBtn,
+//               { backgroundColor: isNavigating ? "#E11D48" : "#635BFF" },
+//             ]}
+//             onPress={toggleNavigation}
+//           >
+//             <MaterialCommunityIcons
+//               name={isNavigating ? "close" : "navigation"}
+//               size={22}
+//               color="white"
+//             />
+//             <Text style={styles.navBtnText}>
+//               {isNavigating ? "Stop Navigation" : "Start Navigation"}
+//             </Text>
+//           </TouchableOpacity>
+
+//           {/* LOCATION LIST */}
+//           <BottomSheetScrollView
+//   contentContainerStyle={styles.listContent}
+//   showsVerticalScrollIndicator={false}
+// >
+//             {!isNavigating &&
+//               LOCATIONS.map((item) => (
+//                 <TouchableOpacity
+//                   key={item.id}
+//                   style={styles.item}
+//                   onPress={() => selectLocation(item.id)}
+//                 >
+//                   <View style={styles.iconCircle}>
+//                     <Ionicons name={item.icon} size={16} color="white" />
+//                   </View>
+//                   <Text style={styles.itemText}>{item.name}</Text>
+//                 </TouchableOpacity>
+//               ))}
+//           </BottomSheetScrollView>
+
+//         </BottomSheetView>
+//       </BottomSheet>
+//     </View>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#050816",
+//   },
+
+//   overlay: {
+//     position: "absolute",
+//     width: "100%",
+//     zIndex: 100,
+//   },
+
+//   header: {
+//     paddingHorizontal: 20,
+//     marginTop: 10,
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//   },
+
+//   iconBtn: {
+//     width: 42,
+//     height: 42,
+//     borderRadius: 14,
+//     backgroundColor: "rgba(255,255,255,0.08)",
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+
+//   smallText: {
+//     color: "#635BFF",
+//     fontSize: 10,
+//     fontWeight: "700",
+//   },
+
+//   title: {
+//     color: "white",
+//     fontSize: 18,
+//     fontWeight: "700",
+//   },
+
+//   sheetBackground: {
+//     backgroundColor: "#0E1324",
+//     borderTopLeftRadius: 30,
+//     borderTopRightRadius: 30,
+//   },
+
+//   sheetContent: {
+//     padding: 20,
+//     gap: 14,
+//   },
+
+//   routeCard: {
+//     backgroundColor: "#141B34",
+//     padding: 14,
+//     borderRadius: 16,
+//   },
+
+//   routeLabel: {
+//     color: "#00F5D4",
+//     fontSize: 12,
+//     fontWeight: "700",
+//   },
+
+//   routeText: {
+//     color: "white",
+//     fontSize: 14,
+//     marginTop: 4,
+//     fontWeight: "600",
+//   },
+
+//   selectRow: {
+//     flexDirection: "row",
+//     gap: 10,
+//   },
+
+//   selectBox: {
+//     flex: 1,
+//     backgroundColor: "#141B34",
+//     padding: 14,
+//     borderRadius: 14,
+//   },
+
+//   activeBox: {
+//     borderWidth: 1,
+//     borderColor: "#635BFF",
+//   },
+
+//   selectLabel: {
+//     color: "rgba(255,255,255,0.5)",
+//     fontSize: 10,
+//     fontWeight: "700",
+//   },
+
+//   selectValue: {
+//     color: "white",
+//     fontSize: 13,
+//     fontWeight: "700",
+//     marginTop: 4,
+//   },
+
+//   navBtn: {
+//     height: 55,
+//     borderRadius: 16,
+//     justifyContent: "center",
+//     alignItems: "center",
+//     flexDirection: "row",
+//     gap: 10,
+//   },
+
+//   navBtnText: {
+//     color: "white",
+//     fontWeight: "700",
+//     fontSize: 15,
+//   },
+
+//  listContent: {
+//   paddingTop: 10,
+//   paddingBottom: 40,
+// },
+
+//   item: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     padding: 12,
+//     backgroundColor: "#141B34",
+//     borderRadius: 12,
+//     marginBottom: 8,
+//   },
+
+//   iconCircle: {
+//     width: 30,
+//     height: 30,
+//     borderRadius: 10,
+//     backgroundColor: "#635BFF",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     marginRight: 10,
+//   },
+
+//   itemText: {
+//     color: "white",
+//     fontSize: 13,
+//     fontWeight: "600",
+//   },
+// });
+
+
+
+New Indoor But hanging
+
+import React, { useMemo, useEffect } from "react";
+import { View, StyleSheet, Text, Dimensions } from "react-native";
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming,
+  withRepeat,
+  cancelAnimation,
+  useAnimatedProps
+} from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Svg, { Defs, Filter, FeGaussianBlur, Polyline, Circle } from "react-native-svg";
+
+import FloorMap from "../../assets/maps/floor_1.svg";
+import { NODES, ROOMS, CORRIDORS } from "../../utils/constants";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const MAP_SIZE = 1200;
+
+// High-performance native components wrappers
+const AnimatedPolyline = Animated.createAnimatedComponent(Polyline);
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+export default function IndoorDeptMap({ startRoom, endRoom, route, setStartRoom, setEndRoom }) {
+  
+  // ================= CAMERA & GESTURES (YOUR ORIGINAL EXACT MECHANISM) =================
+  const scale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  
+  const startX = useSharedValue(0);
+  const startY = useSharedValue(0);
+  const startScale = useSharedValue(1);
+
+  // Performance-optimized Shared Values (No heavy bridge traffic)
+  const strokeOffset = useSharedValue(2000); // Start fully hidden
+  const pulseScale = useSharedValue(1);
+
+  // 1. Loop pulse animation runs on UI Thread directly
+  useEffect(() => {
+    pulseScale.value = withRepeat(withTiming(1.6, { duration: 1000 }), -1, true);
+  }, []);
+
+  // 2. Trigger route animation only when target change occurs
+  useEffect(() => {
+    if (route.length >= 2) {
+      strokeOffset.value = 2000; // Reset
+      strokeOffset.value = withTiming(0, { duration: 800 }); // Animate to visible smoothly
+    }
+  }, [route]);
+
+  const panGesture = Gesture.Pan()
+    .onBegin(() => {
+      cancelAnimation(translateX);
+      cancelAnimation(translateY);
+      startX.value = translateX.value;
+      startY.value = translateY.value;
+    })
+    .onUpdate((e) => {
+      translateX.value = startX.value + e.translationX;
+      translateY.value = startY.value + e.translationY;
+    });
+
+  const pinchGesture = Gesture.Pinch()
+    .onBegin(() => {
+      cancelAnimation(scale);
+      startScale.value = scale.value;
+    })
+    .onUpdate((e) => {
+      scale.value = Math.max(0.6, Math.min(startScale.value * e.scale, 4));
+    });
+
+  const doubleTap = Gesture.Tap().numberOfTaps(2).onEnd(() => {
+    scale.value = withTiming(1, { duration: 250 });
+    translateX.value = withTiming(0, { duration: 250 });
+    translateY.value = withTiming(0, { duration: 250 });
+  });
+
+  const gesture = Gesture.Simultaneous(panGesture, pinchGesture, doubleTap);
+
+  const focusRoom = (room) => {
+    // Camera jump logic removed to completely avoid layout stuttering
+  };
+
+  // ================= CACHED ROUTE & PATH STRING =================
+  const { pointsString, firstNode, lastNode } = useMemo(() => {
+    if (route.length < 2) return { pointsString: "", firstNode: null, lastNode: null };
+    
+    const validNodes = route.map((id) => NODES.find((n) => n.id === id)).filter(Boolean);
+    if (validNodes.length === 0) return { pointsString: "", firstNode: null, lastNode: null };
+
+    return {
+      pointsString: validNodes.map((p) => `${p.x},${p.y}`).join(" "),
+      firstNode: validNodes[0],
+      lastNode: validNodes[validNodes.length - 1],
+    };
+  }, [route]);
+
+  // ================= NATIVE ANIMATED PROPS (NO RE-RENDERS) =================
+  const animatedPathProps = useAnimatedProps(() => ({
+    strokeDasharray: "2000",
+    strokeDashoffset: strokeOffset.value
+  }));
+
+  const animatedPulseProps = useAnimatedProps(() => ({
+    r: 8 * pulseScale.value,
+    opacity: 1 - (pulseScale.value - 1) / 0.6
+  }));
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scale: scale.value }
+    ],
+  }));
+
+  return (
+    <GestureDetector gesture={gesture}>
+      <View style={styles.container}>
+        <Animated.View style={[styles.mapWrapper, animatedStyle]}>
+          
+          {/* Base Floor Map */}
+          <FloorMap width={MAP_SIZE} height={MAP_SIZE} />
+
+          {/* Static Corridors */}
+          <Svg width={MAP_SIZE} height={MAP_SIZE} style={styles.absoluteSvg}>
+            {CORRIDORS.map((c) => (
+              <Polyline 
+                key={c.id} 
+                points={c.points.map(p => `${p.x},${p.y}`).join(" ")} 
+                stroke="#2A2F45" 
+                strokeWidth={4} 
+                fill="none" 
+              />
+            ))}
+          </Svg>
+
+          {/* Active Route Line Layers */}
+          {pointsString.length > 0 && (
+            <Svg width={MAP_SIZE} height={MAP_SIZE} style={styles.absoluteSvg}>
+              <Defs>
+                <Filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <FeGaussianBlur stdDeviation="3" result="blur" />
+                </Filter>
+                <Filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <FeGaussianBlur stdDeviation="8" result="blur" />
+                </Filter>
+              </Defs>
+
+              {/* LAYER 1: Deep Outer Glow */}
+              <AnimatedPolyline
+                points={pointsString}
+                stroke="#5755EA"
+                strokeWidth={14}
+                opacity={0.3}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                filter="url(#outerGlow)"
+                animatedProps={animatedPathProps}
+              />
+
+              {/* LAYER 2: Soft Inner Glow */}
+              <AnimatedPolyline
+                points={pointsString}
+                stroke="#5755EA"
+                strokeWidth={8}
+                opacity={0.6}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                filter="url(#innerGlow)"
+                animatedProps={animatedPathProps}
+              />
+
+              {/* LAYER 3: Main Core Line */}
+              <AnimatedPolyline
+                points={pointsString}
+                stroke="#9795FF"
+                strokeWidth={3.5}
+                opacity={1}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                animatedProps={animatedPathProps}
+              />
+
+              {/* STARTPOINT PIN (Exact Node Entrance Position) */}
+              {firstNode && (
+                <Circle
+                  cx={firstNode.x}
+                  cy={firstNode.y}
+                  r={4.5}
+                  fill="#635BFF"
+                  filter="url(#innerGlow)"
+                />
+              )}
+
+              {/* DESTINATION NEON PULSE DOT (Far end near target corridor node) */}
+              {lastNode && (
+                <>
+                  <AnimatedCircle
+                    cx={lastNode.x}
+                    cy={lastNode.y}
+                    fill="none"
+                    stroke="#00F5D4"
+                    strokeWidth={2}
+                    animatedProps={animatedPulseProps}
+                  />
+                  <Circle
+                    cx={lastNode.x}
+                    cy={lastNode.y}
+                    r={4.5}
+                    fill="#00F5D4"
+                    filter="url(#innerGlow)"
+                  />
+                </>
+              )}
+            </Svg>
+          )}
+
+          {/* YOUR ORIGINAL ROOM LABELS & DESIGN (Untouched positions) */}
+          {ROOMS.map((room) => {
+            const isSelected = startRoom === room.id || endRoom === room.id;
+            return (
+              <View
+                key={room.id}
+                style={[
+                  styles.roomPin,
+                  { 
+                    left: room.x, 
+                    top: room.y, 
+                    backgroundColor: isSelected ? "#00F5D4" : "#635BFF", 
+                    transform: [{ scale: isSelected ? 1.15 : 1 }, { translateX: -25 }, { translateY: -10 }] 
+                  }
+                ]}
+              >
+                <Text
+                  onPress={() => {
+                    if (!startRoom) {
+                      setStartRoom(room.id);
+                    } else if (startRoom && !endRoom) {
+                      setEndRoom(room.id);
+                    } else {
+                      setStartRoom(room.id);
+                      setEndRoom(null);
+                    }
+                    focusRoom(room);
+                  }}
+                  style={styles.roomText}
+                >
+                  {room.name}
+                </Text>
+              </View>
+            );
+          })}
+        </Animated.View>
+      </View>
+    </GestureDetector>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { 
+    flex: 1, 
+    backgroundColor: "#050816",
+    overflow: "hidden" 
+  },
+  mapWrapper: {
+    width: MAP_SIZE,
+    height: MAP_SIZE,
+  },
+  absoluteSvg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+  roomPin: { 
+    position: "absolute", 
+    paddingHorizontal: 6, 
+    paddingVertical: 4, 
+    borderRadius: 6, 
+    zIndex: 10, 
+    elevation: 5,
+  },
+  roomText: { 
+    color: "white", 
+    fontSize: 7, 
+    fontWeight: "700" 
+  },
+});

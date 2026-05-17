@@ -1,25 +1,28 @@
 const Chat = require("../models/Chat");
 const axios = require("axios");
-const response = require("../utils/response"); 
+const response = require("../utils/response");
 
 const handleUserQuery = async (req, res) => {
   try {
-    const { query, chatId ,use_internet} = req.body; // If chatId exists, we append to it
+    const { query, chatId, use_internet } = req.body; // If chatId exists, we append to it
     const userId = req.user.id;
 
     if (!query) return response(res, 400, false, "Query is required");
 
     // 1. Call Python RAG Service
-    const pythonResponse = await axios.post(`${process.env.PYTHON_URL}/query/ask`, {
-      query: query,
-      use_internet : use_internet,
-    });
+    const pythonResponse = await axios.post(
+      `${process.env.PYTHON_URL}/query/ask`,
+      {
+        query: query,
+        use_internet: use_internet,
+      },
+    );
 
     if (!pythonResponse.data.success) {
       throw new Error("Python AI Service failed");
     }
 
-    const aiData = pythonResponse.data.data; 
+    const aiData = pythonResponse.data.data;
     // aiData now contains { answer: { answer, code, explanation, found_in_context }, sources: [...] }
 
     // 2. Prepare the messages
@@ -29,11 +32,31 @@ const handleUserQuery = async (req, res) => {
       text: aiData.answer.answer,
       metadata: {
         sourceDocuments: aiData.sources,
-            found_in_context: aiData.answer.found_in_context,
-    needs_internet: aiData.answer.needs_internet || false
-      }
-    };
 
+        // core RAG flags
+        found_in_context: aiData.answer.found_in_context,
+        needs_internet: aiData.answer.needs_internet || false,
+
+        // navigation system
+        officeNodeId: aiData.answer.officeNodeId || null,
+        doorNodeId: aiData.answer.doorNodeId || null,
+
+        // AI understanding layer
+        intent: aiData.answer.intent || null,
+        matched_person: aiData.answer.matched_person || null,
+
+        // academic insights
+        publications_count: aiData.answer.publications_count || null,
+
+        // optional debugging
+        source: aiData.answer.source || "rag",
+      },
+    };
+    console.log("AI NAVIGATION DATA:", {
+      officeNodeId: aiData.answer.officeNodeId,
+      doorNodeId: aiData.answer.doorNodeId,
+      intent: aiData.answer.intent,
+    });
     let chat;
 
     if (chatId) {
@@ -41,7 +64,7 @@ const handleUserQuery = async (req, res) => {
       chat = await Chat.findByIdAndUpdate(
         chatId,
         { $push: { messages: { $each: [userMessage, botMessage] } } },
-        { new: true }
+        { new: true },
       );
     } else {
       // Start a brand new conversation
@@ -56,13 +79,11 @@ const handleUserQuery = async (req, res) => {
       chatId: chat._id,
       botResponse: botMessage,
     });
-
   } catch (error) {
     console.error("Chat Error:", error.message);
     return response(res, 500, false, "Internal Server Error", error.message);
   }
 };
-
 
 // GET: /api/chat/all
 const getAllChats = async (req, res) => {
@@ -76,13 +97,11 @@ const getAllChats = async (req, res) => {
     return response(res, 200, true, "Chats fetched successfully", {
       chats,
     });
-
   } catch (error) {
     console.error("Get All Chats Error:", error.message);
     return response(res, 500, false, "Failed to fetch chats", error.message);
   }
 };
-
 
 // GET: /api/chat/recent
 const getRecentChats = async (req, res) => {
@@ -93,17 +112,21 @@ const getRecentChats = async (req, res) => {
       .select("_id title updatedAt messages createdAt")
       .sort({ updatedAt: -1 })
       .limit(5);
-    
+
     return response(res, 200, true, "Recent chats fetched successfully", {
       chats,
     });
-
   } catch (error) {
     console.error("Get Recent Chats Error:", error.message);
-    return response(res, 500, false, "Failed to fetch recent chats", error.message);
+    return response(
+      res,
+      500,
+      false,
+      "Failed to fetch recent chats",
+      error.message,
+    );
   }
 };
-
 
 const getChatById = async (req, res) => {
   try {
@@ -160,12 +183,11 @@ const getChatById = async (req, res) => {
     // 7. FINAL RESPONSE DEBUG
     console.log("🚀 Sending response to frontend");
 
-    console.log(chat)
+    console.log(chat);
 
     return response(res, 200, true, "Chat fetched successfully", {
       chat,
     });
-
   } catch (error) {
     console.log("🔥 ERROR IN getChatById:");
     console.log(error);
@@ -177,6 +199,4 @@ const getChatById = async (req, res) => {
   }
 };
 
-
-
-module.exports = { handleUserQuery,getAllChats,getRecentChats,getChatById };
+module.exports = { handleUserQuery, getAllChats, getRecentChats, getChatById };

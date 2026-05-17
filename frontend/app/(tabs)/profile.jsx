@@ -120,9 +120,9 @@ const handleUpdateProfile = async (imageUri) => {
         {/* Header / ID Card Section */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Student Profile</Text>
-          <TouchableOpacity style={styles.editButton}>
+          {/* <TouchableOpacity style={styles.editButton}>
             <Ionicons name="pencil" size={18} color="white" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <GlassmorphismCard gradientStyle={styles.cardGradient}>

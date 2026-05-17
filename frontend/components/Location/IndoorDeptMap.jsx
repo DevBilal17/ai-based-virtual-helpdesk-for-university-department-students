@@ -1,28 +1,52 @@
-import React, { useState, useMemo } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, StyleSheet, Text, Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  cancelAnimation,
 } from "react-native-reanimated";
-
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Svg, { Defs, Filter, FeGaussianBlur, Polyline } from "react-native-svg";
 
 import FloorMap from "../../assets/maps/floor_1.svg";
-import { RAW_CONNECTIONS, NODES, ROOMS, CORRIDORS } from "../../utils/constants";
-import { findPath, makeConnectionsBidirectional } from "../../utils/mapFunctions";
+import { NODES, ROOMS, CORRIDORS } from "../../utils/constants";
 
-import Svg, { Polyline } from "react-native-svg";
+// Screen dimensions dynamically get karenge taake center perfect ho
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const MAP_SIZE = 1200;
 
-export default function IndoorDeptMap() {
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [route, setRoute] = useState([]);
-  
-  // Sahi Navigation k liye dono states ka hona zaroori hai
-  const [startRoom, setStartRoom] = useState(null); 
-  const [endRoom, setEndRoom] = useState(null);
+export default function IndoorDeptMap({
+  startRoom,
+  endRoom,
+  route,
+  setStartRoom,
+  setEndRoom,
+}) {
+  //   const INITIAL_X = (SCREEN_WIDTH - MAP_SIZE) / 2;
+  // const INITIAL_Y = (SCREEN_HEIGHT - MAP_SIZE) / 2;
 
-  // ================= CAMERA =================
+  const [viewport, setViewport] = useState({
+    width: 0,
+    height: 0,
+  });
+  // const INITIAL_X = -MAP_SIZE / 2 + viewport.width / 2;
+  // const INITIAL_Y = -MAP_SIZE / 2 + viewport.height / 2;
+  useEffect(() => {
+    if (viewport.width && viewport.height) {
+      translateX.value = INITIAL.x;
+      translateY.value = INITIAL.y;
+    }
+  }, [viewport]);
+  const INITIAL = useMemo(() => {
+    if (!viewport.width || !viewport.height) return { x: 0, y: 0 };
+
+    return {
+      x: -MAP_SIZE / 2 + viewport.width / 2,
+      y: -MAP_SIZE / 2 + viewport.height / 2,
+    };
+  }, [viewport]);
+  // ================= CAMERA & GESTURES =================
   const scale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -31,57 +55,106 @@ export default function IndoorDeptMap() {
   const startY = useSharedValue(0);
   const startScale = useSharedValue(1);
 
-  // ================= GESTURES =================
+  // Pan Gesture Configuration
   const panGesture = Gesture.Pan()
     .onBegin(() => {
+      // Lag khatam karne ke liye chalte hue animations ko cancel karenge
+      cancelAnimation(translateX);
+      cancelAnimation(translateY);
       startX.value = translateX.value;
       startY.value = translateY.value;
     })
     .onUpdate((e) => {
+      // Dynamic bounds taake map screen se bilkul baahir na nikal jaye
+      const maxTx = (MAP_SIZE * scale.value - SCREEN_WIDTH) / 2;
+      const maxTy = (MAP_SIZE * scale.value - SCREEN_HEIGHT) / 2;
+
       translateX.value = startX.value + e.translationX;
       translateY.value = startY.value + e.translationY;
     });
 
+  // Pinch Gesture Configuration
   const pinchGesture = Gesture.Pinch()
     .onBegin(() => {
+      cancelAnimation(scale);
       startScale.value = scale.value;
     })
     .onUpdate((e) => {
-      scale.value = Math.max(
-        0.6,
-        Math.min(startScale.value * e.scale, 3)
-      );
+      scale.value = Math.max(0.6, Math.min(startScale.value * e.scale, 4));
     });
 
+  // Double Tap to Reset
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      scale.value = withTiming(1);
-      translateX.value = withTiming(0);
-      translateY.value = withTiming(0);
+      scale.value = withTiming(1, { duration: 250 });
+
+      translateX.value = withTiming(INITIAL.x, {
+        duration: 250,
+      });
+
+      translateY.value = withTiming(INITIAL.y, {
+        duration: 250,
+      });
     });
 
-  const gesture = Gesture.Simultaneous(
-    panGesture,
-    pinchGesture,
-    doubleTap
-  );
+  const gesture = Gesture.Simultaneous(panGesture, pinchGesture, doubleTap);
 
-  // ================= FOCUS ROOM =================
+  // PERFECT CENTER FOCUS MATH
+  // const focusRoom = (room) => {
+  //   if (!viewport.width || !viewport.height) return;
+
+  //   const targetScale = 2;
+
+  //   const targetX =
+  //     viewport.width / 2 - room.x * targetScale;
+
+  //   const targetY =
+  //     viewport.height / 2 - room.y * targetScale;
+
+  //   scale.value = withTiming(targetScale, {
+  //     duration: 350,
+  //   });
+
+  //   translateX.value = withTiming(targetX, {
+  //     duration: 350,
+  //   });
+
+  //   translateY.value = withTiming(targetY, {
+  //     duration: 350,
+  //   });
+  // };
+  // const focusRoom = () => {
+  //   scale.value = withTiming(
+  //     scale.value < 2 ? 2 : 1,
+  //     {
+  //       duration: 350,
+  //     }
+  //   );
+  // };
   const focusRoom = (room) => {
-    scale.value = withTiming(2, { duration: 400 });
-    translateX.value = withTiming(-room.x + 200);
-    translateY.value = withTiming(-room.y + 300);
-  };
+    if (!room || !viewport.width || !viewport.height) return;
 
-  // ================= ROUTE POINTS (OPTIMIZED) =================
-  const routePoints = useMemo(() => {
+    const targetScale = 2;
+
+    const targetX = viewport.width / 2 - room.x * targetScale;
+    const targetY = viewport.height / 2 - room.y * targetScale;
+
+    scale.value = withTiming(targetScale, { duration: 350 });
+    translateX.value = withTiming(targetX, { duration: 350 });
+    translateY.value = withTiming(targetY, { duration: 350 });
+  };
+  // ================= OPTIMIZED ROUTE POINTS =================
+  // pointsString ko direct useMemo me string bana kar cache kar lia taake render par lag na aaye
+  const pointsString = useMemo(() => {
+    if (route.length < 2) return "";
     return route
       .map((id) => NODES.find((n) => n.id === id))
-      .filter(Boolean);
+      .filter(Boolean)
+      .map((p) => `${p.x},${p.y}`)
+      .join(" ");
   }, [route]);
 
-  // ================= CAMERA STYLE =================
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
@@ -89,113 +162,140 @@ export default function IndoorDeptMap() {
       { scale: scale.value },
     ],
   }));
-  const CONNECTIONS = makeConnectionsBidirectional(RAW_CONNECTIONS)
+
   return (
     <GestureDetector gesture={gesture}>
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        onLayout={(e) => {
+          const { width, height } = e.nativeEvent.layout;
 
-        <Animated.View style={animatedStyle}>
+          setViewport({
+            width,
+            height,
+          });
+        }}
+      >
+        <View style={styles.viewport}>
+          <Animated.View style={[styles.mapWrapper, animatedStyle]}>
+            {/* Base Floor Map */}
+            <FloorMap width={MAP_SIZE} height={MAP_SIZE} />
 
-          {/* ================= BACKGROUND MAP ================= */}
-          <FloorMap width={1200} height={1200} />
-
-          {/* ================= STATIC CORRIDORS ================= */}
-          <Svg
-            width={1200}
-            height={1200}
-            style={StyleSheet.absoluteFill}
-          >
-            {CORRIDORS.map((c) => (
-              <Polyline
-                key={c.id}
-                points={c.points.map(p => `${p.x},${p.y}`).join(" ")}
-                stroke="#2A2F45"
-                strokeWidth={4}
-                fill="none"
-              />
-            ))}
-          </Svg>
-
-          {/* ================= ACTIVE ROUTE ================= */}
-          {routePoints.length > 1 && (
-            <Svg
-              width={1200}
-              height={1200}
-              style={StyleSheet.absoluteFill}
-            >
-              <Polyline
-                points={routePoints
-                  .map(p => `${p.x},${p.y}`)
-                  .join(" ")}
-                stroke="#00F5D4"
-                strokeWidth={6}
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            {/* Static Corridors */}
+            <Svg width={MAP_SIZE} height={MAP_SIZE} style={styles.absoluteSvg}>
+              {CORRIDORS.map((c) => (
+                <Polyline
+                  key={c.id}
+                  points={c.points.map((p) => `${p.x},${p.y}`).join(" ")}
+                  stroke="#2A2F45"
+                  strokeWidth={4}
+                  fill="none"
+                />
+              ))}
             </Svg>
-          )}
 
-          {/* ================= ROOMS ================= */}
-          {ROOMS.map((room) => {
-            // Room tab highlighted hoga agar wo Start ya End me se koi ek ho
-            const isSelected = startRoom === room.id || endRoom === room.id;
-
-            return (
-              <View
-                key={room.id}
-                style={[
-                  styles.roomPin,
-                  {
-                    left: room.x,
-                    top: room.y,
-                    backgroundColor: isSelected
-                      ? "#00F5D4" // Active points k liye color
-                      : "#635BFF",
-                    transform: [
-                      { scale: isSelected ? 1.2 : 1 },
-                    ],
-                  },
-                ]}
+            {/* Active Route Line with Filters */}
+            {pointsString.length > 0 && (
+              <Svg
+                width={MAP_SIZE}
+                height={MAP_SIZE}
+                style={styles.absoluteSvg}
               >
-                <Text
-                  onPress={() => {
-                    setSelectedRoom(room.id);
+                <Defs>
+                  <Filter
+                    id="innerGlow"
+                    x="-20%"
+                    y="-20%"
+                    width="140%"
+                    height="140%"
+                  >
+                    <FeGaussianBlur stdDeviation="3" result="blur" />
+                  </Filter>
+                  <Filter
+                    id="outerGlow"
+                    x="-50%"
+                    y="-50%"
+                    width="200%"
+                    height="200%"
+                  >
+                    <FeGaussianBlur stdDeviation="8" result="blur" />
+                  </Filter>
+                </Defs>
 
-                    // --- JADUI LOGIC YAHAN HAI ---
-                    if (!startRoom) {
-                      // 1. Agar kuch select nahi hai, to pehla click START point hoga
-                      setStartRoom(room.id);
-                      setRoute([]); // Purana rasta saaf karein
-                    } else if (startRoom && !endRoom) {
-                      // 2. Agar start mil gaya hai to dusra click END point hoga
-                      setEndRoom(room.id);
-                      
-                      // Rasta nikaalein: startRoom se lekar abhi click kiye gaye room tak
-                      const path = findPath(
-                        startRoom,
-                        room.id,
-                        CONNECTIONS
-                      );
-                      setRoute(path);
-                    } else {
-                      // 3. Agar teesri baar click ho, to ise naya START bana dein aur cycle reset karein
-                      setStartRoom(room.id);
-                      setEndRoom(null);
-                      setRoute([]);
-                    }
+                {/* LAYER 1: Deep Outer Glow */}
+                <Polyline
+                  points={pointsString}
+                  stroke="#5755EA"
+                  strokeWidth={14}
+                  opacity={0.3}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  filter="url(#outerGlow)"
+                />
 
-                    focusRoom(room);
-                  }}
-                  style={styles.roomText}
+                {/* LAYER 2: Soft Inner Glow */}
+                <Polyline
+                  points={pointsString}
+                  stroke="#5755EA"
+                  strokeWidth={8}
+                  opacity={0.6}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  filter="url(#innerGlow)"
+                />
+
+                {/* LAYER 3: Main Core Line */}
+                <Polyline
+                  points={pointsString}
+                  stroke="#9795FF"
+                  strokeWidth={3.5}
+                  opacity={1}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
+            )}
+
+            {/* Rooms Pins */}
+            {ROOMS.map((room) => {
+              const isSelected = startRoom === room.id || endRoom === room.id;
+              return (
+                <View
+                  key={room.id}
+                  style={[
+                    styles.roomPin,
+                    {
+                      left: room.x,
+                      top: room.y,
+                      backgroundColor: isSelected ? "#00F5D4" : "#635BFF",
+                      transform: [{ scale: isSelected ? 1.15 : 1 }],
+                    },
+                  ]}
                 >
-                  {room.name}
-                </Text>
-              </View>
-            );
-          })}
-
-        </Animated.View>
+                  <Text
+                    onPress={() => {
+                      if (!startRoom) {
+                        setStartRoom(room.id);
+                      } else if (startRoom && !endRoom) {
+                        setEndRoom(room.id);
+                      } else {
+                        setStartRoom(room.id);
+                        setEndRoom(null);
+                      }
+                      focusRoom(room);
+                    }}
+                    style={styles.roomText}
+                  >
+                    {room.name}
+                  </Text>
+                </View>
+              );
+            })}
+          </Animated.View>
+        </View>
       </View>
     </GestureDetector>
   );
@@ -204,20 +304,36 @@ export default function IndoorDeptMap() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B1020",
+    backgroundColor: "#050816",
+    // overflow: "hidden"
+  },
+  viewport: {
+    flex: 1,
     overflow: "hidden",
+  },
+  mapWrapper: {
+    position: "absolute",
+    width: MAP_SIZE,
+    height: MAP_SIZE,
+  },
+  absoluteSvg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
   roomPin: {
     position: "absolute",
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     paddingVertical: 4,
     borderRadius: 6,
     zIndex: 10,
-    elevation: 10,
+    elevation: 5,
+    marginLeft: 0,
+    marginTop: 0,
   },
   roomText: {
     color: "white",
-    fontSize: 6,
-    fontWeight: "600",
+    fontSize: 7,
+    fontWeight: "700",
   },
 });

@@ -28,7 +28,19 @@ export const voiceApi = createApi({
      
       invalidatesTags: ["Chat"], 
     }),
+
+     // ----------------------------
+    // 2. TEXT + INTERNET API (NEW)
+    // ----------------------------
+    processText: builder.mutation({
+      query: (body) => ({
+        url: "query/process",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
-export const { useProcessVoiceMutation } = voiceApi;
+export const { useProcessVoiceMutation ,useProcessTextMutation} = voiceApi;

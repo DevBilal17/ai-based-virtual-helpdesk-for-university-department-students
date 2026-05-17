@@ -28,37 +28,33 @@ const CustomDrawer = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   //    console.log(userChats)
- const handleSelectChat = async (chat) => {
-  dispatch(setLoadingHistory(true));
+  const handleSelectChat = async (chat) => {
+    dispatch(setLoadingHistory(true));
 
-  dispatch(setActiveChatId(chat._id));
+    dispatch(setActiveChatId(chat._id));
 
-  await setItem("active_chat_id", chat._id);
+    await setItem("active_chat_id", chat._id);
 
-  props.navigation.closeDrawer();
+    props.navigation.closeDrawer();
 
-  router.push({
-    pathname: "/(tabs)/chat",
-    params: { chatId: chat._id },
-  });
-};
+    router.push({
+      pathname: "/(tabs)/chat",
+      params: { chatId: chat._id },
+    });
+  };
 
-const handleNewChat = async () => {
-  await removeItem("active_chat_id");
+  const handleNewChat = async () => {
+    await removeItem("active_chat_id");
 
-  dispatch(clearChat());
+    dispatch(clearChat());
 
-  props.navigation.closeDrawer();
+    props.navigation.closeDrawer();
 
-  router.push("/(tabs)/chat");
-};
+    router.push("/(tabs)/chat");
+  };
 
   return (
-    <DrawerContentScrollView
-      {...props}
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.logo}>AI Desk</Text>
@@ -67,10 +63,7 @@ const handleNewChat = async () => {
       </View>
 
       {/* New Chat */}
-      <TouchableOpacity
-  style={styles.newChatBtn}
-  onPress={handleNewChat}
->
+      <TouchableOpacity style={styles.newChatBtn} onPress={handleNewChat}>
         <GlassmorphismCard
           style={styles.newChatCard}
           gradientStyle={styles.newChatGradient}
@@ -88,7 +81,6 @@ const handleNewChat = async () => {
         <FlatList
           data={userChats}
           keyExtractor={(item) => item._id}
-          scrollEnabled={false}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.chatItem}
@@ -107,7 +99,7 @@ const handleNewChat = async () => {
           )}
         />
       </View>
-    </DrawerContentScrollView>
+    </View>
   );
 };
 
