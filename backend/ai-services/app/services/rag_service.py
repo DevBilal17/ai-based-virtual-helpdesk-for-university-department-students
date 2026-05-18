@@ -101,26 +101,44 @@ def build_context(docs):
 # ---------------------------
 # Helper: extract metadata
 # ---------------------------
-def extract_navigation_info(docs):
+def extract_navigation_info(docs, matched_person=None):
     office_node_id = None
     door_node_id = None
 
     for d in docs:
         meta = d.metadata or {}
 
-        # safer faculty detection
-        if "officeNodeId" in str(meta):
-            office_node_id = (
-                meta.get("officeNodeId")
-                or meta.get("basicInfo", {}).get("officeNodeId")
-                or meta.get("contact", {}).get("officeNodeId")
-            )
+        # prioritize matched person doc
+        full_name = (
+            meta.get("basicInfo", {}).get("fullName")
+            or meta.get("fullName")
+        )
 
-        if "doorNodeId" in meta:
-            door_node_id = meta.get("doorNodeId")
+        if matched_person and full_name:
+            if matched_person.lower() not in full_name.lower():
+                continue
+
+        # office node
+        office_node_id = (
+            meta.get("officeNodeId")
+            or meta.get("basicInfo", {}).get("officeNodeId")
+            or meta.get("contact", {}).get("officeNodeId")
+            or office_node_id
+        )
+
+        # door node
+        door_node_id = (
+            meta.get("doorNodeId")
+            or meta.get("basicInfo", {}).get("doorNodeId")
+            or meta.get("contact", {}).get("doorNodeId")
+            or door_node_id
+        )
+
+        # stop if both found
+        if office_node_id or door_node_id:
+            break
 
     return office_node_id, door_node_id
-
 
 def get_publication_count(docs):
     for d in docs:
@@ -136,7 +154,32 @@ def get_publication_count(docs):
 async def rag_answer(query: str):
 
     query = normalize_text(query)
+    # ---------------------------
+    # Clean navigation query
+    # ---------------------------
 
+    navigation_keywords = [
+        "currently i am at",
+        "i am at",
+        "from here",
+        "give me location",
+        "give me directions",
+        "navigate",
+        "direction",
+        "route",
+        "how do i go",
+        "take me to",
+        "i want to visit",
+        "visit",
+        "location"
+    ]
+
+    clean_query = query
+
+    for kw in navigation_keywords:
+        clean_query = clean_query.replace(kw, "")
+
+    clean_query = " ".join(clean_query.split())
     client = get_chroma_client()
     collection = get_or_create_collection(client)
     embedding_model = get_embedding_model()
@@ -152,7 +195,7 @@ async def rag_answer(query: str):
         search_kwargs={"k": 5}
     )
 
-    docs = retriever.invoke(query)
+    docs = retriever.invoke(clean_query)
 
     # ---------------------------
     # No context found
@@ -174,7 +217,7 @@ async def rag_answer(query: str):
     # ---------------------------
     # Extract navigation metadata
     # ---------------------------
-    office_node_id, door_node_id = extract_navigation_info(docs)
+    # office_node_id, door_node_id = extract_navigation_info(docs)
     publications_count = get_publication_count(docs)
     # ---------------------------
     # Prompt
@@ -296,9 +339,19 @@ OUTPUT FORMAT (STRICT JSON ONLY):
     # ---------------------------
     # Add metadata to response
     # ---------------------------
+    matched_person = parsed.get("matched_person")
+
+    office_node_id, door_node_id = extract_navigation_info(
+        docs,
+        matched_person=matched_person
+    )
+
     parsed["officeNodeId"] = parsed.get("officeNodeId") or office_node_id
     parsed["doorNodeId"] = parsed.get("doorNodeId") or door_node_id
-    parsed["publications_count"] = parsed.get("publications_count") or publications_count
+    parsed["publications_count"] = (
+        parsed.get("publications_count")
+        or publications_count
+    )
     # ---------------------------
     # Sources
     # ---------------------------

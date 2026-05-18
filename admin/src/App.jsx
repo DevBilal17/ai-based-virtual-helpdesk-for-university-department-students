@@ -13,6 +13,7 @@ import ResetPassword from "./pages/ResetPassword.jsx";
 import ProtectedLayout from "./layouts/ProtectedLayout.jsx";
 import { dashboardRoutes } from "./config/dashboardRoutes.js";
 import DashboardSkeleton from "./components/skeletons/DashboardSkeleton.jsx";
+import Navigation from "./pages/Navigation.jsx";
 
 const RootRedirect = () => {
   const { currentUser } = useSelector((state) => state.auth);
@@ -34,7 +35,9 @@ const App = () => {
   return (
     <BrowserRouter>
       {/* <Header /> */}
-
+      <Routes>
+        <Route path="/navigation" element={<Navigation />} />
+      </Routes>
       <Suspense fallback={<DashboardSkeleton />}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />

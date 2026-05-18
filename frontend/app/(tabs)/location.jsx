@@ -33,13 +33,22 @@ export default function Location() {
     floor: room?.floor,
   };
 };
-  useEffect(() => {
-    if (!nodeId) return;
-    console.log("Received navigation intent for nodeId:", nodeId);
-      const roomInfo = getRoomInfo(nodeId);
-    setEndRoom(roomInfo.exists ? roomInfo.roomId : null);
-    setStartRoom(null); // user current location later set karega
-  }, [nodeId]);
+useEffect(() => {
+  if (!nodeId) return;
+
+  const roomInfo = getRoomInfo(nodeId);
+
+  if (!roomInfo.exists) return;
+
+  if (intent === "from") {
+    setStartRoom(roomInfo.roomId);
+  } 
+  else {
+    setEndRoom(roomInfo.roomId);
+    setStartRoom(null);
+  }
+
+}, [nodeId, intent]);
   const route = useMemo(() => {
     if (startRoom && endRoom) {
       // Dono selected rooms ke complete objects dhoonden
