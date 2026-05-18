@@ -1,9 +1,11 @@
+import json
+
 from app.utils.intent_router import detect_intent
 from app.controllers.query_controllers import process_query_core
 from app.services.whisper_service import WhisperService
 from app.services.tts_service import text_to_speech
 from pydantic import BaseModel
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Form
 
 router = APIRouter()
 
@@ -17,6 +19,7 @@ def clean_text(text: str):
 class TextRequest(BaseModel):
     query: str
     use_internet: bool = False
+    chat_history: list = []
 @router.post("/query/process")
 async def process_text(request: TextRequest):
     try:
@@ -49,7 +52,8 @@ async def process_text(request: TextRequest):
             # 3. RAG / Internet Hybrid Layer
             ai_result = await process_query_core(
                 text,
-                use_internet=request.use_internet   # 👈 IMPORTANT ADDITION
+                use_internet=request.use_internet,
+                   chat_history=request.chat_history   
             )
 
             rag_data = ai_result["answer"]
@@ -89,13 +93,16 @@ async def process_text(request: TextRequest):
         }
 
 @router.post("/process")
-async def voice_controller(file: UploadFile = File(...)):
+async def voice_controller(file: UploadFile = File(...), chat_history: str = Form(None)):
     try:
 
         # 1. Speech → Text
         result = await WhisperService.transcribe_audio(file)
         text = clean_text(result.get("transcription", ""))
-
+        if chat_history:
+            chat_history = json.loads(chat_history)
+        else:
+            chat_history = []
         if not text:
             return {"error": "Empty transcription"}
 
@@ -116,7 +123,7 @@ async def voice_controller(file: UploadFile = File(...)):
             )
 
         else:
-            ai_result = await process_query_core(text)
+            ai_result = await process_query_core(text, chat_history=chat_history)
 
             rag_data = ai_result["answer"]
 

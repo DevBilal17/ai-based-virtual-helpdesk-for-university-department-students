@@ -3,7 +3,21 @@ const FormData = require("form-data");
 const fs = require("fs");
 const sendResponse = require("../utils/response");
 const Chat = require("../models/Chat");
+const getChatHistory = async (chatId) => {
+  if (!chatId) return [];
 
+  const chat = await Chat.findById(chatId).select("messages");
+
+  if (!chat?.messages) return [];
+
+  return chat.messages
+    .slice(-4) // 👈 your choice (last 4)
+    .map((msg) => ({
+      role: msg.sender === "user" ? "user" : "assistant",
+      content: msg.text,
+       matched_person: msg.metadata?.matched_person || null,
+    }));
+};
 const processVoice = async (req, res) => {
   try {
     if (!req.file) {
@@ -15,19 +29,19 @@ const processVoice = async (req, res) => {
     const userId = req.user.id;
     const filePath = req.file.path;
     const form = new FormData();
-
+    const chatHistory = await getChatHistory(chatId);
     // Python FastAPI ko file forward karna
     form.append("file", fs.createReadStream(filePath), {
       filename: req.file.originalname,
       contentType: req.file.mimetype,
     });
-
+    form.append("chat_history", JSON.stringify(chatHistory));
     // FastAPI URL (Aapki existing service ka port)
     const pythonURL = `${process.env.PYTHON_URL}/voice/process`;
 
     const pythonRes = await axios.post(pythonURL, form, {
       headers: { ...form.getHeaders() },
-      timeout: 30000, // 15 seconds timeout for AI processing
+      timeout: 30000, // 30 seconds timeout for AI processing
     });
     console.log(pythonRes);
     // Temp file delete karein
@@ -115,7 +129,7 @@ const processTextQuery = async (req, res) => {
     if (!query) {
       return sendResponse(res, 400, false, "Query is required");
     }
-
+    const chatHistory = await getChatHistory(chatId);
     // 1. Send to Python backend (NO FILE)
     const pythonURL = `${process.env.PYTHON_URL}/voice/query/process`;
 
@@ -124,6 +138,7 @@ const processTextQuery = async (req, res) => {
       {
         query,
         use_internet: use_internet || false,
+        chat_history: chatId ? chatHistory : [],
       },
       {
         timeout: 30000,

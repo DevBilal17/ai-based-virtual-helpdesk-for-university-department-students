@@ -8,13 +8,31 @@ const handleUserQuery = async (req, res) => {
     const userId = req.user.id;
 
     if (!query) return response(res, 400, false, "Query is required");
+    let chatHistory = [];
+    if (chatId) {
+      const chat = await Chat.findById(chatId).select("messages");
 
+      if (chat && chat.messages) {
+        chatHistory = chat.messages.slice(-4).map((msg) => ({
+          role: msg.sender === "user" ? "user" : "assistant",
+          content: msg.text,
+           matched_person: msg.metadata?.matched_person || null,
+        }));
+      }
+    }
+        if (!chatId) {
+      console.log("New conversation - no memory injected");
+    } else {
+      console.log("Memory injected:", chatHistory.length);
+    }
     // 1. Call Python RAG Service
     const pythonResponse = await axios.post(
       `${process.env.PYTHON_URL}/query/ask`,
       {
         query: query,
         use_internet: use_internet,
+        // 👇 ONLY send if chat exists
+        chat_history: chatId ? chatHistory : [],
       },
     );
 

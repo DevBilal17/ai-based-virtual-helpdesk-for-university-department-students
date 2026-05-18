@@ -9,6 +9,7 @@ router = APIRouter()
 class QueryRequest(BaseModel):
     query: str
     use_internet: bool = False
+    chat_history: list = []
 
 
 # Route
@@ -16,17 +17,19 @@ class QueryRequest(BaseModel):
 async def ask_question(request: QueryRequest):
     return await query_controller(
         request.query,
-        request.use_internet
+        request.use_internet,
+        chat_history=request.chat_history
     )
 
 
 
 async def query_controller(
     query: str,
-    use_internet: bool = False
+    use_internet: bool = False,
+chat_history: list = []
 ):
     try:
-        result = await process_query_core(query,use_internet)
+        result = await process_query_core(query,use_internet, chat_history)
 
         return APIResponse(
             statusCode=200,

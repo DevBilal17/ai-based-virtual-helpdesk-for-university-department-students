@@ -15,89 +15,6 @@ def build_context(docs):
     return "\n\n".join([d.page_content for d in docs])
 
 
-# async def rag_answer(query: str):
-
-#     query = normalize_text(query)
-
-#     client = get_chroma_client()
-#     collection = get_or_create_collection(client)
-#     embedding_model = get_embedding_model()
-
-#     vectorstore = Chroma(
-#         client=client,
-#         collection_name=collection.name,
-#         embedding_function=embedding_model
-#     )
-
-#     retriever = vectorstore.as_retriever(
-#         search_type="similarity",
-#         search_kwargs={"k": 5}
-#     )
-
-#     docs = retriever.invoke(query)
-
-#     if not docs:
-#         return {
-#             "answer": "I don’t have this information in the current documents. You can switch to internet search, and I’ll find the latest details for you.",
-#             "found_in_context": False,
-#             "needs_internet": True
-#         }
-
-#     context = build_context(docs)
-
-#     prompt = ChatPromptTemplate.from_messages([
-#         ("system", """
-# You are a Virtual Help Desk AI Assistant.
-
-# RULES:
-# - Use ONLY context
-# - If context is sufficient → answer from it
-# - If partial → infer carefully
-# - If not enough → say I don’t have this information in the current documents. You can switch to internet search, and I’ll find the latest details for you.
-
-# Return ONLY JSON:
-# {{
-#   "answer": "...",
-#   "found_in_context": true
-# }}
-# """),
-#         ("human", "Context:\n{context}\n\nQuestion:\n{question}")
-#     ])
-
-#     llm = ChatGroq(
-#         model="llama-3.1-8b-instant",
-#         temperature=0,
-#         api_key=api_key
-#     )
-
-#     chain = prompt | llm
-
-#     response = chain.invoke({
-#         "context": context,
-#         "question": query
-#     })
-
-#     try:
-#         parsed = json.loads(response.content)
-#     except:
-#         parsed = {
-#             "answer": response.content,
-#             "found_in_context": True
-#         }
-
-#     parsed.setdefault("found_in_context", True)
-#     parsed["needs_internet"] = not parsed["found_in_context"]
-
-#     sources = list(set([
-#         d.metadata.get("source", "Unknown") for d in docs
-#     ]))
-
-#     return {
-#         "answer": parsed,
-#         "sources": sources
-#     }
-
-
 # ---------------------------
 # Helper: extract metadata
 # ---------------------------
@@ -140,6 +57,22 @@ def extract_navigation_info(docs, matched_person=None):
 
     return office_node_id, door_node_id
 
+def extract_name_from_query(query: str):
+    words = query.lower().split()
+
+    # remove noise words
+    stop_words = [
+        "i", "want", "to", "visit", "the",
+        "give", "me", "ok", "please"
+    ]
+
+    cleaned = [w for w in words if w not in stop_words]
+
+    if len(cleaned) > 0:
+        return " ".join(cleaned).title()
+
+    return None
+
 def get_publication_count(docs):
     for d in docs:
         meta = d.metadata or {}
@@ -148,16 +81,73 @@ def get_publication_count(docs):
             return len(pubs)
     return None
 
+def extract_last_person(chat_history):
+    for msg in reversed(chat_history):
+        content = msg.get("content", "")
+
+        # assistant messages check
+        if "Dr." in content or "Sir" in content:
+            return content
+
+    return None
+def get_last_matched_person(chat_history):
+    for msg in reversed(chat_history):
+        person = msg.get("matched_person")
+
+        if person:
+            return person
+
+    return None
+def format_chat_history(chat_history):
+    if not chat_history:
+        return ""
+
+    formatted = []
+
+    for msg in chat_history:
+        role = msg.get("role", "user")
+        content = msg.get("content", "")
+
+        if role == "assistant":
+            formatted.append(f"Assistant: {content}")
+        else:
+            formatted.append(f"User: {content}")
+
+    return "\n".join(formatted)
+def should_inject_entity(query: str):
+    triggers = [
+                "his", "her", "him",
+                "office", "location",
+                "meet", "visit", "where"
+            ]
+    return any(t in query.lower() for t in triggers)
 # ---------------------------
 # MAIN RAG FUNCTION
 # ---------------------------
-async def rag_answer(query: str):
-
+async def rag_answer(query: str, chat_history=None):
+    chat_history = chat_history or []
+    print("CHAT HISTORY:", chat_history)
     query = normalize_text(query)
+    history_entity = get_last_matched_person(chat_history)
+    # query_entity = extract_name_from_query(query)
+
+    entity = history_entity 
+
+    def should_inject(query):
+        triggers = ["visit", "office", "location", "meet", "where"]
+        return any(t in query.lower() for t in triggers)
+
+    if entity and should_inject(query):
+        query = f"{entity} {query}"
+    print("ENTITY:", entity)
+    print("QUERY BEFORE SEARCH:", query)
+    
+
+
     # ---------------------------
     # Clean navigation query
     # ---------------------------
-
+    print(query)
     navigation_keywords = [
         "currently i am at",
         "i am at",
@@ -194,9 +184,13 @@ async def rag_answer(query: str):
         search_type="similarity",
         search_kwargs={"k": 5}
     )
+    final_query = clean_query
+    if entity:
+        final_query = f"{entity} {clean_query}"
 
-    docs = retriever.invoke(clean_query)
+    docs = retriever.invoke(final_query)
 
+   
     # ---------------------------
     # No context found
     # ---------------------------
@@ -213,7 +207,8 @@ async def rag_answer(query: str):
     # Build context
     # ---------------------------
     context = build_context(docs)
-
+    formatted_history = format_chat_history(chat_history)
+    print(formatted_history)
     # ---------------------------
     # Extract navigation metadata
     # ---------------------------
@@ -282,6 +277,8 @@ From the same context, also extract:
 4. matched_person:
    - fullName of person if found in context
    - otherwise null
+    - If multiple people match, choose ONLY the most relevant one
+    - Do NOT mix information from different people
 -----------------------------------
 TASK 3: MEETING INTENT (NEW FEATURE)
 -----------------------------------
@@ -307,7 +304,16 @@ OUTPUT FORMAT (STRICT JSON ONLY):
      "matched_person": null
 }}
 """),
-    ("human", "Context:\n{context}\n\nQuestion:\n{question}")
+   ("human", """
+Previous Conversation:
+{chat_history}
+
+Document Context:
+{context}
+
+Current User Question:
+{question}
+""")
 ])
     llm = ChatGroq(
         model="llama-3.1-8b-instant",
@@ -318,6 +324,7 @@ OUTPUT FORMAT (STRICT JSON ONLY):
     chain = prompt | llm
 
     response = chain.invoke({
+        "chat_history": formatted_history,
         "context": context,
         "question": query
     })

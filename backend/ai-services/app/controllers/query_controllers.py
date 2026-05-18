@@ -7,10 +7,38 @@ import os
 
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
-async def process_query_core(query: str, use_internet: bool = False):
+async def process_query_core(
+    query: str,
+    use_internet: bool = False,
+    chat_history: list = None
+):
+    chat_history = chat_history or []
+     # 🔥 FIRST CHECK (IMPORTANT)
+    if use_internet:
+        try:
+            results = tavily.search(
+                query=query,
+                search_depth="advanced",
+                max_results=5
+            )
 
-    intent = detect_intent(query)
+            return {
+                "answer": internet_answer(query, results.get("results", [])),
+                "sources": ["Tavily Search"]
+            }
 
+        except Exception as e:
+            return {
+                "answer": {
+                    "answer": "Internet search failed. Please try again later.",
+                    "found_in_context": False,
+                    "needs_internet": True
+                },
+                "sources": []
+            }
+    if not use_internet:
+        intent = detect_intent(query)
+    print("DETECTED INTENT:", intent)
     # 1. Greeting
     if intent == "greeting":
         return {
@@ -34,21 +62,21 @@ async def process_query_core(query: str, use_internet: bool = False):
             "sources": []
         }
 
-    # 3. Internet mode
-    if use_internet:
+    # # 3. Internet mode
+    # if use_internet:
 
-        results = tavily.search(
-            query=query,
-            search_depth="advanced",
-            max_results=5
-        )
+    #     results = tavily.search(
+    #         query=query,
+    #         search_depth="advanced",
+    #         max_results=5
+    #     )
 
-        return {
-            "answer": internet_answer(query, results["results"]),
-            "sources": ["Tavily Search"]
-        }
+    #     return {
+    #         "answer": internet_answer(query, results["results"]),
+    #         "sources": ["Tavily Search"]
+    #     }
     # 4. RAG mode
-    return await rag_answer(query)
+    return await rag_answer(query,chat_history=chat_history)
 
 
 # async def process_query_core(query: str):
