@@ -8,7 +8,7 @@ const TabLayout = () => {
    const insets = useSafeAreaInsets();
   return (
     <Tabs
-      initialRouteName='location'
+      initialRouteName='index'
 
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -73,6 +73,19 @@ const TabLayout = () => {
       <Tabs.Screen name="chat" />
       <Tabs.Screen name="voice"  />
       <Tabs.Screen name="location" />
+      <Tabs.Screen
+  name="qrScreen"
+  options={{
+    title: "QR",
+    tabBarIcon: ({ color, focused }) => (
+      <Ionicons
+        name={focused ? "qr-code" : "qr-code-outline"}
+        size={focused ? 30 : 26}
+        color={color}
+      />
+    ),
+  }}
+/>
       <Tabs.Screen name="profile" />
     </Tabs>
   );

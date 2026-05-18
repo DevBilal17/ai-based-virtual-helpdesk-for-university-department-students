@@ -20,6 +20,7 @@ export default function Location() {
   const [startRoom, setStartRoom] = useState(null);
   const [endRoom, setEndRoom] = useState(null);
   const { nodeId, intent } = useLocalSearchParams();
+  console.log("Received Params:", { nodeId, intent });
   const CONNECTIONS = useMemo(() => {
     return makeConnectionsBidirectional(RAW_CONNECTIONS);
   }, []);

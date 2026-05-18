@@ -10,6 +10,7 @@ const locationRoutes = require("./routes/location.routes.js");
 const dashboardRoutes = require("./routes/dashboard.routes.js");
 const chatRoutes = require("./routes/chat.routes.js");
 const voiceRoutes = require("./routes/voice.routes.js");
+const qrRoutes = require("./routes/qr.routes.js");
 const response = require("./utils/response");
 
 const app = express();
@@ -49,7 +50,7 @@ app.use("/api/location", locationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/voice", voiceRoutes);
-
+app.use("/api/qr", qrRoutes);
 // ================= DEFAULT 404 =================
 app.use((req, res, next) => {
   return response(res, 404, false, "Route not found");

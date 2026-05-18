@@ -68,7 +68,7 @@ function AppContent() {
           <Stack.Screen name="onboarding" />
         ) : isLoggedIn ? (
           <Stack.Screen
-            name="(tabs)/location"
+            name="(tabs)"
             options={{
               gestureEnabled: false,
             }}
