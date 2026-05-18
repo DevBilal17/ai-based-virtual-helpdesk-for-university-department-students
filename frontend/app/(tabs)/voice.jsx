@@ -30,7 +30,7 @@ import { getItem, setItem } from "../../utils/asyncStorage";
 const VoiceScreen = () => {
   const [status, setStatus] = useState("idle");
   const recorderRef = useRef(null);
-  const playerRef = useRef(null);
+  const soundRef = useRef(null);
   const [locationPrompt, setLocationPrompt] = useState(null);
   const [needsInternet, setNeedsInternet] = useState(false);
   const [lastQuery, setLastQuery] = useState("");
@@ -82,9 +82,10 @@ const VoiceScreen = () => {
             recorderRef.current = null;
           }
 
-          if (playerRef.current) {
-            await playerRef.current.pause();
-            playerRef.current = null;
+          if (soundRef.current) {
+            await soundRef.current.stopAsync();
+            await soundRef.current.unloadAsync();
+            soundRef.current = null;
           }
         } catch (e) {
           console.log(e);
@@ -134,50 +135,30 @@ const isSpeaking = status === "speaking";
 const isProcessing = status === "processing";
 const playAudio = async (url) => {
   try {
-    if (playerRef.current) {
-      await playerRef.current.pause();
-      playerRef.current = null;
+    if (soundRef.current) {
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
     }
 
-    const player = createAudioPlayer({ uri: url });
-    playerRef.current = player;
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: url },
+      { shouldPlay: true }
+    );
 
-    let isStopped = false;
+    soundRef.current = sound;
 
-    const stopHandler = () => {
-      isStopped = true;
-      try {
-        player.pause();
-      } catch (e) {}
+    await new Promise((resolve) => {
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (!status.isLoaded) return;
 
-      try {
-        player.removeAllListeners?.();
-      } catch (e) {}
-
-      playerRef.current = null;
-    };
-
-    // attach stop function to ref so UI can call it
-    playerRef.current.stopPlayback = stopHandler;
-
-    await player.play();
-
-    return new Promise((resolve) => {
-      const interval = setInterval(() => {
-        // 🔥 USER STOP CHECK
-        if (!playerRef.current || isStopped) {
-          clearInterval(interval);
-          resolve();
-          return;
-        }
-
-        // 🔥 NATURAL END CHECK
-        if (player.playing === false) {
-          clearInterval(interval);
+        if (status.didJustFinish) {
           resolve();
         }
-      }, 200);
+      });
     });
+
+    await sound.unloadAsync();
+    soundRef.current = null;
 
   } catch (error) {
     console.log("Audio play error:", error);
@@ -262,13 +243,10 @@ const playAudio = async (url) => {
   };
 const stopPlayback = async () => {
   try {
-    if (playerRef.current) {
-      try {
-        playerRef.current.pause?.();
-        playerRef.current.stopPlayback?.();
-      } catch (e) {}
-
-      playerRef.current = null;
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
     }
 
     setStatus("idle");

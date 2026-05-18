@@ -158,28 +158,31 @@ const chat = () => {
 
   const [askQuestion, { isLoading: isBotTyping }] = useAskQuestionMutation();
 
-  const onSubmit = async (data) => {
-    if (!isHydrated) return;
-    const userInput = data?.message?.trim();
-    if (userInput === "" || isBotTyping) return;
-    const currentChatId = activeChatId || "new_chat";
+const onSubmit = async (data) => {
+  const userInput = data?.message?.trim();
 
-    dispatch(setTypingChatId(currentChatId));
-    const userMessage = {
-      id: Date.now().toString(),
-      sender: "user",
-      text: userInput,
-    };
-    dispatch(addMessage(userMessage));
-    reset();
+  if (!userInput) return; // only block empty input
+  if (isBotTyping) return; // prevent double requests
 
-    try {
-      const currChatId = activeChatId;
-      const response = await askQuestion({
-        query: userInput,
-        chatId: currChatId,
-        use_internet: false,
-      }).unwrap();
+  const currentChatId = activeChatId || "new_chat";
+
+  dispatch(setTypingChatId(currentChatId));
+
+  const userMessage = {
+    id: Date.now().toString(),
+    sender: "user",
+    text: userInput,
+  };
+
+  dispatch(addMessage(userMessage));
+  reset();
+
+  try {
+    const response = await askQuestion({
+      query: userInput,
+      chatId: activeChatId,
+      use_internet: false,
+    }).unwrap();
       console.log("API Response:", response);
 
       if (currentChatId !== activeChatId) return;

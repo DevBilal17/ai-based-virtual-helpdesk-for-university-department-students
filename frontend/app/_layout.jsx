@@ -1,52 +1,100 @@
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+} from "react-native";
+
 import "../global.css";
-// import "react-native-gesture-handler";
-import { getItem } from "../utils/asyncStorage";
 
 import { Provider, useDispatch } from "react-redux";
 import { store } from "../store/store";
 
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast, {
+  BaseToast,
+  ErrorToast,
+} from "react-native-toast-message";
 
-import { setCredentials } from "../store/slices/authSlice";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+
+import { getItem } from "../utils/asyncStorage";
+import { setCredentials } from "../store/slices/authSlice";
+
 function AppContent() {
-  const [isShowOnboarding, setIsShowOnboarding] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
+
+  const [showOnboarding, setShowOnboarding] =
+    useState(null);
+
+  const [isLoggedIn, setIsLoggedIn] =
+    useState(false);
 
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        const onboardingStatus = await getItem("onboardingCompleted");
-        setIsShowOnboarding(onboardingStatus !== "true");
+        /**
+         * Load all persisted app data
+         */
+        const [
+          onboardingStatus,
+          token,
+          user,
+          loggedIn,
+        ] = await Promise.all([
+          getItem("onboardingCompleted"),
+          getItem("token"),
+          getItem("user"),
+          getItem("loggedIn"),
+        ]);
 
-        const token = await getItem("token");
-        const user = await getItem("user");
-        const loggedIn = await getItem("loggedIn");
+        /**
+         * Determine onboarding visibility
+         */
+        setShowOnboarding(
+          onboardingStatus !== "true"
+        );
 
+        /**
+         * Restore authenticated user
+         */
         if (token && user) {
-          dispatch(
-            setCredentials({
-              token,
-              user: JSON.parse(user),
-            }),
-          );
+          try {
+            const parsedUser = JSON.parse(user);
+
+            dispatch(
+              setCredentials({
+                token,
+                user: parsedUser,
+              })
+            );
+          } catch (parseError) {
+            console.log(
+              "User Parse Error:",
+              parseError
+            );
+          }
         }
 
+        /**
+         * Restore login state
+         */
         setIsLoggedIn(loggedIn === "true");
       } catch (error) {
-        console.log(error);
+        console.log(
+          "App Initialization Error:",
+          error
+        );
       }
     };
 
     initializeApp();
-  }, []);
+  }, [dispatch]);
 
-  if (isShowOnboarding === null) {
+  /**
+   * Initial app loader
+   */
+  if (showOnboarding === null) {
     return (
       <View
         style={{
@@ -56,15 +104,22 @@ function AppContent() {
           backgroundColor: "#000",
         }}
       >
-        <ActivityIndicator size="large" color="#00ffcc" />
+        <ActivityIndicator
+          size="large"
+          color="#00ffcc"
+        />
       </View>
     );
   }
 
   return (
     <>
-      <Stack screenOptions={{ headerShown: false }}>
-        {isShowOnboarding ? (
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {showOnboarding ? (
           <Stack.Screen name="onboarding" />
         ) : isLoggedIn ? (
           <Stack.Screen
@@ -77,12 +132,16 @@ function AppContent() {
           <Stack.Screen name="(auth)/login" />
         )}
 
+        {/* Auth Screens */}
         <Stack.Screen name="(auth)/verificationcode" />
         <Stack.Screen name="(auth)/resetpassword" />
         <Stack.Screen name="(auth)/newpassword" />
       </Stack>
 
-      <Toast config={toastConfig} topOffset={50} />
+      <Toast
+        config={toastConfig}
+        topOffset={50}
+      />
     </>
   );
 }
@@ -90,10 +149,12 @@ function AppContent() {
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureHandlerRootView
+        style={{ flex: 1 }}
+      >
         <BottomSheetModalProvider>
-      <AppContent />
-      </BottomSheetModalProvider>
+          <AppContent />
+        </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </Provider>
   );
@@ -101,10 +162,22 @@ export default function RootLayout() {
 
 const toastConfig = {
   success: (props) => (
-    <BaseToast {...props} style={{ borderLeftColor: "green", height: 80 }} />
+    <BaseToast
+      {...props}
+      style={{
+        borderLeftColor: "green",
+        minHeight: 80,
+      }}
+    />
   ),
 
   error: (props) => (
-    <ErrorToast {...props} style={{ borderLeftColor: "red", height: 80 }} />
+    <ErrorToast
+      {...props}
+      style={{
+        borderLeftColor: "red",
+        minHeight: 80,
+      }}
+    />
   ),
 };

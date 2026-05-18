@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -21,13 +21,24 @@ import {
 
 import { removeItem, setItem } from "../../utils/asyncStorage";
 import { useRouter } from "expo-router";
+import DrawerChatsSkeleton from "../skeleton/DrawerRecentChatsSkeleton";
 
 const CustomDrawer = (props) => {
-  const { data, isLoading } = useGetUserChatsQuery();
+  const { data, isLoading, isFetching, refetch } = useGetUserChatsQuery();
   const userChats = data?.data?.chats || [];
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
-  //    console.log(userChats)
+  const onRefresh = useCallback(async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+    } catch (error) {
+      console.log("Refresh error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
   const handleSelectChat = async (chat) => {
     dispatch(setLoadingHistory(true));
 
@@ -77,27 +88,32 @@ const CustomDrawer = (props) => {
       {/* Chats */}
       <View style={styles.chatSection}>
         <Text style={styles.sectionTitle}>Recent Chats</Text>
+        {isLoading || isFetching ? (
+          <DrawerChatsSkeleton />
+        ) : (
+          <FlatList
+            data={userChats}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.chatItem}
+                onPress={() => handleSelectChat(item)}
+              >
+                <Ionicons
+                  name="chatbubble-ellipses-outline"
+                  size={18}
+                  color="rgba(255,255,255,0.7)"
+                />
 
-        <FlatList
-          data={userChats}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.chatItem}
-              onPress={() => handleSelectChat(item)}
-            >
-              <Ionicons
-                name="chatbubble-ellipses-outline"
-                size={18}
-                color="rgba(255,255,255,0.7)"
-              />
-
-              <Text numberOfLines={1} style={styles.chatTitle}>
-                {item.title || "Untitled Chat"}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
+                <Text numberOfLines={1} style={styles.chatTitle}>
+                  {item.title || "Untitled Chat"}
+                </Text>
+              </TouchableOpacity>
+            )}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        )}
       </View>
     </View>
   );
@@ -110,6 +126,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0C1013",
     padding: 18,
+    paddingBottom: 120,
   },
 
   header: {
@@ -153,6 +170,7 @@ const styles = StyleSheet.create({
 
   chatSection: {
     marginTop: 10,
+    paddingBottom: 120,
   },
 
   sectionTitle: {

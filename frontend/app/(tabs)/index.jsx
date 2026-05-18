@@ -9,26 +9,47 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import GlassmorphismCard from "../../components/GlassmorphismCard/GlassmorphismCard";
 import { Ionicons } from "@expo/vector-icons";
 import ModuleBox from "../../components/Home/ModuleBox";
 import HistoryChatBox from "../../components/Home/HistoryChatBox";
-import { router } from "expo-router";
-import axios from "axios"
+import { router, useFocusEffect } from "expo-router";
+import axios from "axios";
 import { removeItem } from "../../utils/asyncStorage";
 import { useSelector } from "react-redux";
 import { useGetRecentChatsQuery } from "../../store/services/chatApi";
 import { FlatList } from "react-native";
 import EmptyState from "../../components/EmptyState";
 import { BASE_URL_8000 } from "../../utils/constants";
+import RecentChatSkeleton from "../../components/skeleton/RecentChatSkeleton";
 const { width } = Dimensions.get("window");
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user);
   const [showLogout, setShowLogout] = useState(false);
-  const [isAIOnline,setIsAIOnline] = useState(false)
+  const [isAIOnline, setIsAIOnline] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const { data, isLoading, isFetching, isError, refetch } =
+    useGetRecentChatsQuery();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
+  const onRefresh = useCallback(async () => {
+    try {
+      setRefreshing(true);
+      await refetch();
+      await AISystemRes();
+    } catch (error) {
+      console.log("Refresh Error:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
   const handleLogout = async () => {
     await removeItem("loggedIn");
     await removeItem("token");
@@ -39,9 +60,9 @@ const Home = () => {
   const AISystemRes = async () => {
     try {
       const res = await axios.get(BASE_URL_8000);
-      const data = res?.data
-      if(res?.status == 200){
-          setIsAIOnline(true)
+      const data = res?.data;
+      if (res?.status == 200) {
+        setIsAIOnline(true);
       }
     } catch (error) {
       console.log(error);
@@ -75,8 +96,8 @@ const Home = () => {
       ampm,
     };
   };
-  const { data, isLoading, isFetching, isError } = useGetRecentChatsQuery();
 
+  // console.log(user);
   // console.log(JSON.stringify(data));
   const recentChats = data?.data?.chats || [];
   return (
@@ -96,13 +117,23 @@ const Home = () => {
                 style={styles.headerIconCard}
                 gradientStyle={styles.headerIconGradient}
               >
-                <Ionicons name="grid-outline" size={20} color="white" />
+                <Ionicons
+                  name="person-circle-outline"
+                  size={28}
+                  color="white"
+                />
               </GlassmorphismCard>
             </TouchableOpacity>
 
             <View style={styles.onlineStatusContainer}>
-              {isAIOnline ? <View style={styles.pulseDot}/> : <View style={styles.pulseDotOffline} /> }
-              <Text style={styles.onlineText}>{isAIOnline ? "AI SYSTEM ONLINE" : "AI SYSTEM OFFLINE"}</Text>
+              {isAIOnline ? (
+                <View style={styles.pulseDot} />
+              ) : (
+                <View style={styles.pulseDotOffline} />
+              )}
+              <Text style={styles.onlineText}>
+                {isAIOnline ? "AI SYSTEM ONLINE" : "AI SYSTEM OFFLINE"}
+              </Text>
             </View>
 
             <TouchableOpacity onPress={() => setShowLogout(true)}>
@@ -171,41 +202,45 @@ const Home = () => {
                 </TouchableOpacity> */}
               </View>
 
-              <FlatList
-                data={recentChats}
-                scrollEnabled={false}
-                keyExtractor={(item) => item._id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.historyListContainer}
-                ListEmptyComponent={
-                  !isLoading && (
+              {isLoading || isFetching ? (
+                <RecentChatSkeleton />
+              ) : (
+                <FlatList
+                  data={recentChats}
+                  scrollEnabled={false}
+                  keyExtractor={(item) => item._id}
+                  showsVerticalScrollIndicator={false}
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  contentContainerStyle={styles.historyListContainer}
+                  ListEmptyComponent={
                     <EmptyState
                       icon="chatbubbles-outline"
                       title="No Conversations Found"
                       message="Start a new chat or voice interaction to see your history here."
                     />
-                  )
-                }
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() =>
-                      router.push({
-                        pathname: "/chat",
-                        params: { chatId: item._id },
-                      })
-                    }
-                  >
-                    <GlassmorphismCard style={styles.historyListCard}>
-                      <HistoryChatBox
-                        title={item.title || "Untitled Chat"}
-                        message={item?.messages[1]?.text || ""}
-                        date={formatDateTime(item.updatedAt)}
-                      />
-                    </GlassmorphismCard>
-                  </TouchableOpacity>
-                )}
-                ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-              />
+                  }
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        router.push({
+                          pathname: "/chat",
+                          params: { chatId: item._id },
+                        })
+                      }
+                    >
+                      <GlassmorphismCard style={styles.historyListCard}>
+                        <HistoryChatBox
+                          title={item.title || "Untitled Chat"}
+                          message={item?.messages[1]?.text || ""}
+                          date={formatDateTime(item.updatedAt)}
+                        />
+                      </GlassmorphismCard>
+                    </TouchableOpacity>
+                  )}
+                  ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+                />
+              )}
             </View>
           </ScrollView>
 
@@ -294,8 +329,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     elevation: 8,
   },
-    pulseDotOffline:{
-      height: 8,
+  pulseDotOffline: {
+    height: 8,
     width: 8,
     borderRadius: 4,
     backgroundColor: `red`,
@@ -303,7 +338,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOpacity: 1,
     elevation: 8,
-    },
+  },
   onlineText: {
     fontSize: 10,
     color: "#fff",

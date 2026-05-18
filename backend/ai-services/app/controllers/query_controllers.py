@@ -27,7 +27,7 @@ async def process_query_core(query: str, use_internet: bool = False):
         
         return {
             "answer": {
-                "answer": "This system is developed by:\n- Muhammad Bilal Aqeel (Team Lead)\n- Abdul Waleed\nBoth are BSCS 8th semester students.",
+                "answer": "This system is developed by:\n- Muhammad Bilal Aqeel (Team Lead)\n- Abdul Waleed\nBoth are BSIT 8th semester students.",
                 "found_in_context": True,
                 "needs_internet": False
             },
@@ -49,91 +49,93 @@ async def process_query_core(query: str, use_internet: bool = False):
         }
     # 4. RAG mode
     return await rag_answer(query)
+
+
 # async def process_query_core(query: str):
-    try:
-        query = normalize_text(query)
-        # 1. Load DB
-        client = get_chroma_client()
-        collection = get_or_create_collection(client)
-        embedding_model = get_embedding_model()
+#     try:
+#         query = normalize_text(query)
+#         # 1. Load DB
+#         client = get_chroma_client()
+#         collection = get_or_create_collection(client)
+#         embedding_model = get_embedding_model()
 
-        vectorstore = Chroma(
-            client=client,
-            collection_name=collection.name,
-            embedding_function=embedding_model
-        )
+#         vectorstore = Chroma(
+#             client=client,
+#             collection_name=collection.name,
+#             embedding_function=embedding_model
+#         )
 
-        # 2. Retriever
-        retriever = vectorstore.as_retriever(
-            search_type="similarity",
-            search_kwargs={
-                "k": 5
-            }
-        )
-        docs = retriever.get_relevant_documents(query)
+#         # 2. Retriever
+#         retriever = vectorstore.as_retriever(
+#             search_type="similarity",
+#             search_kwargs={
+#                 "k": 5
+#             }
+#         )
+#         docs = retriever.get_relevant_documents(query)
 
-        if not docs or len(docs) == 0:
-            return {
-                "answer": {
-                    "answer": "No relevant context found in documents.",
-                    "found_in_context": False
-                },
-                "sources": []
-            }
-        # 3. Prompt
-        prompt = ChatPromptTemplate.from_messages([
-("system", """
-You are a helpful AI assistant working with document context.
+#         if not docs or len(docs) == 0:
+#             return {
+#                 "answer": {
+#                     "answer": "No relevant context found in documents.",
+#                     "found_in_context": False
+#                 },
+#                 "sources": []
+#             }
+#         # 3. Prompt
+#         prompt = ChatPromptTemplate.from_messages([
+# ("system", """
+# You are a helpful AI assistant working with document context.
 
-RULES:
-- Use context as primary source
-- If context is partially relevant, infer logically
-- If context is weak, still try to help
-- Do NOT say "not available" too aggressively
-- Keep response JSON valid
+# RULES:
+# - Use context as primary source
+# - If context is partially relevant, infer logically
+# - If context is weak, still try to help
+# - Do NOT say "not available" too aggressively
+# - Keep response JSON valid
 
-OUTPUT FORMAT:
-{
-  "answer": "...",
-  "found_in_context": true/false
-}
-"""),
-("human", "Context:\n{context}\n\nQuestion:\n{question}")
-])
-        # 4. LLM
-        llm = ChatGroq(
-            model="llama-3.1-8b-instant",
-            temperature=0,
-            api_key=os.getenv("GROQ_API_KEY")
-        )
+# OUTPUT FORMAT:
+# {
+#   "answer": "...",
+#   "found_in_context": true/false
+# }
+# """),
+# ("human", "Context:\n{context}\n\nQuestion:\n{question}")
+# ])
+#         # 4. LLM
+#         llm = ChatGroq(
+#             model="llama-3.1-8b-instant",
+#             temperature=0,
+#             api_key=os.getenv("GROQ_API_KEY")
+#         )
 
-        # 5. Chain
-        docs = retriever.get_relevant_documents(query)
+#         # 5. Chain
+#         docs = retriever.get_relevant_documents(query)
 
-        context = build_context(docs)
+#         context = build_context(docs)
 
-        generation_chain = prompt | llm
-        raw = generation_chain.invoke({
-            "context": context,
-            "question": query
-        })
+#         generation_chain = prompt | llm
+#         raw = generation_chain.invoke({
+#             "context": context,
+#             "question": query
+#         })
 
-        result = raw.content
+#         result = raw.content
 
-        # 6. Execute
-        input_data = map_chain.invoke(query)
-        ai_json_response = generation_chain.invoke(input_data)
+#         # 6. Execute
+#         input_data = map_chain.invoke(query)
+#         ai_json_response = generation_chain.invoke(input_data)
 
-        # 7. Sources
-        source_files = list(set([
-            doc.metadata.get("source", "Unknown")
-            for doc in input_data["context"]
-        ]))
+#         # 7. Sources
+#         source_files = list(set([
+#             doc.metadata.get("source", "Unknown")
+#             for doc in input_data["context"]
+#         ]))
 
-        return {
-            "answer": ai_json_response,
-            "sources": source_files
-        }
+#         return {
+#             "answer": ai_json_response,
+#             "sources": source_files
+#         }
 
-    except Exception as e:
-        raise Exception(str(e))
+#     except Exception as e:
+#         raise Exception(str(e))

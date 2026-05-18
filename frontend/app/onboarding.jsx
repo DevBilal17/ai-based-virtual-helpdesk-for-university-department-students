@@ -1,27 +1,35 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Onboarding from "react-native-onboarding-swiper";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import DoneButtonComponent from "../components/onBoarding/DoneButtonComponent";
 import Slide from "../components/onBoarding/Slide";
 import { setItem } from "../utils/asyncStorage";
-import { SafeAreaView } from "react-native-safe-area-context";
-const onboarding = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-const handleSkip = async () => {
-    await setItem("onboardingCompleted", "true");
-    router.replace("/login");
-  };
 
-  const handleDone = async () => {
-    await setItem("onboardingCompleted", "true");
-    router.replace("/login");
-  };
+const OnboardingScreen = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  /**
+   * Save onboarding completion state
+   * and navigate user to login screen
+   */
+  const completeOnboarding = useCallback(async () => {
+    try {
+      await setItem("onboardingCompleted", "true");
+
+      router.replace("/login");
+    } catch (error) {
+      console.log("Onboarding Error:", error);
+    }
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
       <Onboarding
         pageIndexCallback={(index) => setCurrentIndex(index)}
-        onSkip={handleSkip}
-        onDone={handleDone}
+        onSkip={completeOnboarding}
+        onDone={completeOnboarding}
         containerStyles={{ padding: 0 }}
         titleStyles={{ display: "none" }}
         subTitleStyles={{ display: "none" }}
@@ -32,6 +40,7 @@ const handleSkip = async () => {
         pages={[
           {
             backgroundColor: "transparent",
+
             image: (
               <Slide
                 bg={require("../assets/images/on-boarding-bg-1.png")}
@@ -41,11 +50,14 @@ const handleSkip = async () => {
                 active={currentIndex === 0}
               />
             ),
+
             title: "",
             subtitle: "",
           },
+
           {
             backgroundColor: "transparent",
+
             image: (
               <Slide
                 bg={require("../assets/images/on-boarding-bg-1.png")}
@@ -55,20 +67,24 @@ const handleSkip = async () => {
                 active={currentIndex === 1}
               />
             ),
+
             title: "",
             subtitle: "",
           },
+
           {
             backgroundColor: "transparent",
+
             image: (
               <Slide
                 bg={require("../assets/images/on-boarding-bg-3.png")}
-                img={""}
+                img={null}
                 title="Find Locations"
                 subtitle="Scan QR to locate labs & offices"
                 active={currentIndex === 2}
               />
             ),
+
             title: "",
             subtitle: "",
           },
@@ -78,4 +94,4 @@ const handleSkip = async () => {
   );
 };
 
-export default onboarding;
+export default OnboardingScreen;
