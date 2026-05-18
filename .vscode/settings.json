@@ -16,6 +16,8 @@
     "Toastify",
     "Waleed",
     "wordprocessingml",
+    "Yousaf",
     "Yousuf"
-  ]
+  ],
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

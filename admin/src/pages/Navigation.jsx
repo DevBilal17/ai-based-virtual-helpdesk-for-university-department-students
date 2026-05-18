@@ -4,19 +4,18 @@ import IndoorMap from "../components/map/IndoorMap";
 import { ROOMS } from "../data/constants";
 import SidebarContent from "../components/map/SidebarContent";
 
-
 export default function Navigation() {
   const [searchParams] = useSearchParams();
-const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-useEffect(() => {
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const nodeId = searchParams.get("nodeId");
   const intent = searchParams.get("intent");
 
@@ -47,58 +46,55 @@ useEffect(() => {
     }
   }, [nodeId, intent]);
 
-return (
-  <div style={styles.page}>
-    
-    {/* HEADER */}
-    <div style={styles.header}>
-      <div>
-        <div style={{ fontSize: 12, opacity: 0.7 }}>
-          Department Navigation
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700 }}>
-          IT Dept • Yousaf Block • 2nd Floor
+  return (
+    <div style={styles.page}>
+      {/* HEADER */}
+      <div style={styles.header}>
+        <div>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>
+            Department Navigation
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 700 }}>
+            IT Dept • Yousaf Block • 2nd Floor
+          </div>
         </div>
       </div>
+
+      {/* MAP AREA */}
+      <div style={styles.mapArea}>
+        <IndoorMap
+          startRoom={startRoom}
+          endRoom={endRoom}
+          setStartRoom={setStartRoom}
+          setEndRoom={setEndRoom}
+        />
+
+        {/* DESKTOP SIDEBAR */}
+        {!isMobile && (
+          <div style={styles.sidebar}>
+            <SidebarContent
+              startRoom={startRoom}
+              endRoom={endRoom}
+              setStartRoom={setStartRoom}
+              setEndRoom={setEndRoom}
+            />
+          </div>
+        )}
+
+        {/* MOBILE BOTTOM SHEET */}
+        {isMobile && (
+          <div style={styles.mobileSheet}>
+            <SidebarContent
+              startRoom={startRoom}
+              endRoom={endRoom}
+              setStartRoom={setStartRoom}
+              setEndRoom={setEndRoom}
+            />
+          </div>
+        )}
+      </div>
     </div>
-
-    {/* MAP AREA */}
-    <div style={styles.mapArea}>
-      
-      <IndoorMap
-        startRoom={startRoom}
-        endRoom={endRoom}
-        setStartRoom={setStartRoom}
-        setEndRoom={setEndRoom}
-      />
-
-      {/* DESKTOP SIDEBAR */}
-      {!isMobile && (
-        <div style={styles.sidebar}>
-          <SidebarContent
-            startRoom={startRoom}
-            endRoom={endRoom}
-            setStartRoom={setStartRoom}
-            setEndRoom={setEndRoom}
-          />
-        </div>
-      )}
-
-      {/* MOBILE BOTTOM SHEET */}
-      {isMobile && (
-        <div style={styles.mobileSheet}>
-          <SidebarContent
-            startRoom={startRoom}
-            endRoom={endRoom}
-            setStartRoom={setStartRoom}
-            setEndRoom={setEndRoom}
-          />
-        </div>
-      )}
-
-    </div>
-  </div>
-);
+  );
 }
 const styles = {
   page: {

@@ -48,6 +48,7 @@ const DashUpdateLocation = lazy(
 const DashLocationDetails = lazy(
   () => import("../components/location_management/DashLocationDetails.jsx"),
 );
+const Navigation = lazy(() => import("../pages/Navigation.jsx"));
 
 // Define the dashboard routes
 export const dashboardRoutes = [
@@ -140,5 +141,10 @@ export const dashboardRoutes = [
     path: "locations/location-details/:id",
     component: DashLocationDetails,
     label: "Location Details",
+  },
+  {
+    path: "navigation",
+    component: Navigation,
+    label: "Navigation",
   },
 ];

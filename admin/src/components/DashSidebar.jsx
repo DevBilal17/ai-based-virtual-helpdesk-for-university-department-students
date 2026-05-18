@@ -12,6 +12,7 @@ import {
   SidebarClose,
   SidebarOpen,
   MapPinned,
+  Navigation,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutSuccess, signOutFailure } from "../redux/slices/authSlice.js";
@@ -57,10 +58,15 @@ const DashSidebar = () => {
       icon: HelpCircle,
       path: "/dashboard/faqs",
     },
+    // {
+    //   name: "Location Management",
+    //   icon: MapPinned,
+    //   path: "/dashboard/locations",
+    // },
     {
-      name: "Location Management",
-      icon: MapPinned,
-      path: "/dashboard/locations",
+      name: "Navigation",
+      icon: Navigation,
+      path: "/dashboard/navigation",
     },
   ];
 
