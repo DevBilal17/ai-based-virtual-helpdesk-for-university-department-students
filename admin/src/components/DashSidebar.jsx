@@ -63,11 +63,11 @@ const DashSidebar = () => {
     //   icon: MapPinned,
     //   path: "/dashboard/locations",
     // },
-    {
-      name: "Navigation",
-      icon: Navigation,
-      path: "/dashboard/navigation",
-    },
+    // {
+    //   name: "Navigation",
+    //   icon: Navigation,
+    //   path: "/dashboard/navigation",
+    // },
   ];
 
   // Sidebar System Tabs
