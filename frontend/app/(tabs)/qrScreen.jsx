@@ -29,11 +29,11 @@ export default function QrScreen() {
           </View>
 
           <TouchableOpacity style={styles.iconBtn}>
-            <Ionicons
+            {/* <Ionicons
               name="information-circle-outline"
               size={20}
               color="white"
-            />
+            /> */}
           </TouchableOpacity>
         </LinearGradient>
       </SafeAreaView>

@@ -70,14 +70,13 @@ export const makeConnectionsBidirectional = (connections) => {
     if (!bidirectional[source]) bidirectional[source] = [];
     
     connections[source].forEach((target) => {
-      const cleanTarget = target.trim(); // Kisi bhi extra space ko khatam karne k liye
+      const cleanTarget = target.trim();
       
-      // Source se Target ka rasta
       if (!bidirectional[source].includes(cleanTarget)) {
         bidirectional[source].push(cleanTarget);
       }
       
-      // Target se Source ka wapsi rasta (Fixes the Room-to-Room issue!)
+     
       if (!bidirectional[cleanTarget]) bidirectional[cleanTarget] = [];
       if (!bidirectional[cleanTarget].includes(source)) {
         bidirectional[cleanTarget].push(source);

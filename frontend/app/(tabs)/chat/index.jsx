@@ -41,7 +41,8 @@ const chat = () => {
     defaultValues: { message: "" },
   });
   const dispatch = useDispatch();
-
+  const user = useSelector((state) => state.auth.user);
+  console.log("User Data in Chat Component:", user);
   const { activeChatId, messages, isLoadingHistory, typingChatId } =
     useSelector((state) => state.chat);
   const { chatId } = useLocalSearchParams();
@@ -53,6 +54,7 @@ const chat = () => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [locationPrompt, setLocationPrompt] = useState(null);
   const messageValue = watch("message") || "";
+
   // console.log(messages)
   const handleBotResponse = (botResponse) => {
     const metadata = botResponse?.metadata || {};
@@ -158,31 +160,31 @@ const chat = () => {
 
   const [askQuestion, { isLoading: isBotTyping }] = useAskQuestionMutation();
 
-const onSubmit = async (data) => {
-  const userInput = data?.message?.trim();
+  const onSubmit = async (data) => {
+    const userInput = data?.message?.trim();
 
-  if (!userInput) return; // only block empty input
-  if (isBotTyping) return; // prevent double requests
+    if (!userInput) return; // only block empty input
+    if (isBotTyping) return; // prevent double requests
 
-  const currentChatId = activeChatId || "new_chat";
+    const currentChatId = activeChatId || "new_chat";
 
-  dispatch(setTypingChatId(currentChatId));
+    dispatch(setTypingChatId(currentChatId));
 
-  const userMessage = {
-    id: Date.now().toString(),
-    sender: "user",
-    text: userInput,
-  };
+    const userMessage = {
+      id: Date.now().toString(),
+      sender: "user",
+      text: userInput,
+    };
 
-  dispatch(addMessage(userMessage));
-  reset();
+    dispatch(addMessage(userMessage));
+    reset();
 
-  try {
-    const response = await askQuestion({
-      query: userInput,
-      chatId: activeChatId,
-      use_internet: false,
-    }).unwrap();
+    try {
+      const response = await askQuestion({
+        query: userInput,
+        chatId: activeChatId,
+        use_internet: false,
+      }).unwrap();
       console.log("API Response:", response);
 
       if (currentChatId !== activeChatId) return;
@@ -193,7 +195,7 @@ const onSubmit = async (data) => {
       }
 
       const aiResponse = response?.data?.botResponse;
-      console.log("AI Response in Component:", aiResponse)
+      console.log("AI Response in Component:", aiResponse);
       handleBotResponse(aiResponse);
       const botReply = {
         id: (Date.now() + 1).toString(),
@@ -249,20 +251,20 @@ const onSubmit = async (data) => {
 
     dispatch(clearChat());
   };
-const handleLocationNavigate = () => {
-  if (!locationPrompt) return;
+  const handleLocationNavigate = () => {
+    if (!locationPrompt) return;
 
-  const { nodeId, intent } = locationPrompt;
+    const { nodeId, intent } = locationPrompt;
 
-  setLocationPrompt(null);
+    setLocationPrompt(null);
 
-  if (!nodeId) return;
+    if (!nodeId) return;
 
-  router.push({
-    pathname: "(tabs)/location",
-    params: { nodeId, intent },
-  });
-};
+    router.push({
+      pathname: "(tabs)/location",
+      params: { nodeId, intent },
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -322,7 +324,7 @@ const handleLocationNavigate = () => {
           /* --- CHAT LIST --- */
           <FlatList
             data={messages}
-            renderItem={renderChatBoxItem}
+            renderItem={({ item }) => renderChatBoxItem({ item, user })}
             keyExtractor={(item) => item.id}
             inverted
             contentContainerStyle={styles.listContent}
@@ -375,14 +377,15 @@ const handleLocationNavigate = () => {
   );
 };
 
-const renderChatBoxItem = ({ item }) => {
+const renderChatBoxItem = ({ item, user }) => {
   const shouldAnimate = !item.isHistory && item.sender === "bot";
+
   return (
     <MessageBox
       isUser={item.sender === "user"}
       image={
         item.sender === "user"
-          ? require("../../../assets/images/profile-img.png")
+          ? { uri: user?.profileImage?.url }
           : require("../../../assets/icons/message-bot.png")
       }
       question={item.sender === "user" ? item.text : undefined}

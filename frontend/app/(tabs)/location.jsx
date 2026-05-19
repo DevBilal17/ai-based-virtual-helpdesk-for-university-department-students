@@ -108,11 +108,12 @@ useEffect(() => {
           </View>
 
           <TouchableOpacity style={styles.iconBtn}>
-            <Ionicons
+            {/*   <Ionicons
               name="information-circle-outline"
               size={22}
               color="white"
-            />
+            /> */}
+          
           </TouchableOpacity>
         </View>
       </SafeAreaView>
