@@ -5,7 +5,7 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 
 
-from app.utils.text_intelligence import normalize_text
+from app.utils.text_intelligence import normalize_teacher_entities, normalize_text, smart_normalize_query
 from app.services.store_to_vector_db import get_chroma_client, get_or_create_collection
 from app.services.embeddings import get_embedding_model
 
@@ -127,7 +127,12 @@ def should_inject_entity(query: str):
 async def rag_answer(query: str, chat_history=None):
     chat_history = chat_history or []
     print("CHAT HISTORY:", chat_history)
-    query = normalize_text(query)
+    # query = normalize_text(query)
+    query_obj = smart_normalize_query(query)
+
+    query = query_obj["cleaned"]
+
+    print("NORMALIZED QUERY:", query)
     history_entity = get_last_matched_person(chat_history)
     # query_entity = extract_name_from_query(query)
 
@@ -170,6 +175,10 @@ async def rag_answer(query: str, chat_history=None):
         clean_query = clean_query.replace(kw, "")
 
     clean_query = " ".join(clean_query.split())
+
+    # clean_query = normalize_teacher_entities(clean_query)
+
+    print("CLEAN QUERY:", clean_query)
     client = get_chroma_client()
     collection = get_or_create_collection(client)
     embedding_model = get_embedding_model()
@@ -185,9 +194,9 @@ async def rag_answer(query: str, chat_history=None):
         search_kwargs={"k": 5}
     )
     final_query = clean_query
-    if entity:
-        final_query = f"{entity} {clean_query}"
 
+    if entity and entity.lower() not in final_query.lower():
+        final_query = f"{entity} {final_query}"
     docs = retriever.invoke(final_query)
 
    

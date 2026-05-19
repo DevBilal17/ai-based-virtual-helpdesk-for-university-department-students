@@ -8,7 +8,103 @@ from pyphonetics import Metaphone
 # Initialize phonetic engine once (IMPORTANT for performance)
 metaphone = Metaphone()
 
+TEACHER_ALIASES = {
+    "mariam rehman": [
+        "mariam",
+        "maryam",
+        "maryaam",
+        "mariyam",
+        "maryum",
+        "meryam",
+        "mariam rehman",
+        "maryam rehman",
+        "mariam rehmaan",
+        "maryam rehmaan",
+        "prof mariam",
+        "prof maryam",
+        "dr mariam",
+        "dr maryam",
+        "doctor mariam",
+        "doctor maryam",
+        "sir mariam",
+        "mam mariam",
+        "mam maryam",
+        "chairperson mariam",
+        "hod mariam",
+    ],
 
+    "rabia saleem": [
+        "rabia",
+        "rabiya",
+        "rabeya",
+        "rabia saleem",
+        "rabiya saleem",
+        "dr rabia",
+        "doctor rabia",
+        "mam rabia",
+        "miss rabia",
+    ],
+
+    "muhammad younas": [
+        "younas",
+        "yunus",
+        "yunas",
+        "younis",
+        "yonas",
+        "yunas",
+        "muhammad younas",
+        "muhammad yunus",
+        "mohammad younas",
+        "sir younas",
+        "sir yunus",
+        "dr younas",
+        "dr yunus",
+        "doctor younas",
+        "doctor yunus",
+    ],
+
+    "tahir abdullah": [
+        "tahir",
+        "tahir abdullah",
+        "tahir abdula",
+        "tahir abdulla",
+        "sir tahir",
+        "dr tahir",
+    ],
+
+    "afzaal hussain": [
+        "afzal",
+        "afzaal",
+        "afzaaal",
+        "afzaal hussain",
+        "afzal hussain",
+        "sir afzal",
+        "sir afzaal",
+        "dr afzal",
+        "dr afzaal",
+        "doctor afzaal",
+    ],
+
+    "shahbaz nazeer": [
+        "shahbaz",
+        "shahbaaz",
+        "shehbaz",
+        "shahbaz nazeer",
+        "shehbaz nazeer",
+        "sir shahbaz",
+        "sir shehbaz",
+        "dr shahbaz",
+    ],
+
+    "farhan shafqat": [
+        "farhan",
+        "farhan shafqat",
+        "farhan shafat",
+        "farhan shafaqat",
+        "sir farhan",
+        "mr farhan",
+    ],
+}
 # =========================
 # 1. BASIC TEXT NORMALIZER
 # =========================
@@ -61,11 +157,14 @@ def fuzzy_score(a: str, b: str) -> int:
 # =========================
 def smart_normalize_query(query: str) -> dict:
     """
-    Returns enhanced query object with multiple layers:
-    - cleaned text
-    - phonetic form
+    Enhanced query normalization pipeline
     """
+
     cleaned = normalize_text(query)
+
+    # teacher/entity normalization
+    cleaned = normalize_teacher_entities(cleaned)
+
     phonetic = phonetic_encode(cleaned)
 
     return {
@@ -73,7 +172,6 @@ def smart_normalize_query(query: str) -> dict:
         "cleaned": cleaned,
         "phonetic": phonetic
     }
-
 
 # =========================
 # 5. BEST MATCH FINDER (FOR RETRIEVAL)
@@ -112,3 +210,29 @@ def phonetic_match(a: str, b: str) -> bool:
     Checks if two words sound similar
     """
     return phonetic_encode(a) == phonetic_encode(b)
+
+
+def normalize_teacher_entities(text: str) -> str:
+    """
+    Replace teacher aliases with canonical names
+    """
+
+    text = normalize_text(text)
+
+    for canonical_name, aliases in TEACHER_ALIASES.items():
+
+        all_aliases = aliases + [canonical_name]
+
+        for alias in all_aliases:
+
+            alias_clean = normalize_text(alias)
+
+            # exact containment
+            if alias_clean in text:
+                text = text.replace(alias_clean, canonical_name)
+
+            # phonetic fallback
+            elif phonetic_match(alias_clean, text):
+                text = canonical_name
+
+    return text
