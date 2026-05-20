@@ -24,7 +24,7 @@ import {
   useProcessVoiceMutation,
 } from "../../store/services/voiceApi";
 import { BASE_URL, BASE_URL_8000 } from "../../utils/constants";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { getItem, setItem } from "../../utils/asyncStorage";
 
 const VoiceScreen = () => {
@@ -35,6 +35,9 @@ const VoiceScreen = () => {
   const [needsInternet, setNeedsInternet] = useState(false);
   const [lastQuery, setLastQuery] = useState("");
   const [activeChatId, setActiveChatId] = useState(null);
+  const sessionRef = useRef(0);
+  const stopRef = useRef(false);
+  
   // RTK Query Mutation Hook
   const [processVoice, { isLoading }] = useProcessVoiceMutation();
   const [processText] = useProcessTextMutation();
@@ -129,14 +132,34 @@ const VoiceScreen = () => {
     };
     syncSession();
   }, []);
-  const isDisabled = status === "processing" || status === "speaking";
+  useEffect(() => {
+  return () => {
+    stopRef.current = true;
+
+    if (soundRef.current) {
+      soundRef.current.stopAsync().catch(() => {});
+      soundRef.current.unloadAsync().catch(() => {});
+      soundRef.current = null;
+    }
+  };
+}, []);
+useFocusEffect(
+  React.useCallback(() => {
+    return () => {
+      stopPlayback();
+    };
+  }, [])
+);
+  const isDisabled = status === "processing";
   const isRecording = status === "listening";
 const isSpeaking = status === "speaking";
 const isProcessing = status === "processing";
-const playAudio = async (url) => {
+const playAudio = async (url, sessionId) => {
   try {
+    stopRef.current = false;
+
     if (soundRef.current) {
-      await soundRef.current.unloadAsync();
+      await soundRef.current.unloadAsync().catch(() => {});
       soundRef.current = null;
     }
 
@@ -147,21 +170,30 @@ const playAudio = async (url) => {
 
     soundRef.current = sound;
 
-    await new Promise((resolve) => {
-      sound.setOnPlaybackStatusUpdate((status) => {
+    return new Promise((resolve) => {
+      sound.setOnPlaybackStatusUpdate(async (status) => {
         if (!status.isLoaded) return;
+
+        // STOP pressed OR new session started
+        if (stopRef.current || sessionId !== sessionRef.current) {
+          await sound.stopAsync().catch(() => {});
+          resolve();
+          return;
+        }
 
         if (status.didJustFinish) {
           resolve();
         }
       });
+    }).finally(async () => {
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      soundRef.current = null;
     });
 
-    await sound.unloadAsync();
-    soundRef.current = null;
-
   } catch (error) {
-    console.log("Audio play error:", error);
+    console.log(error);
   }
 };
   const startRecording = async () => {
@@ -230,9 +262,11 @@ const playAudio = async (url) => {
 
       await setItem("active_chat_id", idToUse);
 
-      setStatus("speaking");
+  setStatus("speaking");
+sessionRef.current += 1;
+const currentSession = sessionRef.current;
 
-      await playAudio(audioUrl);
+await playAudio(audioUrl, currentSession);
 
       setStatus("idle");
     } catch (error) {
@@ -243,15 +277,19 @@ const playAudio = async (url) => {
   };
 const stopPlayback = async () => {
   try {
+    stopRef.current = true;
+    console.log("Stop Playback Triggered, Session ID:", sessionRef.current);
+    sessionRef.current += 1; //  cancel old session
+
     if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
+      await soundRef.current.stopAsync().catch(() => {});
+      await soundRef.current.unloadAsync().catch(() => {});
       soundRef.current = null;
     }
 
     setStatus("idle");
   } catch (e) {
-    console.log(e);
+    setStatus("idle");
   }
 };
 useEffect(() => {
@@ -290,7 +328,7 @@ useEffect(() => {
   };
 const toggleMic = () => {
   if (status === "speaking") {
-    stopPlayback(); // 🔥 NEW FEATURE
+    stopPlayback();
     return;
   }
 

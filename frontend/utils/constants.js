@@ -2,9 +2,9 @@
 
 // export const BASE_URL_8000 = "http://172.19.48.129:8000"
 
-export const BASE_URL = "http://10.192.184.123:5000";
+export const BASE_URL = "http://192.168.1.98:5000";
 
-export const BASE_URL_8000 = "http://10.192.184.123:8000";
+export const BASE_URL_8000 = "http://192.168.1.98:8000";
 // >>>>>>> 1a7f37397712dc4acb98b894a51a1e7f2e3ecc1d
 
 export const COLORS = {
@@ -265,18 +265,7 @@ export const RAW_CONNECTIONS = {
   door_f_washroom: ["faculty_washroom"],
 j_offices_to_main_corridor:["j_main_to_offices_corridor"],
   door_faculty_room_1: ["faculty_room_1"],
-  // j_faculty_turn: [
-  //   "door_hod_office",
-  //   "door_sir_tahir",
-  //   "door_sir_shahbaz",
-  //   "door_kitchen",
-  //   "door_f_washroom",
-  //   "door_faculty_room_1",
-  //   "door_faculty_room_2",
-  //   "door_mam_rabia",
-  //   "door_sir_afzaal",
-  //   "door_sir_younas",
-  // ],
+
   j_it_01_turn: ["door_it01", "j_main_to_offices_corridor"],
 
   door_it01: ["it_01"],

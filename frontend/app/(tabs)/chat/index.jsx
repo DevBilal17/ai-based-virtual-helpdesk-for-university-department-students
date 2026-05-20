@@ -187,7 +187,7 @@ const chat = () => {
       }).unwrap();
       console.log("API Response:", response);
 
-      if (currentChatId !== activeChatId) return;
+      // if (currentChatId !== activeChatId) return;
       const newId = response?.data?.chatId;
       if (newId && newId !== activeChatId) {
         dispatch(setActiveChatId(newId));

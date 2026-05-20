@@ -12,10 +12,10 @@ import Svg, { Defs, Filter, FeGaussianBlur, Polyline } from "react-native-svg";
 import FloorMap from "../../assets/maps/floor_1.svg";
 import { NODES, ROOMS, CORRIDORS } from "../../utils/constants";
 
-// Screen dimensions dynamically get karenge taake center perfect ho
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAP_SIZE = 1200;
-
+const ROOM_SIZE = 20; // adjust based on your pin size
 export default function IndoorDeptMap({
   startRoom,
   endRoom,
@@ -58,14 +58,14 @@ export default function IndoorDeptMap({
   // Pan Gesture Configuration
   const panGesture = Gesture.Pan()
     .onBegin(() => {
-      // Lag khatam karne ke liye chalte hue animations ko cancel karenge
+      
       cancelAnimation(translateX);
       cancelAnimation(translateY);
       startX.value = translateX.value;
       startY.value = translateY.value;
     })
     .onUpdate((e) => {
-      // Dynamic bounds taake map screen se bilkul baahir na nikal jaye
+     
       const maxTx = (MAP_SIZE * scale.value - SCREEN_WIDTH) / 2;
       const maxTy = (MAP_SIZE * scale.value - SCREEN_HEIGHT) / 2;
 
@@ -132,20 +132,23 @@ export default function IndoorDeptMap({
   //     }
   //   );
   // };
-  const focusRoom = (room) => {
-    if (!room || !viewport.width || !viewport.height) return;
+const focusRoom = (room) => {
+  if (!room || !viewport.width || !viewport.height) return;
 
-    const targetScale = 2;
+  const targetScale = 2;
 
-    const targetX = viewport.width / 2 - room.x * targetScale;
-    const targetY = viewport.height / 2 - room.y * targetScale;
+  const targetX =
+    viewport.width / 2 - (room.x + ROOM_SIZE / 2) * targetScale;
 
-    scale.value = withTiming(targetScale, { duration: 350 });
-    translateX.value = withTiming(targetX, { duration: 350 });
-    translateY.value = withTiming(targetY, { duration: 350 });
-  };
+  const targetY =
+    viewport.height / 2 - (room.y + ROOM_SIZE / 2) * targetScale;
+
+  scale.value = withTiming(targetScale, { duration: 350 });
+  translateX.value = withTiming(targetX, { duration: 350 });
+  translateY.value = withTiming(targetY, { duration: 350 });
+};
   // ================= OPTIMIZED ROUTE POINTS =================
-  // pointsString ko direct useMemo me string bana kar cache kar lia taake render par lag na aaye
+
   const pointsString = useMemo(() => {
     if (route.length < 2) return "";
     return route
@@ -285,7 +288,7 @@ export default function IndoorDeptMap({
                         setStartRoom(room.id);
                         setEndRoom(null);
                       }
-                      focusRoom(room);
+                      // focusRoom(room);
                     }}
                     style={styles.roomText}
                   >
