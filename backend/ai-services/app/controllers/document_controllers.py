@@ -17,24 +17,34 @@ async def upload_file_controller(file):
 
         print("File Content at 1:",file_content)
 
-        if isinstance(file_content, list):
-            file_content = " ".join([str(x.page_content) for x in file_content])
-        print("File Content at 2:",file_content)
-        # 🔥 NORMALIZE FULL TEXT
-        file_content = normalize_text(file_content)
-        print("File Content at 3:",file_content)
+     
         # 🔥 CHUNK
+        # ALWAYS DOCUMENT LIST NOW
         file_chunks = split_text(file_content)
+        
         print("File Chunks at:",file_chunks)
         # 🔥 NORMALIZE CHUNKS (VERY IMPORTANT)
-        clean_chunks = [normalize_text(c) for c in file_chunks]
+        texts = [
+            normalize_text(c.page_content)
+            for c in file_chunks
+            if c.page_content and c.page_content.strip()
+        ]
         print("File Chunks at:",file_chunks)
         # 🔥 EMBEDDINGS
-        embeddings = create_embeddings(clean_chunks)
-        print("File Embeddings at:", embeddings)
+        print("🔵 STEP: chunks count =", len(texts))
+        print("🔵 STEP: chunks sample =", texts[:1])
+
+        embeddings = create_embeddings(texts)
+
+        print("🟡 STEP: embeddings type =", type(embeddings))
+        print("🟡 STEP: embeddings length =", len(embeddings) if embeddings else 0)
         # 🔥 STORE
+        print("🔵 embeddings type:", type(embeddings))
+        print("🔵 embeddings length:", len(embeddings))
+        print("🔵 first embedding sample:", embeddings[0][:5])
+        print("🔵 chunks length:", len(texts))
         chunk_count = store_embeddings(
-            clean_chunks,
+            texts,
             embeddings,
             result.get("fileName")
         )

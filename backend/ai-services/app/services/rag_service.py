@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 from app.utils.text_intelligence import normalize_teacher_entities, normalize_text, smart_normalize_query
-from app.services.store_to_vector_db import get_chroma_client, get_or_create_collection
+from app.services.store_to_vector_db import get_chroma_client, get_collection
 from app.services.embeddings import get_embedding_model
 
 load_dotenv()
@@ -180,7 +180,7 @@ async def rag_answer(query: str, chat_history=None):
 
     print("CLEAN QUERY:", clean_query)
     client = get_chroma_client()
-    collection = get_or_create_collection(client)
+    collection = get_collection()
     embedding_model = get_embedding_model()
 
     vectorstore = Chroma(
@@ -197,7 +197,11 @@ async def rag_answer(query: str, chat_history=None):
 
     if entity and entity.lower() not in final_query.lower():
         final_query = f"{entity} {final_query}"
-    docs = retriever.invoke(final_query)
+    try:
+        docs = retriever.invoke(final_query)
+    except Exception as e:
+        print("RETRIEVER ERROR:", str(e))
+        raise
 
    
     # ---------------------------

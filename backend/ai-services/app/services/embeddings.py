@@ -9,22 +9,28 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 
 @lru_cache()
 def get_embedding_model():
-    # This model is local, fast, and free.
     return HuggingFaceEmbeddings(
-        # model_name="sentence-transformers/all-MiniLM-L6-v2"
-        model_name="BAAI/bge-small-en-v1.5"
+        model_name="BAAI/bge-small-en-v1.5",
+        # huggingfacehub_api_token=HF_TOKEN
     )
 
+def extract_text(chunk):
+    if hasattr(chunk, "page_content"):
+        return chunk.page_content
+    if isinstance(chunk, dict):
+        return chunk.get("page_content") or chunk.get("text", "")
+    return str(chunk)
+
 def create_embeddings(chunks):
-    # In a standard LangChain flow, we pass the MODEL to the vector store.
-    # However, if you want to see the vectors for debugging:
+    if not chunks:
+        return []
+
     model = get_embedding_model()
-    
-    # If chunks are LangChain Documents, we need to extract page_content
-    if hasattr(chunks[0], 'page_content'):
-        texts = [doc.page_content for doc in chunks]
-    else:
-        texts = chunks
-        
+    texts = [extract_text(c) for c in chunks]
+
     vectors = model.embed_documents(texts)
-    return vectors
+
+    if len(vectors) != len(texts):
+        raise ValueError("Embedding mismatch")
+
+    return [[float(x) for x in v] for v in vectors]
