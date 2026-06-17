@@ -224,22 +224,22 @@ const DashSidebar = () => {
         </div>
 
         {/* System Title */}
-        <h2
+        {/* <h2
           className={`${isSidebarCollapsed ? "hidden" : "block"} mt-6 text-xs text-gray-400 uppercase mb-4 tracking-wide`}
         >
           System
-        </h2>
+        </h2> */}
 
-        {isSidebarCollapsed ? (
+        {/* {isSidebarCollapsed ? (
           <div
             className={"my-4 border-t border-gray-700 transition-all mx-2"}
           />
         ) : (
           ""
-        )}
+        )} */}
 
         {/* System Tabs */}
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           {systemTabs.map((tab, index) => {
             // CHANGE:
             // Use custom function for nested route active state
@@ -266,7 +266,7 @@ const DashSidebar = () => {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Admin Profile and Logout Section */}

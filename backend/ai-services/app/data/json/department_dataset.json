@@ -1,11 +1,5 @@
 {
-  "meta": {
-    "university": "GCUF",
-    "department_name": "Information Technology",
-    "department_slug": "information-technology",
-    "website_url": "https://gcuf.edu.pk/faculties/physical-science/information-technology/",
-    "language": "en"
-  },
+  
 
   "contact_info": {
     "email": ["it@gcuf.edu.pk"],
@@ -43,12 +37,7 @@
 
   "academics": [
     {
-      "program": "BS Information Technology",
-      "scheme_year": "2022-2026",
-      "level": "BS",
-      "credit_hours": {
-        "total": 133
-      },
+    
 
       "semesters": [
         {
@@ -693,7 +682,7 @@
       ]
     },
     {
-      "program": "MS Information Technology",
+    
       "scheme_year": "2022-2024",
       "level": "MS",
       "credit_hours": {
@@ -1101,7 +1090,6 @@
       "basicInfo": {
         "fullName": "Prof. Dr. Mariam Rehman",
         "designation": "Professor / Chairperson",
-        "department": "Information Technology",
         "faculty": "Physical Science",
         "officeNodeId": "door_hod_office"
       },

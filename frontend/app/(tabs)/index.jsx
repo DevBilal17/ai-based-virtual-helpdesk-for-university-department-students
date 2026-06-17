@@ -101,12 +101,12 @@ const Home = () => {
   // console.log(JSON.stringify(data));
   const recentChats = data?.data?.chats || [];
   return (
-    // Updated background logic to match your dark navy theme
+
     <View style={{ flex: 1, backgroundColor: "#0C1013" }}>
       <ImageBackground
         source={require("../../assets/images/on-boarding-bg-1.png")}
         style={{ flex: 1 }}
-        imageStyle={{ opacity: 0.4 }} // Lowered opacity to make the UI pop
+        imageStyle={{ opacity: 0.4 }} 
         blurRadius={Platform.OS === "ios" ? 60 : 30}
       >
         <SafeAreaView style={styles.container}>

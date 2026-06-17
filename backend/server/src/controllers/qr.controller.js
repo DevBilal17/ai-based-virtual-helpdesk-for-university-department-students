@@ -2,7 +2,7 @@ const path = require("path");
 const rooms = require("../data/rooms");
 const { generateQRFile, ensureDir } = require("../utils/qrGenerator");
 
-const BASE_URL = "http://192.168.1.39:5173/navigation";
+const BASE_URL = "http://10.192.184.123:5173/navigation";
 
 const generateAllQRs = async (req, res, next) => {
   try {

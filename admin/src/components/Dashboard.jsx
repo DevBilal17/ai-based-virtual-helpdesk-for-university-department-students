@@ -116,7 +116,7 @@ const Dashboard = () => {
     {
       id: 1,
       title: "Total Interactions",
-      value: "42,584",
+      value: "256",
       growth: "+15%",
       icon: <Users size={18} />,
       active: false,
@@ -219,20 +219,20 @@ const Dashboard = () => {
         {/* Right */}
         <div className="flex items-center gap-3">
           {/* Date */}
-          <div className="flex items-center gap-2 bg-[#0f172a] border border-[#1F2937] px-4 py-2 rounded-lg text-sm text-gray-300">
+          {/* <div className="flex items-center gap-2 bg-[#0f172a] border border-[#1F2937] px-4 py-2 rounded-lg text-sm text-gray-300">
             <CalendarDays size={16} />
             <span>Apr 01, 2026 - Apr 30, 2026</span>
-          </div>
+          </div> */}
 
           {/* Notification */}
-          <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
+          {/* <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
             <Bell size={17} />
-          </button>
+          </button> */}
 
           {/* Search */}
-          <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
+          {/* <button className="w-10 h-10 rounded-lg bg-[#0f172a] border border-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white transition duration-200">
             <Search size={17} />
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -311,9 +311,9 @@ const Dashboard = () => {
                 Volume
               </button>
 
-              <button className="px-4 py-2 text-sm text-gray-400 hover:text-white transition duration-200">
+              {/* <button className="px-4 py-2 text-sm text-gray-400 hover:text-white transition duration-200">
                 Latency
-              </button>
+              </button> */}
             </div>
           </div>
 

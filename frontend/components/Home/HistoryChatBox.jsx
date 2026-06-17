@@ -9,7 +9,12 @@ const HistoryChatBox = ({title,message,date}) => {
   if (!text) return "";
   return text.length > 35 ? text.slice(0, 35) + "..." : text;
 };
+ const formatTitle = (text) => {
+  if (!text) return "";
+  return text.length > 20 ? text.slice(0, 20) + "..." : text;
+};
 // console.log(date)
+title=formatTitle(title)
 message=formatMessage(message)
   return (
     <View style={{width:width*0.92,
